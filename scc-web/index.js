@@ -1,0 +1,12 @@
+const express = require('express')
+
+const hostname = '127.0.0.1';
+const port = 3000;
+
+var app = express();
+
+app.listen(port, function() {
+	console.log(`Server running at http://${hostname}:${port}/`);
+});
+
+app.use('/', express.static('build'));

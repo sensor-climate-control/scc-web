@@ -1,0 +1,35 @@
+[
+    {
+        "name": "sensor123",
+        "active": true,
+        "home": "home1234",
+        "readings": [
+            {
+                "date_time": "1667425695",
+                "temp": "52.1",
+                "humidity": "0.25"
+            },
+            {
+                "date_time": "1667425696",
+                "temp": "52.2",
+                "humidity": "0.26"
+            }
+        ]
+    },
+    {
+        "name": "sensor234",
+        "home": "home1234",
+        "readings": [
+            {
+                "date_time": "1667425695",
+                "temp": "52.1",
+                "humidity": "0.25"
+            },
+            {
+                "date_time": "1667425696",
+                "temp": "52.2",
+                "humidity": "0.26"
+            }
+        ]
+    }
+]
