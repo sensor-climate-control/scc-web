@@ -12,6 +12,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "nodemon": "^2.0.20",
     "react-scripts": "5.0.1"
   },
   "scripts": {
@@ -20,7 +21,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "preserve": "react-scripts build",
-    "serve": "node index.js"
+    "serve": "node index.js",
+    "dev": "nodemon index.js"
   },
   "eslintConfig": {
     "extends": [

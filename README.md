@@ -1,6 +1,18 @@
 # scc-web
 This is the website repository for the Oregon State University Sensor-Based In-Home Climate Control Capstone Project
 
+### Development
+
+Install [NodeJS](https://nodejs.org/en/download/) and ensure you have [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
+
+Run `npm install`
+
+Run `npm start` and `npm run dev` in separate terminal windows to run both the ReactJS frontend and NodeJS backend in development mode (reload on code change).
+
+### `npm run serve`
+
+Builds the React app and serves it with NodeJS. Use for testing, not development.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
