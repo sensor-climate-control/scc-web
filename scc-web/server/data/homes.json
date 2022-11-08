@@ -1,0 +1,44 @@
+[
+    {
+        "name": "home1234",
+        "zip_code": "97330",
+        "users": [
+            "user123",
+            "user234",
+            "user345"
+        ],
+        "home_admins": [
+            "user123"
+        ],
+        "sensors": [
+            "sensor123",
+            "sensor234",
+            "sensor345"
+        ],
+        "preferences": {
+            "desired_temp": 64.1
+        },
+        "windows": [
+            {
+                "id": "window1",
+                "room": "Bedroom",
+                "nickname": "Bedroom Window",
+                "orientation": "N",
+                "open": false,
+                "blinds": true,
+                "blinds_open": false,
+                "floor": 1
+            },
+            {
+                "id": "window2",
+                "room": "Kitchen",
+                "nickname": "Kitchen Sink Window",
+                "orientation": "S",
+                "open": false,
+                "blinds": false,
+                "blinds_open": false,
+                "floor": 2
+            }
+        ]
+    }
+]

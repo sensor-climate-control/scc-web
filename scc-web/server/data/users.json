@@ -1,0 +1,39 @@
+[
+    {
+        "name": "user123",
+        "admin": false,
+        "email": "user123@example.com",
+        "password": "hunter2",
+        "phone": "123-456-7890",
+        "phone_carrier": "verizon",
+        "preferences": {
+            "notifications": {
+                "phone": true,
+                "email": true
+            },
+            "default_home": "home1234"
+        },
+        "homes": [
+            "home1234"
+        ]
+    },
+    {
+        "name": "user234",
+        "admin": true,
+        "email": "user234@example.com",
+        "password": "hunter2",
+        "phone": null,
+        "phone_carrier": null,
+        "preferences": {
+            "notifications": {
+                "phone": false,
+                "email": true
+            },
+            "default_home": null
+        },
+        "homes": [
+            "home234",
+            "home345"
+        ]
+    }
+]
