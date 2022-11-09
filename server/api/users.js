@@ -19,9 +19,7 @@ router.get('/', async function (req, res, next) {
 // Returns requested user details
 // Requires auth from requested user or admin
 router.get('/:userid', async function (req, res, next) {
-    res.status(200).send({
-        user: users[0]
-    })
+    res.status(200).send(users[0])
 })
 
 // Returns login token if username/email and password match
