@@ -13,6 +13,12 @@ router.get('/', async function (req, res, next) {
     });
 });
 
+router.get('/:userid', async function (req, res, next) {
+    res.status(200).send({
+        user: users[0]
+    })
+})
+
 router.post('/login', async function (req, res) {
     res.status(200).send({
         userid: "user123",
