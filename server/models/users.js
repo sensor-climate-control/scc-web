@@ -10,5 +10,7 @@ const UserSchema = {
     admin: { default: false },
     phone: { required: false },
     phone_carrier: { required: false },
+    preferences: { required: false },
+    homes: { default: [] }
 }
 exports.UserSchema = UserSchema
