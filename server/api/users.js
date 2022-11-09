@@ -4,7 +4,7 @@ const users = require('../data/users.json')
 // Creates new user
 router.post('/', async function (req, res, next) {
     res.status(201).send({
-        userid: "user123"
+        userid: users[0].name
     });
 });
 
