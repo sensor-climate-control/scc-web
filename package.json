@@ -18,12 +18,13 @@
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node index.js",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "preserve": "react-scripts build",
     "serve": "node index.js",
-    "dev": "PORT=3001 nodemon index.js"
+    "dev": "PORT=3001 nodemon index.js",
+    "start-react": "react-scripts start"
   },
   "eslintConfig": {
     "extends": [
