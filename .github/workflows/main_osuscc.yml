@@ -28,7 +28,9 @@ jobs:
           npm run test --if-present
 
       - name: compress node_modules for faster upload
-        run: tar -cvf node_modules.tar ./node_modules
+        run: |
+          tar -cvf node_modules.tar ./node_modules
+          rm -rf ./node_modules
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
