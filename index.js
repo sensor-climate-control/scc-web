@@ -8,9 +8,10 @@ const port = 3001;
 var app = express();
 
 app.use(express.json());
+
 app.use(express.static('build'));
 
-app.use('/', api);
+app.use('/api', api);
 
 app.use('*', function (req, res, next) {
 	res.status(404).json({
@@ -21,4 +22,3 @@ app.use('*', function (req, res, next) {
 app.listen(port, function() {
 	console.log(`Server running at http://${hostname}:${port}/`);
 });
-

@@ -1,22 +1,22 @@
-import logo from './logo.svg';
 import './App.css';
+import { Stack } from 'react-bootstrap';
+import Header from './features/application/Header'
+import CurrentAqi from './features/weather/CurrentAqi';
+import CurrentWeather from './features/weather/CurrentWeather';
 
 function App() {
   return (
     <div className="App">
+      <Header />
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Sensor-Based Climate Control FrontEnd
-        </p>
-        <a
-          className="App-link"
-          href="https://github.com/sensor-climate-control"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Github
-        </a>
+        <Stack direction="vertical" gap={3}>
+          <br />
+          <Stack direction="horizontal" gap={3}>
+            <br />
+            <CurrentAqi />
+            <CurrentWeather />
+          </Stack>
+        </Stack>
       </header>
     </div>
   );
