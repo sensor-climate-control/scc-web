@@ -8,9 +8,10 @@ const port = 3001;
 var app = express();
 
 app.use(express.json());
+
 app.use(express.static('build'));
 
-app.use('/', api);
+app.use('/api', api);
 
 app.use('*', function (req, res, next) {
 	res.status(404).json({
