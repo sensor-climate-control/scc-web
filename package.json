@@ -23,7 +23,7 @@
     "eject": "react-scripts eject",
     "preserve": "react-scripts build",
     "serve": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "PORT=3001 nodemon index.js"
   },
   "eslintConfig": {
     "extends": [

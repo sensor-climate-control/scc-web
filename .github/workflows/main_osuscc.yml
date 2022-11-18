@@ -27,6 +27,9 @@ jobs:
           npm run build --if-present
           npm run test --if-present
 
+      - name: compress node_modules for faster upload
+        run: tar -cvf node_modules.tar ./node_modules
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
@@ -45,6 +48,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: node-app
+
+      - name: untar node_modules for deployment
+        run: tar -xvf node_modules.tar
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp

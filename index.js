@@ -3,7 +3,7 @@ const express = require('express')
 const api = require('./server/api')
 
 const hostname = '127.0.0.1';
-const port = 3001;
+const port = process.env.PORT || 80;
 
 var app = express();
 
