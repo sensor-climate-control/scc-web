@@ -22,4 +22,5 @@ function App() {
   );
 }
 
+export const endpoint = "http://localhost:3001/api/";
 export default App;

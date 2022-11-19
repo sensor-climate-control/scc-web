@@ -1,6 +1,6 @@
 const express = require('express')
-
 const api = require('./server/api')
+const cors = require('cors')
 
 const hostname = '127.0.0.1';
 const port = process.env.PORT || 80;
@@ -8,8 +8,8 @@ const port = process.env.PORT || 80;
 var app = express();
 
 app.use(express.json());
-
 app.use(express.static('build'));
+app.use(cors());
 
 app.use('/api', api);
 
