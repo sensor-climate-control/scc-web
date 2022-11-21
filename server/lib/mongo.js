@@ -4,10 +4,7 @@
 
 const { MongoClient } = require('mongodb')
 
-// pull in environment variables from .env in non-production env
-if (process.env.NODE_ENV !== 'production') {
-	require('dotenv').config();
-}
+require('dotenv').config();
 
 // const mongoHost = process.env.MONGO_HOST || 'localhost'
 // const mongoPort = process.env.MONGO_PORT || 27017

@@ -3,10 +3,7 @@ const api = require('./server/api')
 const cors = require('cors');
 const { connectToDb } = require('./server/lib/mongo');
 
-// pull in environment variables from .env in non-production env
-if (process.env.NODE_ENV !== 'production') {
-	require('dotenv').config();
-}
+require('dotenv').config();
 
 const hostname = '127.0.0.1';
 const port = process.env.PORT || 80;
