@@ -1,24 +1,42 @@
 const router = require('express').Router();
 const homes = require('../data/homes.json')
-const sensors = require('../data/sensors.json')
+const sensors = require('../data/sensors.json');
+const { validateAgainstSchema } = require('../lib/validation');
+const { HomeSchema, insertNewHome, getAllHomes, getHomeById } = require('../models/homes');
 
 // Creates new home
 // Requires authentication
 router.post('/', async function (req, res, next) {
-    res.status(201).send({
-        homeid: homes[0].name
-    })
+    if (validateAgainstSchema(req.body, HomeSchema)) {
+        try {
+            const id = await insertNewHome(req.body)
+            res.sendStatus(201).send({
+                id: id
+            })
+        } catch (err) {
+            console.error(err)
+            res.status(500).send({
+                error: "Error inserting business into DB. Please try again later."
+            })
+        }
+    } else {
+        res.status(400).send({
+            error: "Request body does not contain a valid home object"
+        })
+    }
 })
 
 // Fetches all homes
 // Requires admin auth
 router.get('/', async function (req, res, next) {
-    res.status(200).send(homes)
+    const allHomes = await getAllHomes()
+    res.status(200).send(allHomes)
 })
 
 // Fetches specified home
 // Requires admin or home member auth
 router.get('/:homeid', async function (req, res, next) {
+    const allHomes = await getHomeById(req.query.homeid)
     res.status(200).send(homes[0])
 })
 
