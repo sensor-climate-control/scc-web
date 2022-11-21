@@ -11,10 +11,10 @@
                 "phone": true,
                 "email": true
             },
-            "default_home": "home1234"
+            "default_home": "637ac366eba8c983fb809685"
         },
         "homes": [
-            "home1234"
+            "637ac366eba8c983fb809685"
         ]
     },
     {
@@ -32,8 +32,7 @@
             "default_home": null
         },
         "homes": [
-            "home234",
-            "home345"
+            "637ac366eba8c983fb809685"
         ]
     }
 ]

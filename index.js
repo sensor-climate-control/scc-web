@@ -1,6 +1,12 @@
 const express = require('express')
 const api = require('./server/api')
-const cors = require('cors')
+const cors = require('cors');
+const { connectToDb } = require('./server/lib/mongo');
+
+// pull in environment variables from .env in non-production env
+if (process.env.NODE_ENV !== 'production') {
+	require('dotenv').config();
+}
 
 const hostname = '127.0.0.1';
 const port = process.env.PORT || 80;
@@ -19,6 +25,8 @@ app.use('*', function (req, res, next) {
 	});
 });
 
-app.listen(port, function() {
-	console.log(`Server running at http://${hostname}:${port}/`);
-});
+connectToDb(function ()  {
+	app.listen(port, function() {
+		console.log(`Server running at http://${hostname}:${port}/`);
+	});
+})
