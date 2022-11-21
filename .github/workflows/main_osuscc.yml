@@ -32,8 +32,8 @@ jobs:
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
         run: |
-          echo 'MONGO_DB_NAME="prod"' >> .env
-          echo 'MONGO_URL="$MONGODB_URL"' >> .env
+          echo MONGO_DB_NAME="prod" >> .env
+          echo MONGO_URL="$MONGODB_URL" >> .env
 
       - name: compress node_modules for faster upload
         run: |
