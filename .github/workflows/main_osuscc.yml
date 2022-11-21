@@ -28,11 +28,12 @@ jobs:
           npm run test --if-present
 
       - name: create .env file
+        shell: bash
+        env:
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
         run: |
           echo 'MONGO_DB_NAME="prod"' >> .env
           echo 'MONGO_URL="$MONGODB_URL"' >> .env
-        with:
-          MONGODB_URL: ${{ secrets.MONGODB_URL }}
 
       - name: compress node_modules for faster upload
         run: |
