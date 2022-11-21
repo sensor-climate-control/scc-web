@@ -36,8 +36,14 @@ router.get('/', async function (req, res, next) {
 // Fetches specified home
 // Requires admin or home member auth
 router.get('/:homeid', async function (req, res, next) {
-    const allHomes = await getHomeById(req.query.homeid)
-    res.status(200).send(homes[0])
+    const home = await getHomeById(req.params.homeid)
+    if (home) {
+        res.status(200).send(home)
+    } else {
+        res.status(404).send({
+            error: "Requested home not found"
+        })
+    }
 })
 
 // Updates specified home

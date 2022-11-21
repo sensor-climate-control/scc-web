@@ -1,7 +1,7 @@
-const { ObjectId } = require('mongodb')
+// const { ObjectId } = require('mongodb')
 
 const { extractValidFields } = require('../lib/validation')
-const { getDBReference, getDbReference } = require('../lib/mongo')
+const { getDbReference } = require('../lib/mongo')
 
 const HomeSchema = {
     name: { required: true },
@@ -37,8 +37,10 @@ async function getHomeById(id) {
     const db = getDbReference()
     const collection = db.collection('homes')
     const home = await collection.find({
-        _id: new ObjectId(id)
-    }).toArray
+        _id: id
+    }).toArray()
+
+    console.log("==== home: ", home)
 
     return home[0]
 }

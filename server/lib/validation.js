@@ -7,7 +7,7 @@ module.exports = {
      */
     validateAgainstSchema: function (obj, schema) {
         return obj && Object.keys(schema).every(
-            field => !schema[field].required || obj[field] != undefined
+            field => !schema[field].required || obj[field] !== undefined
         );
     },
 
@@ -21,7 +21,7 @@ module.exports = {
     extractValidFields: function (obj, schema) {
         let validObj = {};
         Object.keys(schema).forEach((field) => {
-            if (obj[field] != undefined) {
+            if (obj[field] !== undefined) {
                 validObj[field] = obj[field];
             }
         });

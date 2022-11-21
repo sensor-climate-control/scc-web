@@ -28,14 +28,15 @@ const CurrentWeather = () => {
      * Clears the timer when the component is unmounted.
      */
     useEffect(() => {
-        const color_map = {
-            1: "#00ff88",
-            2: "#ffff00",
-            3: "#ff8800",
-            4: "#ff0000",
-            5: "#99004c",
-            6: "#7e0023",
-        }
+        /* commented out to appease ESLint */
+        // const color_map = {
+        //     1: "#00ff88",
+        //     2: "#ffff00",
+        //     3: "#ff8800",
+        //     4: "#ff0000",
+        //     5: "#99004c",
+        //     6: "#7e0023",
+        // }
 
         function updateTemp() {
             getTempStats().then(({ temp, humidity, feelsLike }) => {

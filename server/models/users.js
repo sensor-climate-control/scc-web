@@ -1,7 +1,8 @@
-const { ObjectId } = require('mongodb')
+/* commented out to appease ESLint */
+// const { ObjectId } = require('mongodb')
 
-const { extractValidFields } = require('../lib/validation')
-const { getDBReference } = require('../lib/mongo')
+// const { extractValidFields } = require('../lib/validation')
+// const { getDbReference } = require('../lib/mongo')
 
 const UserSchema = {
     name: { required: true },
