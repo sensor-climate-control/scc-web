@@ -26,7 +26,8 @@
     "preserve": "react-scripts build",
     "serve": "node index.js",
     "dev": "PORT=3001 nodemon index.js",
-    "start-react": "react-scripts start"
+    "start-react": "react-scripts start",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "eslintConfig": {
     "extends": [
