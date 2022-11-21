@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const homes = require('../data/homes.json')
 const sensors = require('../data/sensors.json');
-const { validateAgainstSchema } = require('../lib/validation');
-const { HomeSchema, insertNewHome, getAllHomes, getHomeById, deleteHomeById } = require('../models/homes');
+const { validateAgainstSchema, extractValidFields } = require('../lib/validation');
+const { HomeSchema, insertNewHome, getAllHomes, getHomeById, deleteHomeById, updateHomeById } = require('../models/homes');
 
 // Creates new home
 // Requires authentication
@@ -49,7 +49,26 @@ router.get('/:homeid', async function (req, res, next) {
 // Updates specified home
 // Requires admin or home admin auth
 router.put('/:homeid', async function (req, res, next) {
-    res.status(200).send(homes[0])
+    const homeid = req.params.homeid
+    if (validateAgainstSchema(req.body, HomeSchema)) {
+        console.log("=== good input")
+        const home = extractValidFields(req.body, HomeSchema)
+        const successfulUpdate = await updateHomeById(homeid, home)
+        console.log("==== successfulUpdate: ", successfulUpdate)
+        if (successfulUpdate) {
+            res.status(200).json({
+                links: {
+                    home: `/api/homes/${homeid}`
+                }
+            });
+        } else {
+            next();
+        }
+    } else {
+        res.status(400).json({
+            error: "Request body is not a valid home object"
+        })
+    }
 })
 
 // Deletes specified home
