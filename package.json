@@ -17,6 +17,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "eslint": "^8.28.0",
     "nodemon": "^2.0.20",
     "react-scripts": "5.0.1"
   },
@@ -27,7 +28,8 @@
     "preserve": "react-scripts build",
     "serve": "node index.js",
     "dev": "PORT=3001 nodemon index.js",
-    "start-react": "react-scripts start"
+    "start-react": "react-scripts start",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0"
   },
   "eslintConfig": {
     "extends": [
