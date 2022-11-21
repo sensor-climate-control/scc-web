@@ -28,7 +28,6 @@ jobs:
           npm run test --if-present
 
       - name: create .env file
-        shell: bash
         with:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
         run: |
