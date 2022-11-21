@@ -9,7 +9,7 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
-name: "CodeQL"
+name: "CodeQL and Lint"
 
 on:
   push:
@@ -21,6 +21,15 @@ on:
     - cron: '27 20 * * 2'
 
 jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install modules
+      run: yarn
+    - name: Run ESLint
+      run: eslint . --ext .js,.jsx,.ts,.tsx
+
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
