@@ -19,7 +19,6 @@ async function insertNewHome(home) {
     const db = getDbReference()
     const collection = db.collection('homes')
     const result = await collection.insertOne(home)
-    console.log("==== result: ", result)
     return result.insertedId
 }
 exports.insertNewHome = insertNewHome
@@ -45,3 +44,13 @@ async function getHomeById(id) {
     return home[0]
 }
 exports.getHomeById = getHomeById
+
+async function deleteHomeById(id) {
+    const db = getDbReference()
+    const collection = db.collection('homes')
+    const result = await collection.deleteOne({
+        _id: id
+    })
+    return result.deletedCount > 0;
+}
+exports.deleteHomeById = deleteHomeById
