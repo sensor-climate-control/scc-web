@@ -27,6 +27,14 @@ jobs:
           npm run build --if-present
           npm run test --if-present
 
+      - name: create .env file
+        shell: bash
+        with:
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+        run: |
+          echo 'MONGO_DB_NAME="prod"' >> .env
+          echo 'MONGO_URL="$MONGODB_URL"' >> .env
+
       - name: compress node_modules for faster upload
         run: |
           tar -cvf node_modules.tar ./node_modules
