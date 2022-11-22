@@ -31,9 +31,13 @@ jobs:
         shell: bash
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          AIRNOW_API_KEY: ${{ secrets.AIRNOW_API_KEY }}
+          OMW_API_KEY: ${{ secrets.OWM_API_KEY }}
         run: |
           echo MONGO_DB_NAME="prod" >> .env
           echo MONGO_URL="$MONGODB_URL" >> .env
+          echo OWM_API_KEY="$OWM_API_KEY" >> .env
+          echo AIRNOW_API_KEY="$AIRNOW_API_KEY" >> .env
 
       - name: compress node_modules for faster upload
         run: |

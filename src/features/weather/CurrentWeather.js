@@ -12,7 +12,7 @@ const CurrentWeather = () => {
      */
     async function getTempStats() {
         return new Promise(async (resolve, _) => {
-            const res = await fetch(endpoint + "/weather/now");
+            const res = await fetch(endpoint + "weather/now");
             const data = await res.json();
 
             const temp = data.main.temp;

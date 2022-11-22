@@ -11,7 +11,7 @@ const CurrentAqi = () => {
      */
     async function getAqi() {
         return new Promise(async (resolve, _) => {
-            const res = await fetch(endpoint + "/weather/aqi/now");
+            const res = await fetch(endpoint + "weather/aqi/now");
             const data = await res.json();
 
             const aqi = data[0].AQI;
