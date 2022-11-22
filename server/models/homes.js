@@ -1,4 +1,4 @@
-// const { ObjectId } = require('mongodb')
+const { ObjectId } = require('mongodb')
 
 const { extractValidFields } = require('../lib/validation')
 const { getDbReference } = require('../lib/mongo')
@@ -19,7 +19,6 @@ async function insertNewHome(home) {
     const db = getDbReference()
     const collection = db.collection('homes')
     const result = await collection.insertOne(home)
-    console.log("==== result: ", result)
     return result.insertedId
 }
 exports.insertNewHome = insertNewHome
@@ -45,3 +44,26 @@ async function getHomeById(id) {
     return home[0]
 }
 exports.getHomeById = getHomeById
+
+async function updateHomeById(id, home) {
+    home = extractValidFields(home, HomeSchema)
+    const db = getDbReference()
+    const collection = db.collection('homes')
+    const result = await collection.replaceOne(
+        { _id: new ObjectId(id) },
+        home
+    )
+    console.log("==== result: ", result)
+    return result.matchedCount > 0;
+}
+exports.updateHomeById = updateHomeById
+
+async function deleteHomeById(id) {
+    const db = getDbReference()
+    const collection = db.collection('homes')
+    const result = await collection.deleteOne({
+        _id: id
+    })
+    return result.deletedCount > 0;
+}
+exports.deleteHomeById = deleteHomeById
