@@ -47,7 +47,7 @@ const CurrentWeather = () => {
         }
 
         updateTemp();
-        const interval = setInterval(updateTemp, 1000 * 10);
+        const interval = setInterval(updateTemp, 1000 * 300); // update every 5 minutes
 
         return () => clearInterval(interval);
     });

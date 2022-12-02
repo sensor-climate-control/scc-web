@@ -43,7 +43,7 @@ const CurrentAqi = () => {
         }
 
         updateAqi();
-        const interval = setInterval(updateAqi, 1000 * 10);
+        const interval = setInterval(updateAqi, 1000 * 300); // update every 5 minutes
 
         return () => clearInterval(interval);
     });
