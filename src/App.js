@@ -4,9 +4,10 @@ import Header from './features/application/Header'
 import CurrentAqi from './features/weather/CurrentAqi';
 import CurrentWeather from './features/weather/CurrentWeather';
 
-const baseurl = process.env.BASEURL || "localhost:3001"
+const baseurl = process.env.APPSETTING_BASEURL || "localhost:3001"
 
 function App() {
+  console.log("==== APPSETTING_BASEURL: ", baseurl)
   return (
     <div className="App">
       <Header />
