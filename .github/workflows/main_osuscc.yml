@@ -34,7 +34,7 @@ jobs:
         env:
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
           AIRNOW_API_KEY: ${{ secrets.AIRNOW_API_KEY }}
-          OMW_API_KEY: ${{ secrets.OWM_API_KEY }}
+          OWM_API_KEY: ${{ secrets.OWM_API_KEY }}
         run: |
           echo MONGO_DB_NAME="prod" >> .env
           echo MONGO_URL="$MONGODB_URL" >> .env
