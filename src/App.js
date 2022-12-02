@@ -4,7 +4,7 @@ import Header from './features/application/Header'
 import CurrentAqi from './features/weather/CurrentAqi';
 import CurrentWeather from './features/weather/CurrentWeather';
 
-const baseurl = process.env.REACT_APP_BASEURL || "localhost:3001"
+const baseurl = process.env.REACT_APP_BASEURL || "http://localhost:3001"
 
 function App() {
   return (
@@ -24,5 +24,5 @@ function App() {
   );
 }
 
-export const endpoint = `http://${baseurl}/api/`;
+export const endpoint = `${baseurl}/api/`;
 export default App;
