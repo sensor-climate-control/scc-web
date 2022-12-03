@@ -7,7 +7,7 @@ Install [NodeJS](https://nodejs.org/en/download/) and ensure you have [NPM](http
 
 Run `npm install`
 
-Run `npm start` and `npm run dev` in separate terminal windows to run both the ReactJS frontend and NodeJS backend in development mode (reload on code change).
+Run `npm run react` and `npm run dev` in separate terminal windows to run both the ReactJS frontend and NodeJS backend in development mode (reload on code change).
 
 ### `npm run serve`
 

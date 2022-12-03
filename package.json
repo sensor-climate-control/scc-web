@@ -29,7 +29,7 @@
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "preserve": "react-scripts build",
-    "serve": "node index.js",
+    "serve": "react-scripts build && node index.js",
     "dev": "PORT=3001 nodemon index.js",
     "react": "react-scripts start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0"
