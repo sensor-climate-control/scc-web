@@ -1,0 +1,945 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: OSUSCC API
+  description: API for the Sensor-Based In-Home Climate Control OSU Capstone Project.
+
+paths:
+  /users:
+    post:
+      summary: Create a new User.
+      description: >
+        Create and store a new application User with specified data and adds it to the application's database.  Only an authenticated User with 'admin' role can create users with the 'admin' or 'instructor' roles.
+      operationId: createUser
+      tags:
+        - Users
+      requestBody:
+        required: true
+        description: A User object.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: New User successfully added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: >
+                      Unique ID of the created User.
+                    example: "123"
+        '400':
+          description: >
+            The request body was either not present or did not contain a valid User object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      summary: Fetch a list of all Users
+      description: >
+        Returns the list of all Users.  This list should be paginated.  Only an authenticated User with 'admin' role can fetch all Users.
+      operationId: getAllUsers
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+
+  /users/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: >
+          Unique ID of a User.  Exact type/format will depend on your implementation but will likely be either an integer or a string.
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+        example: "123"
+        required: true
+
+    get:
+      summary: Fetch data about a specific User.
+      description: >
+        Returns information about the specified User. Only an authenticated User with 'admin' role or an authenticated User whose ID matches the ID of the requested User can fetch this information.
+      operationId: getUserById
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified User `id` not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update data about a specific User.
+      description: >
+        Updates information about the specified User. Only an authenticated User with 'admin' role or an authenticated User whose ID matches the ID of the requested User can update this information.
+      operationId: updateUserById
+      tags:
+        - Users
+      requestBody:
+        description: >
+          Partial updates to be applied to the specified User.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: >
+            The request body was either not present or did not contain a Home object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified Home `id` not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Remove a specific User from the database.
+      description: >
+        Completely removes the data for the specified Home.  Only an authenticated User with 'admin' role or whose ID whose ID matches the ID of the requested User can remove a User.
+      operationId: removeUserById
+      tags:
+        - Users
+      responses:
+        '204':
+          description: Success
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified User `id` not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/login:
+    post:
+      summary: Log in a User.
+      description: >
+        Authenticate a specific User with their email address and password.
+      operationId: authenticateUser
+      tags:
+        - Users
+      requestBody:
+        required: true
+        description: >
+          Email address and plain-text password for the User being authenticated.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            example:
+              email: jdoe@gmail.com
+              password: hunter2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: >
+                      A JWT authentication token.
+                    example: aaaaaaaa.bbbbbbbb.cccccccc
+        '400':
+          description: >
+            The request body was either not present or did not contain all of the required fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: >
+            The specified credentials were invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: >
+            An internal server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /homes:
+    post:
+      summary: Create a new home.
+      description: >
+        Creates a new Home with specified data and adds it to the application's database.  Only an authenticated User can create a new Home.
+      operationId: createHome
+      tags:
+        - Homes
+      requestBody:
+        required: true
+        description: A Home object.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Home'
+      responses:
+        '201':
+          description: New Home successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: >
+                      Unique ID of the created Home.
+                    example: "123"
+        '400':
+          description: >
+            The request body was either not present or did not contain a valid Home object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      summary: Fetch a list of all Homes.
+      description: >
+        Returns the list of all Homes.  This list should be paginated.  The Home returned should not contain the list of Sensors associated with the Home.
+      operationId: getAllHomes
+      tags:
+        - Homes
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  homes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Home'
+
+  /homes/{homeid}:
+    parameters:
+      - name: homeid
+        in: path
+        description: >
+          Unique ID of a Home.
+        schema:
+          type: string
+        example: "123"
+        required: true
+
+    get:
+      summary: Fetch data about a specific Home.
+      description: >
+        Returns summary data about the Home, including the list of users associated with the home and the list of Sensors for the home.
+      operationId: getHomeById
+      tags:
+        - Homes
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Home'
+        '404':
+          description: Specified Home `id` not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Update data for a specific Home.
+      description: >
+        Performs a partial update on the data for the Home.  Only an authenticated User with 'admin' role or an authenticated 'home_admin' User whose ID is in the the `home_admin` list of the Home can update Home information.
+      operationId: updateHomeById
+      tags:
+        - Homes
+      requestBody:
+        description: >
+          Partial updates to be applied to the specified Home.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Home'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: >
+            The request body was either not present or did not contain a Home object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified Home `id` not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Remove a specific Home from the database.
+      description: >
+        Completely removes the data for the specified Home.  Only an authenticated User with 'admin' role or whose ID is in the 'home_admins' list of a Home can remove a Home.
+      operationId: removeHomeById
+      tags:
+        - Homes
+      responses:
+        '204':
+          description: Success
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified Home `id` not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /homes/{homeid}/sensors:
+    parameters:
+      - name: homeid
+        in: path
+        description: >
+          Unique ID of a Home.
+        schema:
+          type: string
+        example: "123"
+        required: true
+    get:
+      summary: Fetch a list of the sensors attached to the Home.
+      description: >
+        Returns a list containing the Sensor IDs of all sensors connected to the home.  Only an authenticated User with 'admin' role or an authenticated User whose ID is in the `users` list of the Home can fetch the list of sensors.
+      operationId: getSensorsByHomeId
+      tags:
+        - Homes
+      responses:
+        '200':
+          description: >
+            Array of Sensor IDs for sensors attached to the Home.  Type will be string.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sensors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified Sensor not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Add a new Sensor to a Home
+      description: >
+        Adds a new Sensor to a Home.  Only an authenticated User with 'admin' role or an authenticated User whose ID is in the `home_admins` list of the Home can update the Sensors connected to the Home.
+      operationId: addSensorsByHomeId
+      tags:
+        - Homes
+      requestBody:
+        required: true
+        description: A Sensor object.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sensor'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: >
+                      Unique ID of the created Sensor.
+                    example: "123"
+        '400':
+          description: >
+            The request body was either not present or did not contain the fields described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified Home `id` not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /homes/{homeid}/sensors/{sensorid}:
+    parameters:
+      - name: homeid
+        in: path
+        description: >
+          Unique ID of a Home.
+        schema:
+          type: string
+        example: "123"
+        required: true
+      - name: sensorid
+        in: path
+        description: >
+          Unique ID of a Sensor.
+        schema:
+          type: string
+        example: "123"
+        required: true
+    get:
+      summary: Fetch data about a specific Sensor
+      description: >
+        Returns a JSON object with data about a sensor.  Only an authenticated User with 'admin' role or an authenticated User whose ID is in the `users` list of the Home can fetch the list of sensors.
+      operationId: getSensorById
+      tags:
+        - Homes
+      responses:
+        '200':
+          description: >
+            Information for a sensor, including readings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sensors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Sensor'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified Sensor not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update data for a specific Sensor
+      description: >
+        Update information for a specific Sensor.  Only an authenticated User with 'admin' role or an authenticated User whose ID is in the `home_admins` list of the Home can update the Sensors connected to the Home.
+      operationId: updateSensorById
+      tags:
+        - Homes
+      requestBody:
+        required: true
+        description: A Sensor object.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sensor'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: >
+            The request body was either not present or did not contain the fields described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified Sensor not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Remove a specific Sensor from the database.
+      description: >
+        Completely removes the data for the specified Home.  Only an authenticated User with 'admin' role or whose ID is in the 'home_admins' list of a Home can remove a Home.
+      operationId: removeSensorById
+      tags:
+        - Homes
+      responses:
+        '204':
+          description: Success
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified Sensor not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /homes/{homeid}/sensors/{sensorid}/readings:
+    parameters:
+      - name: homeid
+        in: path
+        description: >
+          Unique ID of a Home.
+        schema:
+          type: string
+        example: "123"
+        required: true
+      - name: sensorid
+        in: path
+        description: >
+          Unique ID of a Sensor.
+        schema:
+          type: string
+        example: "123"
+        required: true
+    get:
+      summary: Fetch readings for a specific Sensor
+      description: >
+        Returns a JSON object with readings from a sensor.  Only an authenticated User with 'admin' role or an authenticated User whose ID is in the `users` list of the Home can fetch the list of sensors.
+      operationId: getSensorReadingsById
+      tags:
+        - Homes
+      responses:
+        '200':
+          description: >
+            Information for a sensor, including readings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sensors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Sensor'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified Sensor not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Add readings for a specific Sensor
+      description: >
+        Add readings for a specific Sensor.  Only an authenticated User with 'admin' role or an authenticated User whose ID is in the `home_admins` list of the Home can update the Sensors connected to the Home.
+      operationId: addSensorReadingsById
+      tags:
+        - Homes
+      requestBody:
+        required: true
+        description: A Sensor object.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sensor'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: >
+            The request body was either not present or did not contain the fields described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified Sensor not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /weather/now:
+    parameters:
+      - name: zipcode
+        in: query
+        description: >
+          Zip Code for the Home.
+        schema:
+          type: string
+        example: "97330"
+        required: true
+    get:
+      summary: Fetch the current weather forecast.
+      description: >
+        Fetch the current weather forecast. Uses OpenWeatherMap Current Weather API: https://openweathermap.org/current and Geocoding API to convert zip code to latitude and longitude: https://openweathermap.org/api/geocoding-api
+      operationId: getCurrentWeather
+      tags:
+        - Weather
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  coord:
+                    type: string
+                    example: {lon: 10.99, lat: 44.34}
+                  weather:
+                    type: string
+                    example: [{id: 501, main: "Rain", description: "moderate rain", icon: "10d"}]
+                  base:
+                    type: string
+                    example: stations
+                  main:
+                    type: string
+                    example: {temp: 77.59, feels_like: 78.06, temp_min: 75.93, temp_max: 80.42, pressure: 1015, humidity: 64, sea_level: 1015, grnd_level: 933}
+                  visibility:
+                    type: string
+                    example: 10000
+                  wind:
+                    type: string
+                    example: {speed: 0.62, deg: 349, gust: 1.18}
+                  rain:
+                    type: string
+                    example: {1h: 3.16}
+                  clouds:
+                    type: string
+                    example: {all: 100}
+                  dt:
+                    type: string
+                    example: 1661870592
+                  sys:
+                    type: string
+                    example: {type: 2, id: 1075663, country: "IT", sunrise: 1661834187, sunset: 1661882248}
+                  timezone:
+                    type: string
+                    example: 7200
+                  id:
+                    type: string
+                    example: 3163858
+                  name:
+                    type: string
+                    example: "Zocca"
+                  cod:
+                    type: string
+                    example: 200
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /weather/aqi/now:
+    parameters:
+      - name: zipcode
+        in: query
+        description: >
+          Zip Code for the Home.
+        schema:
+          type: string
+        example: "97330"
+        required: true
+    get:
+      summary: Fetch the current weather forecast.
+      description: >
+        Fetch the current weather forecast. Uses OpenWeatherMap Current Weather API: https://openweathermap.org/current and Geocoding API to convert zip code to latitude and longitude: https://openweathermap.org/api/geocoding-api
+      operationId: getCurrentAqi
+      tags:
+        - Weather
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  DateObserved:
+                    type: string
+                    example: "2022-11-09 "
+                  HourObserved:
+                    type: string
+                    example: 14
+                  LocalTimeZone:
+                    type: string
+                    example: "PST"
+                  ReportingAera:
+                    type: string
+                    example: "Corvallis"
+                  StateCode:
+                    type: string
+                    example: "Oregon"
+                  Latitude:
+                    type: string
+                    example: 44.5884
+                  Longitude:
+                    type: string
+                    example: -123.2673
+                  ParameterName:
+                    type: string
+                    example: "PM2.5"
+                  AQI:
+                    type: string
+                    example: 15
+                  Category:
+                    type: string
+                    example: {Number: 1, Name: "Good"}
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    User:
+      description: >
+        An object representing information about a Tarpaulin application user.
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full name of the User.
+          example: Jane Doe
+        email:
+          type: string
+          description: >
+            Email address for the User.  This is required to be unique among all Users.
+          example: doej@gmail.com
+        password:
+          type: string
+          description: >
+            The User's plain-text password.  This is required when creating a new User and when logging in.
+          example: hunter2
+        admin:
+          type: boolean
+          description: >
+            Boolean flag determining whether or not the User has the admin role.
+          default: false
+        phone:
+          type: string
+          description: >
+            The User's phone number.
+          example: 123-456-7890
+        phone_carrier:
+          type: string
+          description: >
+            The User's phone carrier.
+          example: verizon
+
+    Home:
+      description: >
+        An object representing information about a specific home.
+      type: object
+      properties:
+        name:
+          type: string
+          description: The user's name for the home.
+          example: My House
+        zip_code:
+          type: string
+          description: The home's zip code.
+          example: 97330
+        users:
+          type: string
+          description: list of users associated with the home.
+          example: [user1234, user2345]
+        home_admings:
+          type: string
+          description: List of users with admin permissions for the home.
+          example: [user1234]
+        sensors:
+          type: string
+          description: List of sensors in the home.
+          example: [sensor123, sensor234]
+        preferences:
+          type: string
+          description: JSON Object of preferences for the home (TBD)
+          example: {temperature: 68}
+        windows:
+          type: string
+          description: List of windows in the home.
+          example: [{name: East Window 1, direction: east}, {name: North Window 1, direction: North}]
+
+    Sensor:
+      description: >
+        An object representing information about a single sensor.
+      type: object
+      properties:
+        homeId:
+          type: string
+          description: >
+            ID of the Home associated with the Sensor.
+          example: home1234
+        name:
+          type: string
+          description: User's name for the sensor.
+          example: Living Room Sensor.
+        active:
+          type: boolean
+          description: Boolean to enable or disable a sensor
+          example: true
+        location:
+          type: string
+          description: The sensor's location
+          example: First floor East
+        readings:
+          type: array
+          items:
+            type: object
+            properties:
+              date_time:
+                type: string
+                format: date-time
+                description: >
+                  Date and time of the reading.  Should be in ISO 8601 format.
+                example: "2022-06-14T17:00:00-07:00"
+              temp:
+                type: string
+                description: Temperature reading from the sensor
+                example: 52.1
+              humidity:
+                type: string
+                description: Humidity reading from the sensor
+                example: 0.25
+
+    Error:
+      description: >
+        An object representing an error response from the API.
+      type: object
+      properties:
+        error:
+          type: string
+          description: A message describing the Error.
+
+tags:
+  - name: Users
+    description: >
+      API endpoints related to application Users.
+  - name: Homes
+    description: >
+      API endpoints related to Homes.
+  - name: Weather
+    description: >
+      API endpoints related to Weather.
