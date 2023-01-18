@@ -17,11 +17,6 @@ export const weatherSlice = createSlice({
         },
         setFeelsLike: (state, action) => {
             state.value.feelsLike = action.payload;
-        },
-        refreshData: async (state, action) => {
-            let res = await fetch(endpoint + '/now')
-
-            console.log(res.body)
         }
     },
 })
