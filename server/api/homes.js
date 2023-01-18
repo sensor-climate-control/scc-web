@@ -188,7 +188,7 @@ router.put('/:homeid/sensors/:sensorid/readings', async function (req, res, next
     const validReadings = readings.filter(reading => validateAgainstSchema(reading, SensorReadingSchema))
     if (validReadings.length > 0) {
         let sensor = await getSensorById(sensorid)
-        sensor.readings.push(validReadings)
+        validReadings.forEach(reading => sensor.readings.push(reading))
 
         const successfulUpdate = await updateSensorById(sensorid, sensor)
         if (successfulUpdate) {
