@@ -616,12 +616,10 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  sensors:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Sensor'
+                type: array
+                items:
+                  type: object
+                example: [{"date_time": "2022-06-14T17:00:00-07:00", "temp": "52.1","humidity": "0.25"}]
         '403':
           description: >
             The request was not made by an authenticated User satisfying the authorization criteria described above.
@@ -648,7 +646,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Sensor'
+              type: array
+              items:
+                type: object
+              example: [{"date_time": "2022-06-14T17:00:00-07:00", "temp": "52.1","humidity": "0.25"}]
       responses:
         '200':
           description: Success
@@ -699,47 +700,47 @@ paths:
                 type: object
                 properties:
                   coord:
-                    type: string
+                    type: object
                     example: {lon: 10.99, lat: 44.34}
                   weather:
-                    type: string
+                    type: object
                     example: [{id: 501, main: "Rain", description: "moderate rain", icon: "10d"}]
                   base:
                     type: string
-                    example: stations
+                    example: "stations"
                   main:
-                    type: string
+                    type: object
                     example: {temp: 77.59, feels_like: 78.06, temp_min: 75.93, temp_max: 80.42, pressure: 1015, humidity: 64, sea_level: 1015, grnd_level: 933}
                   visibility:
                     type: string
-                    example: 10000
+                    example: "10000"
                   wind:
-                    type: string
+                    type: object
                     example: {speed: 0.62, deg: 349, gust: 1.18}
                   rain:
-                    type: string
+                    type: object
                     example: {1h: 3.16}
                   clouds:
-                    type: string
+                    type: object
                     example: {all: 100}
                   dt:
                     type: string
-                    example: 1661870592
+                    example: "1661870592"
                   sys:
-                    type: string
+                    type: object
                     example: {type: 2, id: 1075663, country: "IT", sunrise: 1661834187, sunset: 1661882248}
                   timezone:
                     type: string
-                    example: 7200
+                    example: "7200"
                   id:
                     type: string
-                    example: 3163858
+                    example: "3163858"
                   name:
                     type: string
                     example: "Zocca"
                   cod:
                     type: string
-                    example: 200
+                    example: "200"
         '403':
           description: >
             The request was not made by an authenticated User satisfying the authorization criteria described above.
@@ -789,19 +790,19 @@ paths:
                     type: string
                     example: "Oregon"
                   Latitude:
-                    type: string
+                    type: number
                     example: 44.5884
                   Longitude:
-                    type: string
+                    type: number
                     example: -123.2673
                   ParameterName:
                     type: string
                     example: "PM2.5"
                   AQI:
-                    type: string
+                    type: integer
                     example: 15
                   Category:
-                    type: string
+                    type: object
                     example: {Number: 1, Name: "Good"}
         '403':
           description: >
@@ -815,7 +816,7 @@ components:
   schemas:
     User:
       description: >
-        An object representing information about a Tarpaulin application user.
+        An object representing information about an application user.
       type: object
       properties:
         name:
@@ -860,26 +861,34 @@ components:
         zip_code:
           type: string
           description: The home's zip code.
-          example: 97330
+          example: "97330"
         users:
-          type: string
+          type: array
           description: list of users associated with the home.
-          example: [user1234, user2345]
-        home_admings:
-          type: string
+          items:
+            type: string
+          example: ["user1234", "user2345"]
+        home_admins:
+          type: array
           description: List of users with admin permissions for the home.
-          example: [user1234]
+          items:
+            type: string
+          example: ["user1234"]
         sensors:
-          type: string
+          type: array
           description: List of sensors in the home.
-          example: [sensor123, sensor234]
+          items:
+            type: string
+          example: ["sensor123", "sensor234"]
         preferences:
-          type: string
+          type: object
           description: JSON Object of preferences for the home (TBD)
           example: {temperature: 68}
         windows:
-          type: string
+          type: array
           description: List of windows in the home.
+          items:
+            type: object
           example: [{name: East Window 1, direction: east}, {name: North Window 1, direction: North}]
 
     Sensor:
@@ -887,7 +896,7 @@ components:
         An object representing information about a single sensor.
       type: object
       properties:
-        homeId:
+        homeid:
           type: string
           description: >
             ID of the Home associated with the Sensor.
@@ -918,11 +927,11 @@ components:
               temp:
                 type: string
                 description: Temperature reading from the sensor
-                example: 52.1
+                example: "52.1"
               humidity:
                 type: string
                 description: Humidity reading from the sensor
-                example: 0.25
+                example: "0.25"
 
     Error:
       description: >
