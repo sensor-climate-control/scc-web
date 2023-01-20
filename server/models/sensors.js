@@ -15,7 +15,8 @@ exports.SensorSchema = SensorSchema
 
 const SensorReadingSchema = {
     date_time: { required: true },
-    temp: { required: true },
+    temp_c: { required: true },
+    temp_f: { required: true },
     humidity: { required: true }
 }
 exports.SensorReadingSchema = SensorReadingSchema
