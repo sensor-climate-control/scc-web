@@ -619,7 +619,7 @@ paths:
                 type: array
                 items:
                   type: object
-                example: [{"date_time": "2022-06-14T17:00:00-07:00", "temp": "52.1","humidity": "0.25"}]
+                example: [{"date_time": "1674178986", "temp_f": "52.1", "temp_c": "11.16", "humidity": "0.25"}]
         '403':
           description: >
             The request was not made by an authenticated User satisfying the authorization criteria described above.
@@ -649,7 +649,7 @@ paths:
               type: array
               items:
                 type: object
-              example: [{"date_time": "2022-06-14T17:00:00-07:00", "temp": "52.1","humidity": "0.25"}]
+              example: [{"date_time": "1674178986", "temp_f": "52.1", "temp_c": "11.16", "humidity": "0.25"}]
       responses:
         '200':
           description: Success
@@ -924,10 +924,14 @@ components:
                 description: >
                   Date and time of the reading.  Should be in ISO 8601 format.
                 example: "2022-06-14T17:00:00-07:00"
-              temp:
+              temp_c:
                 type: string
-                description: Temperature reading from the sensor
+                description: Temperature reading from the sensor in celcius
                 example: "52.1"
+              temp_f:
+                type: string
+                description: Temperature reading from the sensor in fahrenheit
+                example: "11.16"
               humidity:
                 type: string
                 description: Humidity reading from the sensor
