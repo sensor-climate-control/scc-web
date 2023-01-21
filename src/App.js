@@ -1,7 +1,6 @@
 import './App.css';
 import { Stack } from 'react-bootstrap';
 import Header from './features/application/Header'
-import CurrentAqi from './features/weather/CurrentAqi';
 import CurrentWeather from './features/weather/CurrentWeather';
 
 const baseurl = process.env.REACT_APP_BASEURL || "http://localhost:3001"
@@ -15,7 +14,6 @@ function App() {
           <br />
           <Stack direction="horizontal" gap={3}>
             <br />
-            <CurrentAqi />
             <CurrentWeather />
           </Stack>
         </Stack>
