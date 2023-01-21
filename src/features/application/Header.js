@@ -1,15 +1,18 @@
-import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
+import './Header.css';
 
-const Header = () => {
+export default function Header(props) {
     return (
-        <Navbar bg="light" expand="lg">
-            <Container>
-                <Navbar.Brand href="">Sensor-Based In-Home Climate Control</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            </Container>
-        </Navbar>
-    )
-}
+        <div className="outer-header-wrapper">
+            <div className="inner-header-wrapper">
+                <h2 className="header-brand-name header-text">Liquidity</h2>
+                <h1 className="header-page-name header-text" header-text>{props.page_name}</h1>
 
-export default Header;
+                <div className="outer-header-user-dropdown">
+                    <div className="inner-header-user-dropdown">
+                        <p className='header-dropdown-first-name header-text'>Welcome back, {props.user_first_name}!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

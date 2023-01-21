@@ -1,0 +1,54 @@
+.outer-header-wrapper {
+    background-color: #656565;
+    width: 100%;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+}
+
+.inner-header-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-text {
+    color: white;
+    margin: 0px;
+}
+
+.header-brand-name {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 30px;
+
+    padding: 10px;
+}
+
+.header-page-name {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 35px;
+}
+
+.outer-header-user-dropdown {
+    background-color: #bdbdbd;
+    padding: 10px;
+    height: 100%;
+}
+
+.inner-header-user-dropdown {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-dropdown-first-name {
+    font-size: 20px;
+    color: black;
+    font-family: sans-serif;
+}
