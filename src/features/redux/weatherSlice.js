@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { endpoint } from '../../App'
 
 const initialState = {
     value: {temp: 0, humidity: 0, feelsLike: 0},
