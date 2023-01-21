@@ -34,7 +34,6 @@
 }
 
 .outer-header-user-dropdown {
-    background-color: #bdbdbd;
     padding: 10px;
     height: 100%;
 }
@@ -51,4 +50,16 @@
     font-size: 20px;
     color: black;
     font-family: sans-serif;
+}
+
+.header-user-dropdown-button {
+    background-color: #bdbdbd;
+    padding: 0px;
+    margin: 0px;
+    border-width: 0px;
+    height: 100%;
+}
+
+.header-user-dropdown-button:hover {
+    background-color: #949494;
 }

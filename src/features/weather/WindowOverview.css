@@ -1,0 +1,4 @@
+.window-overview-body {
+    display: flex;
+    flex-direction: column;
+}
