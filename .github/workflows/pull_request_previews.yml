@@ -32,7 +32,7 @@ jobs:
 
       - name: npm install, build, and test
         env:
-          REACT_APP_BASEURL: "https://cicd-osuscc-pr-${{ github.event.pull_request.number }}.azurewebsites.net"
+          REACT_APP_BASEURL: "https://osuscc-pr-${{ github.event.pull_request.number }}.azurewebsites.net"
         run: |
           npm install
           npm run build --if-present
@@ -58,7 +58,7 @@ jobs:
       - name: Create PR Deployment Slot
         uses: Azure/cli@v1
         with:
-          inlineScript: az webapp deployment slot create --name cicd-osuscc --resource-group capstone --slot pr-${{ github.event.pull_request.number }}
+          inlineScript: az webapp deployment slot create --name osuscc --resource-group capstone --slot pr-${{ github.event.pull_request.number }}
 
       - name: Update PR Preview Comment
         uses: peter-evans/create-or-update-comment@v1.4.5
@@ -67,14 +67,14 @@ jobs:
           edit-mode: replace
           body: |
             ### Deployment Preview
-            😎 Preview this PR: https://cicd-osuscc-pr-${{ github.event.pull_request.number }}.azurewebsites.net
+            😎 Preview this PR: https://osuscc-pr-${{ github.event.pull_request.number }}.azurewebsites.net
             🧑🏼‍💻 Commit SHA: ${{ github.sha }}
           reactions: "rocket"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "cicd-osuscc"
+          app-name: "osuscc"
           slot-name: pr-${{ github.event.pull_request.number }}
           package: .
 
@@ -111,7 +111,7 @@ jobs:
 
       - name: npm install, build, and test
         env:
-          REACT_APP_BASEURL: "https://cicd-osuscc-pr-${{ github.event.pull_request.number }}.azurewebsites.net"
+          REACT_APP_BASEURL: "https://osuscc-pr-${{ github.event.pull_request.number }}.azurewebsites.net"
         run: |
           npm install
           npm run build --if-present
@@ -137,7 +137,7 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "cicd-osuscc"
+          app-name: "osuscc"
           slot-name: pr-${{ github.event.pull_request.number }}
           package: .
 
@@ -148,7 +148,7 @@ jobs:
           edit-mode: replace
           body: |
             ### Deployment Preview
-            😎 Preview this PR: https://cicd-osuscc-pr-${{ github.event.pull_request.number }}.azurewebsites.net
+            😎 Preview this PR: https://osuscc-pr-${{ github.event.pull_request.number }}.azurewebsites.net
             🧑🏼‍💻 Commit SHA: ${{ github.sha }}
 
   delete-deployment-preview:
@@ -167,7 +167,7 @@ jobs:
         uses: Azure/cli@v1
         with:
           inlineScript: |
-            az webapp deployment slot delete --name cicd-osuscc --resource-group capstone --slot pr-${{ github.event.pull_request.number }}
+            az webapp deployment slot delete --name osuscc --resource-group capstone --slot pr-${{ github.event.pull_request.number }}
 
       - name: Find PR Preview Comment
         uses: peter-evans/find-comment@v1
