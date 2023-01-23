@@ -58,7 +58,7 @@ jobs:
       - name: Create PR Deployment Slot
         uses: Azure/cli@v1
         with:
-          inlineScript: az webapp deployment slot create --name cicd-osuscc --resource-group cicd-rg --slot pr-${{ github.event.pull_request.number }}
+          inlineScript: az webapp deployment slot create --name cicd-osuscc --resource-group capstone --slot pr-${{ github.event.pull_request.number }}
 
       - name: Update PR Preview Comment
         uses: peter-evans/create-or-update-comment@v1.4.5
@@ -167,7 +167,7 @@ jobs:
         uses: Azure/cli@v1
         with:
           inlineScript: |
-            az webapp deployment slot delete --name cicd-osuscc --resource-group cicd-rg --slot pr-${{ github.event.pull_request.number }}
+            az webapp deployment slot delete --name cicd-osuscc --resource-group capstone --slot pr-${{ github.event.pull_request.number }}
 
       - name: Find PR Preview Comment
         uses: peter-evans/find-comment@v1
