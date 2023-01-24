@@ -3,12 +3,15 @@ const baseurl = process.env.REACT_APP_BASEURL || "http://localhost:3001"
 
 export const api = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({ baseUrl: baseurl + '/api/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: baseurl }),
     endpoints: (builder) => ({
         getWeather: builder.query({
-            query: () => 'weather/now',
+            query: () => '/api/weather/now',
         }),
+        getAuth: builder.query({
+            query: () => '/.auth/me'
+        })
     }),
 });
 
-export const { useGetWeatherQuery } = api;
+export const { useGetWeatherQuery, useGetAuthQuery } = api;
