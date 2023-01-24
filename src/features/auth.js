@@ -4,6 +4,8 @@ import { useGetAuthQuery } from './../reduxApi';
 const CurrentAuth = () => {
     const { data, error, isLoading } = useGetAuthQuery();
 
+    console.log("==== data: ", data)
+
     return (
         <MyCard title="Auth">
             {(isLoading || error) ? (<p>Loading...</p>) : (
