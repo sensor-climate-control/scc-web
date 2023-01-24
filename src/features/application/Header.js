@@ -1,4 +1,5 @@
 import './Header.css';
+import HamburgerIcon from '../icons/hamburger';
 
 export default function Header(props) {
     return (
@@ -9,6 +10,7 @@ export default function Header(props) {
 
                 <button className='header-user-dropdown-button' onClick={props.accountCallback}>
                     <div className="outer-header-user-dropdown">
+                        <HamburgerIcon class="header-hamburger-icon" />
                         <div className="inner-header-user-dropdown">
                             <p className='header-dropdown-first-name header-text'>Welcome back, {props.user_first_name}!</p>
                         </div>
