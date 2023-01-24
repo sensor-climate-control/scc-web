@@ -1,5 +1,5 @@
-import MyCard from "../application/MyCard";
-import { useGetAuthQuery } from '../../reduxApi';
+import MyCard from "./application/MyCard";
+import { useGetAuthQuery } from './../reduxApi';
 
 const CurrentAuth = () => {
     const { data, error, isLoading } = useGetAuthQuery();
