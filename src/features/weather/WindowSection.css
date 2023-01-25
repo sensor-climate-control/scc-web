@@ -17,6 +17,7 @@
     margin-top: 10px;
     margin-bottom: 10px;
     border-width: 0px;
+    max-width: 350px;
 }
 
 .inner-window-section-wrapper {
