@@ -6,13 +6,16 @@ const CurrentWeather = () => {
 
     return (
         <MyCard title="Current Weather">
-            {(isLoading || error) ? (<p>Loading...</p>) : (
-                <div className="weather-stats-wrapper">
-                    <p>Temperature: {data.main.temp}°F</p>
-                    <p>Feels Like: {data.main.feels_like}°F</p>
-                    <p>Humidity: {data.main.humidity}%</p>
-                </div>
-            )}
+            {
+                (isLoading) ? (<p>Loading...</p>) :
+                (error) ? (<p>{error}</p>) : (
+                    <div className="weather-stats-wrapper">
+                        <p>Temperature: {data.main.temp}°F</p>
+                        <p>Feels Like: {data.main.feels_like}°F</p>
+                        <p>Humidity: {data.main.humidity}%</p>
+                    </div>
+                )
+            }
         </MyCard>
     )
 }

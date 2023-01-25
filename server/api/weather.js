@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const weather = require('../data/weather.json');
+const { requireAuthentication } = require('../lib/auth');
 const { geoLocation } = require('../lib/geo');
 require('dotenv').config();
 
@@ -19,7 +20,7 @@ router.get('/', async function (req, res, next) {
 // Calls OpenWeatherMap API 
 // https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
 // Requires authentication
-router.get('/now', async function (req, res, next) {
+router.get('/now', requireAuthentication, async function (req, res, next) {
     const geo = await geoLocation(zip, "US")
     console.log("==== geo: ", geo)
     let currentWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${geo.lat}&lon=${geo.lon}&units=imperial&appid=${openweathermapApiKey}`)

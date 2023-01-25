@@ -10,9 +10,9 @@ const CurrentAuth = () => {
         <MyCard title="Auth">
             {(isLoading || error) ? (<p>Loading...</p>) : (
                 <div className="weather-stats-wrapper">
-                    <p>User ID: {data[0].user_id}°F</p>
-                    <p>ID Token: {data[0].id_token}°F</p>
-                    <p>Access Token: {data[0].access_token}%</p>
+                    <p>User ID: {data[0].user_id}</p>
+                    <p>ID Token: {data[0].id_token}</p>
+                    <p>Access Token: {data[0].access_token}</p>
                 </div>
             )}
         </MyCard>
