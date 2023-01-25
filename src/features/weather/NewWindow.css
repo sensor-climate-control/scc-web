@@ -41,17 +41,20 @@
 .toggled-window-header-input {
     width: 189px;
 }
-
 .toggled-window-header-button {
     width: 110px;
     font-size: 20px;
     margin-top: 15px;
 }
-
+.toggled-window-header-button:hover {
+    color: green;
+    border: 2px solid green;
+}
 
 .inner-window-section-wrapper:hover {
     cursor: pointer;
 }
 .header-close-icon-wrapper:hover {
     cursor: pointer;
+    color: red;
 }
