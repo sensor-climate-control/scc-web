@@ -24,7 +24,9 @@ async function requireAuthentication(req, res, next) {
         next()
     } catch (err) {
         res.status(401).send({
-            err: 'Invalid auth token'
+            err: 'Invalid auth token',
+            token: token,
+            secret: secret
         })
     }
 }
