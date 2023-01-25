@@ -2,7 +2,7 @@ import MyCard from "../application/MyCard";
 import { useGetWeatherQuery } from '../../reduxApi';
 
 const CurrentWeather = () => {
-    // const { error: authError, isLoading: authIsLoading } = useGetAuthQuery();
+    // const { data: authData } = useGetAuthQuery();
 
     const { data, error, isLoading } = useGetWeatherQuery();
 
