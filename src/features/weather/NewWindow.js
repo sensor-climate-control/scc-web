@@ -2,19 +2,45 @@ import './NewWindow.css'
 import './WindowSection.css'
 import { useState } from 'react';
 import { AiOutlinePlusCircle } from 'react-icons/ai'
+import { RxCross2 } from 'react-icons/rx'
 
 export default function NewWindow() {
     const [toggle, setToggle] = useState(false);
 
     return (
-        <button className="window-section-wrapper" onClick={() => setToggle(!toggle)}>
+        <div className="window-section-wrapper">
             {toggle ? (
                 <div className='toggled-window-section-wrapper'>
                     <div className='toggled-window-header'>
+                        <div className='toggled-window-header-bar'>
+                            <p className='toggled-window-header-text'>Create window</p>
+                            <div className='header-close-icon-wrapper'>
+                                <RxCross2 className='header-close-icon' size={30} onClick={() => setToggle(false)}/>
+                            </div>
+                        </div>
+
+                        <hr className='toggled-window-header-line' />
+
+                        <form>
+                            <div className='toggled-window-input-wrapper'>
+                                <p className='toggled-window-input-text'>Window Name</p>
+                                <input className='toggled-window-header-input' type='text' placeholder='Living Room' />
+                            </div>
+                            <div className='toggled-window-input-wrapper'>
+                                <p className='toggled-window-input-text'>Select Sensor</p>
+                                <select className='toggled-window-header-input'>
+                                    <option value='Sensor 1'>Sensor 1</option>
+                                    <option value='Sensor 2'>Sensor 2</option>
+                                    <option value='Sensor 3'>Sensor 3</option>
+                                </select>
+                            </div>
+
+                            <button className='toggled-window-header-button' type='submit'>Create</button>
+                        </form>
                     </div>
                 </div>
             ):(
-                <div className="inner-window-section-wrapper">
+                <div className="inner-window-section-wrapper" onClick={() => setToggle(true)}>
                     <div className="plus-sign-icon">
                         <AiOutlinePlusCircle size={43} />
                     </div>
@@ -24,6 +50,6 @@ export default function NewWindow() {
                     </div>
                 </div>
             )}
-        </button>
+        </div>
     );
 }
