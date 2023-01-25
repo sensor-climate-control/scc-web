@@ -14,7 +14,7 @@ const CurrentWeather = () => {
         <MyCard title="Current Weather">
             {
                 (isLoading) ? (<p>Loading...</p>) :
-                (error) ? (<p>{error}</p>) : (
+                (error) ? (<p>{JSON.stringify(error)}</p>) : (
                     <div className="weather-stats-wrapper">
                         <p>Temperature: {data.main.temp}°F</p>
                         <p>Feels Like: {data.main.feels_like}°F</p>
