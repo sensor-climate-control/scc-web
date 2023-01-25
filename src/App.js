@@ -19,7 +19,10 @@ function App() {
         <Stack direction="vertical" gap={3}>
           <br />
             {(isLoading || error) ? (
-              <Login />
+              <Stack direction="horizontal" gap={3}>
+                <br />
+                <Login />
+              </Stack>
             ) : (
               <Stack direction="horizontal" gap={3}>
                 <br />
