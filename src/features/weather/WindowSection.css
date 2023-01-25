@@ -32,3 +32,12 @@
     font-weight: 400;
     margin: 0px;
 }
+
+.window-section-detailed {
+    text-align: left;
+    margin-left: 57px;
+}
+
+.window-section-detailed-text {
+    margin: 0px;
+}
