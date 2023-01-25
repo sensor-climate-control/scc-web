@@ -18,6 +18,7 @@ export const api = createApi({
     endpoints: (builder) => ({
         getWeather: builder.query({
             query: () => '/api/weather/now',
+            extraOptions: { maxRetries: 5 },
         }),
         getAuth: builder.query({
             query: () => '/.auth/me'
