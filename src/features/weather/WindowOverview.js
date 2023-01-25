@@ -15,6 +15,7 @@ export default function WindowOverview(props) {
                     {props.windows.map((window) => 
                         <WindowSection name={window.name} status={window.status} />
                     )}
+
                 </div>
             </div>
         </div>
