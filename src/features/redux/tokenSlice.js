@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { api } from '../../reduxApi';
-import { rootState } from '../../store';
 
 const initialState = {
     value: { token: null },
@@ -28,5 +27,3 @@ export const tokenSlice = createSlice({
 // export const { setToken, refreshData } = tokenSlice.actions;
 
 export default tokenSlice.reducer;
-
-export const getUserToken = rootState(token)
