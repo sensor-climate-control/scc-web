@@ -1,10 +1,13 @@
 import './NewWindow.css'
+import './WindowSection.css'
+import { AiOutlinePlusCircle } from 'react-icons/ai'
+
 export default function NewWindow() {
     return (
         <button className="window-section-wrapper">
             <div className="inner-window-section-wrapper">
-                <div className="window-section-indicator">
-                    <div className="window-section-indicator-circle" style={{backgroundColor: bg_color}}/>
+                <div className="plus-sign-icon">
+                    <AiOutlinePlusCircle size={43} />
                 </div>
 
                 <div className="window-section-header">

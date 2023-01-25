@@ -1,3 +1,4 @@
+import NewWindow from "./NewWindow";
 import "./WindowOverview.css";
 import WindowSection from "./WindowSection";
 
@@ -16,6 +17,7 @@ export default function WindowOverview(props) {
                         <WindowSection name={window.name} status={window.status} />
                     )}
 
+                    <NewWindow />
                 </div>
             </div>
         </div>
