@@ -7,8 +7,9 @@ async function requireAuthentication(req, res, next) {
     const authHeader = req.get('authorization') || ''
     const authParts = authHeader.split(' ')
     const token = authParts[0] === 'Bearer' ? authParts[1] : null
+    let payload = null;
     try {
-        const payload = jwt.verify(token, secret)
+        payload = jwt.verify(token, secret)
         req.userId = payload.sub
         
         const user = await getUserById(req.userId)
@@ -25,9 +26,7 @@ async function requireAuthentication(req, res, next) {
     } catch (err) {
         res.status(401).send({
             err: 'Invalid auth token',
-            token: token,
-            secret: secret,
-            authHeader: authHeader
+            payload: payload
         })
     }
 }
