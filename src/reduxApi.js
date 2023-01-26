@@ -9,10 +9,11 @@ export const api = createApi({
             const token = getState().token
 
             console.log("==== token: ", token)
+            console.log("==== token.token: ", token.token)
             console.log("==== state: ", getState())
 
             if (token) {
-                headers.set('authorization', `Bearer ${token}`)
+                headers.set('authorization', `Bearer ${token.token}`)
             }
 
             return headers
