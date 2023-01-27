@@ -13,6 +13,9 @@ export default function WindowSection(props) {
         bg_color = "#efff00";
     }
 
+    // We need to get the temperature of the window from the server using RTK Query
+    // and then populate it here
+
     return (
         <button className="window-section-wrapper" onClick={() => setIsToggled(!isToggled)}>
             {!isToggled ? (
@@ -39,7 +42,7 @@ export default function WindowSection(props) {
 
                     <div className="window-section-detailed">
                         <p className="window-section-detailed-text">Temperature: 30.4 F</p>
-                        <p className="window-section-detailed-text">Humidity: 30.4 F</p>
+                        <p className="window-section-detailed-text">Humidity: 23%</p>
                     </div>
                 </div>
             )}

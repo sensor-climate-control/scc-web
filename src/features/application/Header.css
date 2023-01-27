@@ -117,11 +117,15 @@
     border: 2px solid black;
     background-color: #cfcfcf;
 
+    text-align: left;
+
     padding: 5px;
+
 }
 
 .header-dropdown-option-text {
     font-size: 21px;
     margin-top: 10px;
     margin-bottom: 10px;
+    padding-left: 13px;
 }

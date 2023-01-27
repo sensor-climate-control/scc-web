@@ -19,8 +19,7 @@ export default function Header(props) {
                         </div>
 
                         <div className="inner-header-dropdown-items" style={showDropdown ? {display: "block"} : {display: "none"}}>
-                            <p className='header-dropdown-option-text'>Dropdown Item 1</p>
-                            <p className='header-dropdown-option-text'>Dropdown Item 2</p>
+                            <p className='header-dropdown-option-text'>Account Summary</p>
                             <p className='header-dropdown-option-text'>Dropdown Item 3</p>
                             <p className='header-dropdown-option-text'>Dropdown Item 4</p>
                         </div>
