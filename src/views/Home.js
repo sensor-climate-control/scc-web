@@ -1,4 +1,6 @@
 import WindowOverview from "../features/weather/WindowOverview";
+import GraphSection from "../features/weather/graph/GraphSection";
+import './Home.css'
 
 export default function Home() {
     let windows = [
@@ -21,8 +23,9 @@ export default function Home() {
     ]
 
     return (
-        <div>
+        <div className="outer-home-sections-wrapper">
             <WindowOverview windows={windows} />
+            <GraphSection />
         </div>
     );
 }

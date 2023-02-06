@@ -1,6 +1,5 @@
 .window-overview-body {
     display: flex;
-    flex-direction: column;
 }
 
 .inner-window-overview-wrapper {
@@ -12,4 +11,10 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
+}
+
+.outer-window-overview-wrapper {
+    max-width: 45%;
+    min-width: 45%;
+    margin-right: 2%;
 }

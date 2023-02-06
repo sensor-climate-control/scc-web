@@ -21,7 +21,10 @@ export default function NewWindow() {
 
                         <hr className='toggled-window-header-line' />
 
-                        <form>
+                        <form onSubmit={() => {
+                            // TODO: Send data to backend
+                            setToggle(false);
+                        }}>
                             <div className='toggled-window-input-wrapper'>
                                 <p className='toggled-window-input-text'>Window Name</p>
                                 <input className='toggled-window-header-input' type='text' placeholder='Living Room' />
