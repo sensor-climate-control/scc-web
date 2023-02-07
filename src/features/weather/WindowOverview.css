@@ -1,0 +1,20 @@
+.window-overview-body {
+    display: flex;
+}
+
+.inner-window-overview-wrapper {
+    height: 100%;
+}
+
+.window-overview-body {
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.outer-window-overview-wrapper {
+    max-width: 45%;
+    min-width: 45%;
+    margin-right: 2%;
+}

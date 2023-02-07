@@ -1,0 +1,43 @@
+.window-section-indicator-circle {
+    border-radius: 100%;
+    border-width: 2px;
+    border-color: black;
+
+    width: 37px;
+    height: 37px;
+}
+.window-section-indicator {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.window-section-wrapper {
+    padding: 0px;
+    margin: 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-width: 0px;
+    max-width: 350px;
+}
+
+.inner-window-section-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.window-section-header-text {
+    font-size: 20px;
+    font-weight: 400;
+    margin: 0px;
+}
+
+.window-section-detailed {
+    text-align: left;
+    margin-left: 57px;
+}
+
+.window-section-detailed-text {
+    margin: 0px;
+}
