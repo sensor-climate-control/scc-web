@@ -9,7 +9,7 @@ export default function Header(props) {
         <div className="outer-header-wrapper">
             <div className="inner-header-wrapper">
                 <h2 className="header-brand-name header-text">Liquidity</h2>
-                <h1 className="header-page-name header-text" header-text>{props.page_name}</h1>
+                <h1 className="header-page-name header-text">{props.page_name}</h1>
 
                 <button className='header-user-dropdown-button' onClick={() => setShowDropdown(!showDropdown)}>
                     <div className="outer-header-user-dropdown">
