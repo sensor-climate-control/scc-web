@@ -35,6 +35,20 @@ export const options = {
             text: '',
         },
     },
+    scales: {
+        x: {
+            title: {
+                display: false,
+                text: 'Time',
+            }
+        },
+        y: {
+            title: {
+                display: true,
+                text: 'Temperature (F°)',
+            }
+        }
+    }
 };
 
 // labels should be times for the last 24 hours
@@ -69,8 +83,6 @@ function gen_fake_data(labels, min, max) {
     return data
 }
 
-
-
 export const data = {
     labels,
     datasets: [
@@ -85,6 +97,23 @@ export const data = {
             data: gen_fake_data(labels, 64, 68),
             borderColor: 'rgb(53, 162, 235)',
             backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        },
+    ],
+    xAxes: [
+        {
+            type: 'time',
+            time: {
+                unit: 'hour',
+            },
+        },
+    ],
+    yAxes: [
+        {
+            type: 'linear',
+            ticks: {
+                min: 60,
+                max: 70,
+            },
         },
     ],
 };
