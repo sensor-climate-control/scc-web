@@ -119,6 +119,12 @@ export const data = {
 };
 
 export default function GraphSection() {
+    // In the future, we will want a useEffect to update the data
+    // This can pull from RTK query to get the latest data every
+    // fifteen minutes or so
+
+    // We won't need to propgate the data down from the parent
+    // because the parent doesn't need to know about the data
     return (
         <div className='outer-graph-section-wrapper'>
             <div className='inner-graph-section-wrapper'>
