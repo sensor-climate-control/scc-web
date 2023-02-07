@@ -1,6 +1,6 @@
 .outer-home-sections-wrapper {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     width: 100%;
     min-width: 100%;
 }
