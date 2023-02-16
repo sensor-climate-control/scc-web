@@ -1,15 +1,13 @@
 import WindowOverview from "../features/weather/WindowOverview";
 import GraphSection from "../features/weather/graph/GraphSection";
-import { faker } from '@faker-js/faker';
 import './Home.css'
 import { api } from '../reduxApi';
-import { useEffect } from "react";
 
 const HOME_ID = "63ed9cb48af0fbb8f0201c11";
 
 export default function Home() {
     // useeffect
-    const { data, error, isFetching, isLoading } = api.useGetHomeSensorsQuery(HOME_ID, {
+    const { data } = api.useGetHomeSensorsQuery(HOME_ID, {
         pollingInterval: 3000,
     });
 
@@ -35,7 +33,6 @@ export default function Home() {
 
     // fake data while loading
     let window_data = []
-    let points = []
 
     // if (!data) {
     //     window_data = [

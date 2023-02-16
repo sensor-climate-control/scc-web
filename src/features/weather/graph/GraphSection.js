@@ -1,5 +1,4 @@
 import { Line } from 'react-chartjs-2';
-import { faker } from '@faker-js/faker';
 import React from 'react';
 import {
     Chart as ChartJS,
@@ -71,19 +70,17 @@ for (let i = 0; i < 24; i++) {
     }
 }
 
-function gen_fake_data(labels, min, max) {
-    let curr_val = faker.datatype.number({ min: min, max: max, precision: 0.1});
-    let data = [curr_val];
+// function gen_fake_data(labels, min, max) {
+//     let curr_val = faker.datatype.number({ min: min, max: max, precision: 0.1});
+//     let data = [curr_val];
 
-    for (let i = 1; i < labels.length; i++) {
-        curr_val += faker.datatype.number({ min: -0.3, max: 0.3, precision: 0.1 });
-        data.push(curr_val);
-    }
+//     for (let i = 1; i < labels.length; i++) {
+//         curr_val += faker.datatype.number({ min: -0.3, max: 0.3, precision: 0.1 });
+//         data.push(curr_val);
+//     }
 
-    return data
-}
-
-
+//     return data
+// }
 
 export default function GraphSection(props) {
     // In the future, we will want a useEffect to update the data
