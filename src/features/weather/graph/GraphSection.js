@@ -108,7 +108,6 @@ export default function GraphSection(props) {
     } 
 
     const datasets = [];
-    console.log(props.windows)
     let colors = [{
         borderColor: 'red',
         backgroundColor: 'red',
@@ -143,10 +142,7 @@ export default function GraphSection(props) {
         avg_data[i] /= props.windows.length-num_skipped;
     }
 
-    console.log(avg_data)
-
     for (let i = 0; i < props.windows.length; i++) {
-        console.log(props.windows[i])
         if (props.windows[i].lastReadings === []) {
             continue;
         }
