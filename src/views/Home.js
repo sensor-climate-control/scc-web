@@ -99,15 +99,9 @@ export default function Home() {
         // use last 100 readings
         points = [];
         for (let i = data[0].readings.length - 100; i < data[0].readings.length; i++) {
-            points.push({
-                x: i,
-                y: data[0].readings[i].temp_f
-            });
+            points.push(data[0].readings[i].temp_f)
         }
     }
-
-    console.log(window_data)
-
 
     return (
         <div className="outer-home-sections-wrapper">

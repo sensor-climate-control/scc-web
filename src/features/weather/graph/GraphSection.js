@@ -83,48 +83,50 @@ function gen_fake_data(labels, min, max) {
     return data
 }
 
-export const data = {
-    labels,
-    datasets: [
-        {
-            label: 'Living Room Window',
-            data: gen_fake_data(labels, 62, 66),
-            borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        },
-        {
-            label: 'House Average',
-            data: gen_fake_data(labels, 64, 68),
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-        },
-    ],
-    xAxes: [
-        {
-            type: 'time',
-            time: {
-                unit: 'hour',
-            },
-        },
-    ],
-    yAxes: [
-        {
-            type: 'linear',
-            ticks: {
-                min: 60,
-                max: 70,
-            },
-        },
-    ],
-};
 
-export default function GraphSection() {
+
+export default function GraphSection(props) {
     // In the future, we will want a useEffect to update the data
     // This can pull from RTK query to get the latest data every
     // fifteen minutes or so
 
     // We won't need to propgate the data down from the parent
     // because the parent doesn't need to know about the data
+    const data = {
+        labels,
+        datasets: [
+            {
+                label: 'Living Room Window',
+                data: props.temp_points,
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            },
+            {
+                label: 'House Average',
+                data: gen_fake_data(labels, 64, 68),
+                borderColor: 'rgb(53, 162, 235)',
+                backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            },
+        ],
+        xAxes: [
+            {
+                type: 'time',
+                time: {
+                    unit: 'hour',
+                },
+            },
+        ],
+        yAxes: [
+            {
+                type: 'linear',
+                ticks: {
+                    min: 60,
+                    max: 70,
+                },
+            },
+        ],
+    };
+
     return (
         <div className='outer-graph-section-wrapper'>
             <div className='inner-graph-section-wrapper'>
