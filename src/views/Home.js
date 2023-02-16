@@ -9,7 +9,9 @@ const HOME_ID = "63ed9cb48af0fbb8f0201c11";
 
 export default function Home() {
     // useeffect
-    const { data, error, isLoading } = api.useGetHomeSensorsQuery(HOME_ID);
+    const { data, error, isFetching, isLoading } = api.useGetHomeSensorsQuery(HOME_ID, {
+        pollingInterval: 3000,
+    });
 
     // const { home_data, home_error, home_isLoading } = api.useGetWeatherQuery(HOME_ID);
 
