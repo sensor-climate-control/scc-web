@@ -13,8 +13,8 @@ export default function WindowOverview(props) {
                 <hr className="window-overview-header-line" />
 
                 <div className="window-overview-body">
-                    {props.windows.map((window) => 
-                        <WindowSection name={window.name} status={window.status} />
+                    {props.windows.map((window, ind) => 
+                        <WindowSection key={ind} name={window.name} status={window.status} />
                     )}
 
                     <NewWindow />
