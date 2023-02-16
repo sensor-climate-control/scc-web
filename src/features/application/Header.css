@@ -1,0 +1,131 @@
+.outer-header-wrapper {
+    background-color: #656565;
+    width: 100%;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+}
+
+.inner-header-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-text {
+    color: white;
+    margin: 0px;
+}
+
+.header-brand-name {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 30px;
+
+    padding: 10px;
+}
+
+.header-page-name {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 35px;
+}
+
+.outer-header-user-dropdown {
+    padding: 10px;
+    height: 100%;
+}
+
+.inner-header-user-dropdown {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-dropdown-first-name {
+    font-size: 20px;
+    color: black;
+    font-family: sans-serif;
+}
+
+.header-user-dropdown-button {
+    background-color: #bdbdbd;
+    padding: 0px;
+    margin: 0px;
+    border-width: 0px;
+    height: 100%;
+}
+
+.header-user-dropdown-button:hover {
+    background-color: #949494;
+}
+
+.header-hamburger-icon {
+    display: none;
+}
+
+@media (max-width: 750px) {
+    .header-brand-name {
+        display: none;
+    }
+
+    .header-page-name {
+        padding: 10px;
+    }
+
+    .header-hamburger-icon {
+        display: inline-block;
+    }
+
+    .header-dropdown-first-name {
+        display: none;
+    }
+    .inner-header-user-dropdown {
+        display: none;
+    }
+
+    .outer-header-user-dropdown {
+        padding: 8px;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .header-user-dropdown-button {
+        width: 60px;
+    }
+}
+
+@media (max-width: 400px) {
+    .header-page-name {
+        font-size: 22px;
+    }
+}
+
+.inner-header-dropdown-items {
+    position: fixed;
+    top: 53px;
+    right: 0px;
+    width: 225px;
+    z-index: 20;
+    border: 2px solid black;
+    background-color: #cfcfcf;
+
+    text-align: left;
+
+    padding: 5px;
+
+}
+
+.header-dropdown-option-text {
+    font-size: 21px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 13px;
+}

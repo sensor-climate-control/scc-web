@@ -1,0 +1,60 @@
+.plus-sign-icon {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.toggled-window-header {
+    border-radius: 2px;
+    border-width: 1px;
+    border-style: solid;
+    padding: 12px;
+}
+
+.toggled-window-header-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.toggled-window-header-text {
+    font-size: 18px;
+    font-weight: 450;
+    margin: 0px;
+}
+
+.toggled-window-input-wrapper {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.toggled-window-header-line {
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.toggled-window-input-text {
+    margin: 0px;
+}
+
+.toggled-window-header-input {
+    width: 189px;
+}
+.toggled-window-header-button {
+    width: 110px;
+    font-size: 20px;
+    margin-top: 15px;
+}
+.toggled-window-header-button:hover {
+    color: green;
+    border: 2px solid green;
+}
+
+.inner-window-section-wrapper:hover {
+    cursor: pointer;
+}
+.header-close-icon-wrapper:hover {
+    cursor: pointer;
+    color: red;
+}
