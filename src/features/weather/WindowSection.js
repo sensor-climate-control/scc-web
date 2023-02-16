@@ -41,8 +41,8 @@ export default function WindowSection(props) {
                     </div>
 
                     <div className="window-section-detailed">
-                        <p className="window-section-detailed-text">Temperature: 30.4 F</p>
-                        <p className="window-section-detailed-text">Humidity: 23%</p>
+                        <p className="window-section-detailed-text">Temperature: {props.temp} F</p>
+                        <p className="window-section-detailed-text">Humidity: {props.humidity}%</p>
                     </div>
                 </div>
             )}
