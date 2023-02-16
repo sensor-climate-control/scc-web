@@ -35,45 +35,45 @@ export default function Home() {
     let window_data = []
     let points = []
 
-    if (!data) {
-        window_data = [
-            {
-                name: "Bedroom Window",
-                status: "open",
-                temp: 72,
-                humidity: 50,
-            },
-            {
-                name: "Living Room Window",
-                status: "open",
-                temp: 72,
-                humidity: 50,
-            },
-            {
-                name: "Kitchen Window",
-                status: "close_soon",
-                temp: 72,
-                humidity: 50,
-            },
-            {
-                name: "Guest Bedroom Window",
-                status: "closed",
-                temp: 72,
-                humidity: 50,
-            }
-        ]
+    // if (!data) {
+    //     window_data = [
+    //         {
+    //             name: "Bedroom Window",
+    //             status: "open",
+    //             temp: 72,
+    //             humidity: 50,
+    //         },
+    //         {
+    //             name: "Living Room Window",
+    //             status: "open",
+    //             temp: 72,
+    //             humidity: 50,
+    //         },
+    //         {
+    //             name: "Kitchen Window",
+    //             status: "close_soon",
+    //             temp: 72,
+    //             humidity: 50,
+    //         },
+    //         {
+    //             name: "Guest Bedroom Window",
+    //             status: "closed",
+    //             temp: 72,
+    //             humidity: 50,
+    //         }
+    //     ]
 
-        faker.seed(123);
+    //     faker.seed(123);
 
-        points = [];
-        for (let i = 0; i < 100; i++) {
-            points.push({
-                x: i,
-                y: faker.datatype.number({min: 62, max: 74})
-            });
-        }
+    //     points = [];
+    //     for (let i = 0; i < 100; i++) {
+    //         points.push({
+    //             x: i,
+    //             y: faker.datatype.number({min: 62, max: 74})
+    //         });
+    //     }
     // switch to real data
-    } else {
+    if (data) {
         window_data = []
         let window = {}
         for (let i = 0; i < data.length; i++) {
@@ -83,6 +83,7 @@ export default function Home() {
                     status: "closed",
                     temp: 0,
                     humidity: 0,
+                    lastReadings: [],
                 }
             } else {
                 window = {
@@ -90,6 +91,7 @@ export default function Home() {
                     status: "closed",
                     temp: data[i].readings[data[i].readings.length - 1].temp_f,
                     humidity: data[i].readings[data[i].readings.length - 1].humidity,
+                    lastReadings: data[i].readings.slice(Math.max(data[i].readings.length - 100, 0))
                 }
             }
 
@@ -97,16 +99,16 @@ export default function Home() {
         }
 
         // use last 100 readings
-        points = [];
-        for (let i = data[0].readings.length - 100; i < data[0].readings.length; i++) {
-            points.push(data[0].readings[i].temp_f)
-        }
+        // points = [];
+        // for (let i = data[0].readings.length - 100; i < data[0].readings.length; i++) {
+        //     points.push(data[0].readings[i].temp_f)
+        // }
     }
 
     return (
         <div className="outer-home-sections-wrapper">
             <WindowOverview windows={window_data} />
-            <GraphSection temp_points={points}/>
+            <GraphSection windows={window_data}/>
         </div>
     );
 }

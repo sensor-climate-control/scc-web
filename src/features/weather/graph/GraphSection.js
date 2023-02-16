@@ -92,22 +92,83 @@ export default function GraphSection(props) {
 
     // We won't need to propgate the data down from the parent
     // because the parent doesn't need to know about the data
+
+    if (props.windows === []) {
+        return (
+            <div className='outer-graph-section-wrapper'>
+                <div className='inner-graph-section-wrapper'>
+                    <h1 className='graph-overview-header-text'>Datapoints</h1>
+                    <hr className="window-overview-header-line" />
+                    <div className='graph-section-wrapper-div'>
+                        <Line options={{}} data={{}} />
+                    </div>
+                </div>
+            </div>
+        );
+    } 
+
+    const datasets = [];
+    console.log(props.windows)
+    let colors = [{
+        borderColor: 'red',
+        backgroundColor: 'red',
+    },
+    {
+        borderColor: 'blue',
+        backgroundColor: 'blue',
+    },
+    {
+        borderColor: 'green',
+        backgroundColor: 'green',
+    },
+    {
+        borderColor: 'yellow',
+        backgroundColor: 'yellow',
+    }]
+
+    // average all the data points for each window that has a full 100 data points
+    let avg_data = []
+    for (let i=0; i<100; i++) {
+        avg_data.push(0)
+        let num_skipped = 0;
+        for (let j=0; j<props.windows.length; j++) {
+            if (props.windows[j].lastReadings.length === 0) {
+                num_skipped++;
+                continue;
+            }
+
+            avg_data[i] += parseFloat(props.windows[j].lastReadings[i].temp_f);
+        }
+
+        avg_data[i] /= props.windows.length-num_skipped;
+    }
+
+    console.log(avg_data)
+
+    for (let i = 0; i < props.windows.length; i++) {
+        console.log(props.windows[i])
+        if (props.windows[i].lastReadings === []) {
+            continue;
+        }
+
+        datasets.push({
+            label: props.windows[i].name,
+            data: props.windows[i].lastReadings.map((reading) => reading.temp_f),
+            borderColor: colors[i].borderColor,
+            backgroundColor: colors[i].backgroundColor,
+        })
+    }
+
+    datasets.push({
+        label: 'Average',
+        data: avg_data,
+        borderColor: 'black',
+        backgroundColor: 'black',
+    })
+
     const data = {
         labels,
-        datasets: [
-            {
-                label: 'Living Room Window',
-                data: props.temp_points,
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
-            {
-                label: 'House Average',
-                data: gen_fake_data(labels, 64, 68),
-                borderColor: 'rgb(53, 162, 235)',
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
-            },
-        ],
+        datasets: datasets, 
         xAxes: [
             {
                 type: 'time',
