@@ -128,7 +128,7 @@ export default function GraphSection(props) {
         avg_data.push(0)
         let num_skipped = 0;
         for (let j=0; j<props.windows.length; j++) {
-            if (props.windows[j].lastReadings.length === 0) {
+            if (props.windows[j].lastReadings.length < 100) {
                 num_skipped++;
                 continue;
             }
