@@ -14,7 +14,7 @@ export default function WindowOverview(props) {
 
                 <div className="window-overview-body">
                     {props.windows.map((window, ind) => 
-                        <WindowSection key={ind} name={window.name} status={window.status} />
+                        <WindowSection key={ind} name={window.name} status={window.status} temp={window.temp} humidity={window.humidity} />
                     )}
 
                     <NewWindow />
