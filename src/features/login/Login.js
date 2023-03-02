@@ -27,7 +27,7 @@ function Login () {
 
     async function handleLogin(e) {
         e.preventDefault();
-        console.log("== Logging in with these credentials:", email, password);
+        // console.log("== Logging in with these credentials:", email, password);
 
         triggerLogin({email, password})
     }

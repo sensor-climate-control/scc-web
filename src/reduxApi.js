@@ -28,6 +28,9 @@ export const api = createApi({
         getSensorDetails: builder.query({
             query: (home_id, sensor_id) => `homes/${home_id}/sensors/${sensor_id}`,
         }),
+        getUserDetails: builder.query({
+            query: (user_id) => `users/${user_id}`
+        }),
         getHomeSensors: builder.query({
             async queryFn(home_id) {
                 const response = await fetch(`${baseurl}/api/homes/${home_id}`);
@@ -61,4 +64,4 @@ export const api = createApi({
     }),
 });
 
-export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetHomeSensorsQuery, useLoginMutation } = api;
+export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useLoginMutation } = api;

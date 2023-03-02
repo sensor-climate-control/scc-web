@@ -14,6 +14,7 @@ export const tokenReducer = createSlice({
             api.endpoints.login.matchFulfilled,
             (state, { payload }) => {
                 state.token = payload.token
+                state.userid = payload.userid
             }
         )
     }

@@ -6,13 +6,14 @@ import { useStore } from 'react-redux'
 import Header from '../features/application/Header';
 import { useNavigate } from 'react-router-dom';
 import CurrentWeather from '../features/weather/CurrentWeather';
+import UserInfo from "../features/login/UserInfo";
 
 const HOME_ID = "63ed9cb48af0fbb8f0201c11";
 
 export default function Home() {
     // useeffect
     const { data } = api.useGetHomeSensorsQuery(HOME_ID, {
-        pollingInterval: 3000,
+        pollingInterval: 300000,
     });
 
     const store = useStore()
@@ -124,6 +125,7 @@ export default function Home() {
                 <GraphSection windows={window_data}/>
             </div>
             <CurrentWeather />
+            <UserInfo />
         </>
     );
 }

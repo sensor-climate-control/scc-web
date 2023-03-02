@@ -20,7 +20,7 @@ exports.UserSchema = UserSchema
 async function insertNewUser(user) {
     const userToInsert = extractValidFields(user, UserSchema)
     userToInsert.password = await bcrypt.hash(userToInsert.password, 8)
-    console.log("== Hashed, salted password:", userToInsert.password)
+    // console.log("== Hashed, salted password:", userToInsert.password)
     const db = getDbReference()
     const collection = db.collection('users')
     const result = await collection.insertOne(userToInsert)
