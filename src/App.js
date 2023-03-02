@@ -4,11 +4,6 @@ import Login from './features/login/Login';
 import {
   Routes,
   Route,
-  // Link,
-  // NavLink,
-  // Outlet,
-  // useNavigate,
-  // useParams
 } from 'react-router-dom';
 
 const baseurl = process.env.REACT_APP_BASEURL || "http://localhost:3001"
