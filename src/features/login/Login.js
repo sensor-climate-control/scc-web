@@ -1,17 +1,29 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import MyCard from "../application/MyCard";
 // import { useGetWeatherQuery } from '../../reduxApi';
 import Header from '../application/Header';
 import { useLoginMutation } from '../../reduxApi';
 import CurrentWeather from '../weather/CurrentWeather';
+import { useStore } from 'react-redux'
+import {
+  useNavigate
+} from 'react-router-dom';
 
-const Login = () => {
+function Login () {
     // const { data, error, isLoading } = useGetWeatherQuery();
     const [ email, setEmail ] = useState("")
     const [ password, setPassword ] = useState("")
 
     const [triggerLogin, { data, error, isLoading, isSuccess, isError, isUninitialized }] = useLoginMutation()
+
+    const store = useStore()
+    const navigate = useNavigate()
+
+    if (store.getState().token.token) {
+        return navigate("/");
+    }
+    console.log("==== state: ", store.getState().token.token)
 
     async function handleLogin(e) {
         e.preventDefault();
@@ -57,17 +69,11 @@ const Login = () => {
                 )} */}
                 {(isUninitialized) ? loginForm :
                  (isLoading) ? (<p>Loading...</p>) :
-                 (isSuccess) ? (
-                    <>
-                        <p>{JSON.stringify(data)}</p>
-                        <CurrentWeather />
-                    </>
-                 ) :
+                 (isSuccess) ? (<p>{JSON.stringify(data)}</p>) :
                  (<p>{JSON.stringify(error)}</p>)}
                 
                 
             </MyCard>
-            <CurrentWeather />
         </>
     )
 }

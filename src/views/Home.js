@@ -2,7 +2,10 @@ import WindowOverview from "../features/weather/WindowOverview";
 import GraphSection from "../features/weather/graph/GraphSection";
 import './Home.css'
 import { api } from '../reduxApi';
+import { useStore } from 'react-redux'
 import Header from '../features/application/Header';
+import { useNavigate } from 'react-router-dom';
+import CurrentWeather from '../features/weather/CurrentWeather';
 
 const HOME_ID = "63ed9cb48af0fbb8f0201c11";
 
@@ -11,6 +14,14 @@ export default function Home() {
     const { data } = api.useGetHomeSensorsQuery(HOME_ID, {
         pollingInterval: 3000,
     });
+
+    const store = useStore()
+    const navigate = useNavigate()
+
+    if (!store.getState().token.token) {
+        return navigate("/login");
+    }
+    console.log("==== state: ", store.getState().token.token)
 
     // const { home_data, home_error, home_isLoading } = api.useGetWeatherQuery(HOME_ID);
 
@@ -112,6 +123,7 @@ export default function Home() {
                 <WindowOverview windows={window_data} />
                 <GraphSection windows={window_data}/>
             </div>
+            <CurrentWeather />
         </>
     );
 }
