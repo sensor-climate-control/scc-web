@@ -2,6 +2,7 @@ import WindowOverview from "../features/weather/WindowOverview";
 import GraphSection from "../features/weather/graph/GraphSection";
 import './Home.css'
 import { api } from '../reduxApi';
+import Header from '../features/application/Header';
 
 const HOME_ID = "63ed9cb48af0fbb8f0201c11";
 
@@ -105,9 +106,12 @@ export default function Home() {
     }
 
     return (
-        <div className="outer-home-sections-wrapper">
-            <WindowOverview windows={window_data} />
-            <GraphSection windows={window_data}/>
-        </div>
+        <>
+            <Header page_name='View Your Home' user_first_name='Daniel'/>
+            <div className="outer-home-sections-wrapper">
+                <WindowOverview windows={window_data} />
+                <GraphSection windows={window_data}/>
+            </div>
+        </>
     );
 }

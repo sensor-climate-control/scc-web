@@ -1,17 +1,26 @@
 import './App.css';
-import Header from './features/application/Header'
 import Home from './views/Home';
+import Login from './features/login/Login';
+import {
+  Routes,
+  Route,
+  Link,
+  NavLink,
+  Outlet,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
 
 const baseurl = process.env.REACT_APP_BASEURL || "http://localhost:3001"
 
 function App() {
-
-
-
   return (
     <div className="App">
-      <Header page_name='View Your Home' user_first_name='Daniel'/>
-      <Home />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+      
     </div>
   );
 }

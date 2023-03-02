@@ -2,7 +2,9 @@ import MyCard from "../application/MyCard";
 import { useGetWeatherQuery } from '../../reduxApi';
 
 const CurrentWeather = () => {
-    const { data, error, isLoading } = useGetWeatherQuery();
+    const { data, error, isLoading } = useGetWeatherQuery({
+        pollingInterval: 300,
+    });
 
     return (
         <MyCard title="Current Weather">

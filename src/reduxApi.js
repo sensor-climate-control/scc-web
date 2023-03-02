@@ -3,7 +3,21 @@ const baseurl = process.env.REACT_APP_BASEURL || "http://localhost:3001"
 
 export const api = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({ baseUrl: baseurl + '/api/' }),
+    baseQuery: fetchBaseQuery({ 
+        baseUrl: baseurl + '/api/',
+        prepareHeaders: (headers, { getState }) => {
+            const state = getState()
+            console.log("==== state: ", state)
+            const token = state.token.token
+            console.log("==== token: ", token)
+
+            if(token) {
+                headers.set('authorization', `Bearer ${token}`)
+            }
+
+            return headers
+        }
+    }),
     endpoints: (builder) => ({
         getWeather: builder.query({
             query: () => 'weather/now',
@@ -37,7 +51,14 @@ export const api = createApi({
                 return sensors_details ? { data: sensors_details } : { error: "No data" };
             }
         }),
+        login: builder.mutation({
+            query: (body) => ({
+                url: `users/login`,
+                method: 'POST',
+                body,
+            })
+        }),
     }),
 });
 
-export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetHomeSensorsQuery } = api;
+export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetHomeSensorsQuery, useLoginMutation } = api;

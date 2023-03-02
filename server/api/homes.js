@@ -188,7 +188,12 @@ router.put('/:homeid/sensors/:sensorid/readings', async function (req, res, next
     const validReadings = readings.filter(reading => validateAgainstSchema(reading, SensorReadingSchema))
     if (validReadings.length > 0) {
         let sensor = await getSensorById(sensorid)
-        validReadings.forEach(reading => sensor.readings.push(reading))
+        validReadings.forEach(reading => {
+            if (!reading.date_time) {
+                reading.date_time = Date.now()
+            }
+            sensor.readings.push(reading)
+        })
 
         const successfulUpdate = await updateSensorById(sensorid, sensor)
         if (successfulUpdate) {
