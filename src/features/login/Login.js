@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
 import MyCard from "../application/MyCard";
 // import { useGetWeatherQuery } from '../../reduxApi';
 import Header from '../application/Header';
 import { useLoginMutation } from '../../reduxApi';
-import CurrentWeather from '../weather/CurrentWeather';
+// import CurrentWeather from '../weather/CurrentWeather';
 import { useStore } from 'react-redux'
 import {
   useNavigate
@@ -15,7 +15,7 @@ function Login () {
     const [ email, setEmail ] = useState("")
     const [ password, setPassword ] = useState("")
 
-    const [triggerLogin, { data, error, isLoading, isSuccess, isError, isUninitialized }] = useLoginMutation()
+    const [triggerLogin, { data, error, isLoading, isSuccess, isUninitialized }] = useLoginMutation()
 
     const store = useStore()
     const navigate = useNavigate()
