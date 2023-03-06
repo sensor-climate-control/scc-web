@@ -6,7 +6,7 @@ import { useStore } from 'react-redux'
 import Header from '../features/application/Header';
 import { useNavigate } from 'react-router-dom';
 import CurrentWeather from '../features/weather/CurrentWeather';
-import UserInfo from "../features/login/UserInfo";
+// import UserInfo from "../features/login/UserInfo";
 import React, { useEffect } from 'react';
 import { useGetUserDetailsQuery } from '../reduxApi';
 
@@ -29,7 +29,7 @@ export default function Home() {
     })
 
     const userid = store.getState().token.userid
-    const { data: userdata, error, isError, isLoading } = useGetUserDetailsQuery(userid);
+    const { data: userdata } = useGetUserDetailsQuery(userid);
 
     // const { home_data, home_error, home_isLoading } = api.useGetWeatherQuery(HOME_ID);
 

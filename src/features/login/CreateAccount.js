@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import MyCard from "../application/MyCard";
-import Header from '../application/Header';
+// import Header from '../application/Header';
 import { useCreateAccountMutation } from '../../reduxApi';
 import { useStore } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
