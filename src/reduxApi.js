@@ -29,7 +29,9 @@ export const api = createApi({
             query: (home_id, sensor_id) => `homes/${home_id}/sensors/${sensor_id}`,
         }),
         getUserDetails: builder.query({
-            query: (user_id) => `users/${user_id}`
+            query: (user_id) => {
+                return `users/${user_id}`
+            }
         }),
         getHomeSensors: builder.query({
             async queryFn(home_id) {
@@ -61,7 +63,21 @@ export const api = createApi({
                 body,
             })
         }),
+        createAccount: builder.mutation({
+            query: (body) => ({
+                url: `users`,
+                method: `POST`,
+                body
+            })
+        }),
+        modifyUser: builder.mutation({
+            query: (body, user_id) => ({
+                url: `users/${user_id}`,
+                method: `PUT`,
+                body
+            })
+        })
     }),
 });
 
-export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useLoginMutation } = api;
+export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation } = api;

@@ -18,15 +18,14 @@ export default function Header(props) {
             <div className="outer-header-user-dropdown">
               <RxHamburgerMenu className='header-hamburger-icon' size={43} />
               <div className="inner-header-user-dropdown">
-                {/* <p className='header-dropdown-first-name header-text'>Welcome back, {props.user_first_name}!</p> */}
-                <NavLink to="/login"><p className='header-dropdown-first-name header-text'>Login</p></NavLink>
+                <p className='header-dropdown-first-name header-text'>Hello {props.user_first_name}!</p>
               </div>
 
-              {/* <div className="inner-header-dropdown-items" style={showDropdown ? {display: "block"} : {display: "none"}}>
-                <p className='header-dropdown-option-text'>Account Summary</p>
-                <p className='header-dropdown-option-text'>Dropdown Item 3</p>
-                <p className='header-dropdown-option-text'>Dropdown Item 4</p>
-              </div> */}
+              <div className="inner-header-dropdown-items" style={showDropdown ? {display: "block"} : {display: "none"}}>
+                <p className='header-dropdown-option-text'><NavLink to="/user">Account Summary</NavLink></p>
+                {/* <p className='header-dropdown-option-text'>Dropdown Item 3</p>
+                <p className='header-dropdown-option-text'>Dropdown Item 4</p> */}
+              </div>
             </div>
         </button>
       </div>

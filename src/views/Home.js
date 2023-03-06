@@ -7,6 +7,8 @@ import Header from '../features/application/Header';
 import { useNavigate } from 'react-router-dom';
 import CurrentWeather from '../features/weather/CurrentWeather';
 import UserInfo from "../features/login/UserInfo";
+import React, { useEffect } from 'react';
+import { useGetUserDetailsQuery } from '../reduxApi';
 
 const HOME_ID = "63ed9cb48af0fbb8f0201c11";
 
@@ -19,10 +21,15 @@ export default function Home() {
     const store = useStore()
     const navigate = useNavigate()
 
-    if (!store.getState().token.token) {
-        return navigate("/login");
-    }
-    console.log("==== state: ", store.getState().token.token)
+    useEffect(() => {
+        if (!store.getState().token.token) {
+            return navigate("/login");
+        }
+        console.log("==== state: ", store.getState().token.token)
+    })
+
+    const userid = store.getState().token.userid
+    const { data: userdata, error, isError, isLoading } = useGetUserDetailsQuery(userid);
 
     // const { home_data, home_error, home_isLoading } = api.useGetWeatherQuery(HOME_ID);
 
@@ -119,13 +126,13 @@ export default function Home() {
 
     return (
         <>
-            <Header page_name='View Your Home' user_first_name='Daniel'/>
+            <Header page_name='View Your Home' user_first_name={(userdata) ? userdata.name : ''}/>
             <div className="outer-home-sections-wrapper">
                 <WindowOverview windows={window_data} />
                 <GraphSection windows={window_data}/>
             </div>
             <CurrentWeather />
-            <UserInfo />
+            {/* <UserInfo userdata={userdata}/> */}
         </>
     );
 }
