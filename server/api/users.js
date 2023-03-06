@@ -40,6 +40,7 @@ router.get('/:userid', async function (req, res, next) {
     const userid = req.params.userid
     const user = await getUserById(userid)
     if (user) {
+        console.log("==== user: ", user)
         res.status(200).send(user)
     } else {
         next();

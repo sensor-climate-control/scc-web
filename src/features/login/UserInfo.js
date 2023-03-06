@@ -9,25 +9,23 @@ function UserInfo () {
     const userid = store.getState().token.userid
     console.log("==== userid: ", userid)
 
-    const { data, error, isSuccess, isLoading } = useGetUserDetailsQuery(userid);
+    const { data, error, isError, isLoading } = useGetUserDetailsQuery(userid);
 
-    const userInfo = (
-        <div>
+    const userInfo = 
+        (isLoading) ? (<p>Loading...</p>) :
+        (isError) ? (<p>{JSON.stringify(error)}</p>) : 
+        (<div>
             <p>UserID: {data._id}</p>
             <p>Name: {data.name}</p>
             <p>Email: {data.email}</p>
             <p>Phone Number: {data.phone}</p>
             <p>Phone Carrier: {data.phone_carrier}</p>
             <p>Site Admin: {String(data.admin)}</p>
-        </div>
-    )
+        </div>)
 
     return (
         <MyCard title="User Info">
-            {(isLoading) ? (<p>Loading...</p>) :
-             (isSuccess) ? (userInfo) :
-             (<p>{JSON.stringify(error)}</p>)}
-            
+            {userInfo}
         </MyCard>
     )
 }
