@@ -1,5 +1,21 @@
 .outer-home-sections-wrapper {
     display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 100%;
+}
+
+.top-section-wrapper {
+    min-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    min-width: 100%;
+}
+
+.top-section-wrapper {
+    min-width: 100%;
+    display: flex;
     justify-content: space-between;
     width: 100%;
     min-width: 100%;

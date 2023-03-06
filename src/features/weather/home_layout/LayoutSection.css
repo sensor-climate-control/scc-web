@@ -1,0 +1,120 @@
+.home-layout-rectangle {
+    width: 1200px;
+    height: 1100px;
+    border-radius: 2px;
+    border-width: 5px;
+    border-color: black;
+    border-style: solid;
+    margin: 120px;
+}
+
+.home-layout-wrapper {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.layout-section {
+    padding-bottom: 50px;
+}
+
+.outer-north-window-wrapper {
+    min-width: 100%;
+    max-height: 75px;
+    min-height: 75px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.outer-south-window-wrapper {
+    min-width: 100%;
+    max-height: 75px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.outer-west-window-wrapper {
+    max-width: 100px;
+    min-height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.outer-east-window-wrapper {
+    max-width: 100px;
+    min-height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+}
+
+.vertical-window-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    min-width: 100%;
+    max-height: 940px;
+    min-height: 940px;
+}
+
+
+.north-window-wrapper {
+    transform: translateY(-75px);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 1000px;
+}
+.south-window-wrapper {
+    transform: translateY(65px);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 1000px;
+}
+.west-window-wrapper {
+    transform: translateX(-100px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 1000px;
+}
+.east-window-wrapper {
+    /* transform: translateX(100px); */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 1000px;
+}
+
+
+.layout-window-box {
+    max-width: 200px;
+    max-height: 150px;
+    min-width: 200px;
+    min-height: 150px;
+    border-radius: 2px;
+    border-width: 2px;
+    border-color: black;
+    border-style: solid;
+    background-color: white;
+
+}
+
+.layout-window-name {
+    font-size: 18px;
+}
+
+.layout-window-text {
+    font-size: 13px;
+}
