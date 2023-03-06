@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import MyCard from "../application/MyCard";
 import { useGetUserDetailsQuery } from '../../reduxApi';
 import { useStore } from 'react-redux'
 import Header from '../application/Header';
+import { useNavigate } from 'react-router-dom';
 
 function UserInfo () {
     const store = useStore()
-    const userid = store.getState().token.userid
-    console.log("==== userid: ", userid)
+    const navigate = useNavigate()
 
+    useEffect(() => {
+        if (!store.getState().token.token) {
+            return navigate("/login");
+        }
+        console.log("==== state: ", store.getState().token.token)
+    })
+
+    const userid = store.getState().token.userid
     const { data: userdata, error, isError, isLoading } = useGetUserDetailsQuery(userid);
 
     const userInfo = 
