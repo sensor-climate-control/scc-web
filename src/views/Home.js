@@ -43,6 +43,7 @@ export default function Home() {
     }
 
     let orientations = ["north", "south", "east", "west"]
+    let f_orientations = ["west", "west", "west", "south"]
 
     let n_orientations = ["north", "north", "north", "north"]
     let s_orientations = ["south", "south", "south", "south"]
@@ -51,7 +52,7 @@ export default function Home() {
 
     let map_window_data = window_data.map((window) => {
         return {
-            window_orientation: s_orientations.pop(),
+            window_orientation: f_orientations.pop(),
             data: window,
         }
     })
