@@ -1,6 +1,12 @@
 import './LayoutSection.css'
+import WindowBox from './WindowBox'
 
 export default function LayoutSection(props) {
+    let south_windows = props.data.filter((window) => window.window_orientation === "south")
+    let north_windows = props.data.filter((window) => window.window_orientation === "north")
+    let east_windows = props.data.filter((window) => window.window_orientation === "east")
+    let west_windows = props.data.filter((window) => window.window_orientation === "west")
+
     return (
         <div className="layout-section">
             <div className="layout-section-title">
@@ -12,18 +18,7 @@ export default function LayoutSection(props) {
                         {/* North windows */}
                         <div className='outer-north-window-wrapper'>
                             <div className="north-window-wrapper">
-                                {props.data.map((window) => {
-                                    if (window.window_orientation === "north") {
-                                        return (
-                                            <div className="layout-window-box">
-                                                <h1 className='layout-window-name'>{window.data.name}</h1>
-                                                <h2 className='layout-window-text'>{window.data.status}</h2>
-                                                <h2 className='layout-window-text'>{window.data.temp}</h2>
-                                                <h2 className='layout-window-text'>{window.data.humidity}</h2>
-                                            </div>
-                                        )
-                                    }
-                                })}
+                                {north_windows.map((window, i) => <WindowBox key={i} data={window.data} /> ) }
                             </div>
                         </div>
 
@@ -31,36 +26,14 @@ export default function LayoutSection(props) {
                             {/* West windows */}
                             <div className='outer-west-window-wrapper'>
                                 <div className="west-window-wrapper">
-                                    {props.data.map((window) => {
-                                        if (window.window_orientation === "west") {
-                                            return (
-                                                <div className="layout-window-box">
-                                                    <h1 className='layout-window-name'>{window.data.name}</h1>
-                                                    <h2 className='layout-window-text'>{window.data.status}</h2>
-                                                    <h2 className='layout-window-text'>{window.data.temp}</h2>
-                                                    <h2 className='layout-window-text'>{window.data.humidity}</h2>
-                                                </div>
-                                            )
-                                        }
-                                    })}
+                                    {west_windows.map((window, i) => <WindowBox key={i} data={window.data} /> ) }
                                 </div>
                             </div>
 
                             {/* East windows */}
                             <div className='outer-east-window-wrapper'>
                                 <div className="east-window-wrapper">
-                                    {props.data.map((window) => {
-                                        if (window.window_orientation === "east") {
-                                            return (
-                                                <div className="layout-window-box">
-                                                    <h1 className='layout-window-name'>{window.data.name}</h1>
-                                                    <h2 className='layout-window-text'>{window.data.status}</h2>
-                                                    <h2 className='layout-window-text'>{window.data.temp}</h2>
-                                                    <h2 className='layout-window-text'>{window.data.humidity}</h2>
-                                                </div>
-                                            )
-                                        }
-                                    })}
+                                    {east_windows.map((window, i) => <WindowBox key={i} data={window.data} /> ) }
                                 </div>
                             </div>
                         </div>
@@ -68,18 +41,7 @@ export default function LayoutSection(props) {
                         {/* South windows */}
                         <div className='outer-south-window-wrapper'>
                             <div className="south-window-wrapper">
-                                {props.data.map((window) => {
-                                    if (window.window_orientation === "south") {
-                                        return (
-                                            <div className="layout-window-box">
-                                                <h1 className='layout-window-name'>{window.data.name}</h1>
-                                                <h2 className='layout-window-text'>{window.data.status}</h2>
-                                                <h2 className='layout-window-text'>{window.data.temp}</h2>
-                                                <h2 className='layout-window-text'>{window.data.humidity}</h2>
-                                            </div>
-                                        )
-                                    }
-                                })}
+                                {south_windows.map((window, i) => <WindowBox key={i} data={window.data} /> )}
                             </div>
                         </div>
                     </div>
