@@ -6,7 +6,6 @@ import { useStore } from 'react-redux'
 import Header from '../features/application/Header';
 import { useNavigate } from 'react-router-dom';
 import CurrentWeather from '../features/weather/CurrentWeather';
-// import UserInfo from "../features/login/UserInfo";
 import React, { useEffect } from 'react';
 import { useGetUserDetailsQuery } from '../reduxApi';
 
