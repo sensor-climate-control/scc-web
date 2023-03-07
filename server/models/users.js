@@ -20,7 +20,7 @@ exports.UserSchema = UserSchema
 async function insertNewUser(user) {
     const userToInsert = extractValidFields(user, UserSchema)
     userToInsert.password = await bcrypt.hash(userToInsert.password, 8)
-    // console.log("== Hashed, salted password:", userToInsert.password)
+
     const db = getDbReference()
     const collection = db.collection('users')
     const result = await collection.insertOne(userToInsert)
@@ -67,6 +67,7 @@ exports.getUserById = getUserById
 
 async function updateUserById(id, user) {
     user = extractValidFields(user, UserSchema)
+    user.password = await bcrypt.hash(user.password, 8)
     const db = getDbReference()
     const collection = db.collection('users')
     const result = await collection.replaceOne(

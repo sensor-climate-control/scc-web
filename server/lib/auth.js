@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
+require('dotenv').config();
 
-const secret = "SuperSecret"
+const secret = process.env.OWM_API_KEY
 
 function generateAuthToken(userId) {
     const payload = { sub: userId }
