@@ -30,6 +30,7 @@ function UserInfo () {
             <p>Phone Number: {userdata.phone}</p>
             <p>Phone Carrier: {userdata.phone_carrier}</p>
             <p>Site Admin: {String(userdata.admin)}</p>
+            <p>Homes: {JSON.stringify(userdata.homes)}</p>
         </div>)
 
     return (
