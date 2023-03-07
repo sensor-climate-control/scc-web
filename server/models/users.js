@@ -43,7 +43,7 @@ async function getUserByEmail(email, includePassword = false) {
     const db = getDbReference()
     const collection = db.collection('users')
     const results = await collection
-        .find({ email: email })
+        .find({ email: { $eq: email }})
         .project(includePassword ? {} : { password: 0 })
         .toArray()
     return results[0]
