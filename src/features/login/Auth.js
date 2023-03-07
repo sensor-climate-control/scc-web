@@ -6,7 +6,7 @@ import CreateAccount from './CreateAccount';
 function Auth () {
     return (
         <>
-            <Header page_name='View Your Home' user_first_name=''/>
+            <Header page_name='Login or Create Account' user_first_name=''/>
             <Login />
             <CreateAccount />
         </>
