@@ -2,8 +2,13 @@ const express = require('express')
 const api = require('./server/api')
 const cors = require('cors');
 const { connectToDb } = require('./server/lib/mongo');
-
+const RateLimit = require('express-rate-limit')
 require('dotenv').config();
+
+const limiter = RateLimit({
+	windowMs: 1*60*1000,
+	max: 5000
+})
 
 const hostname = '127.0.0.1';
 const port = process.env.PORT || 80;
@@ -13,6 +18,7 @@ var app = express();
 app.use(express.json());
 app.use(express.static('build'));
 app.use(cors());
+app.use(limiter)
 
 app.use('/api', api);
 
