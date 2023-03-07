@@ -127,7 +127,7 @@ export default function Home() {
     const homeToDisplay = (
             !userdata || 
             !userdata.homes || 
-            userdata.homes.length == 0
+            userdata.homes.length === 0
         ) ? <CreateHome userdata={userdata} /> : (
             <>
                 <div className="outer-home-sections-wrapper">

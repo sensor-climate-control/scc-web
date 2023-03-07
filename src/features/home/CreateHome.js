@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
 import MyCard from "../application/MyCard";
 import { useCreateHomeMutation, useAddHomeToUserMutation } from '../../reduxApi';
