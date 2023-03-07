@@ -18,6 +18,7 @@ export const api = createApi({
             return headers
         }
     }),
+    tagTypes: ['User'],
     endpoints: (builder) => ({
         getWeather: builder.query({
             query: () => 'weather/now',
@@ -31,7 +32,8 @@ export const api = createApi({
         getUserDetails: builder.query({
             query: (user_id) => {
                 return `users/${user_id}`
-            }
+            },
+            providesTags: ['User'],
         }),
         getHomeSensors: builder.query({
             async queryFn(home_id) {
@@ -89,7 +91,8 @@ export const api = createApi({
                 url: `users/${user_id}/homes`,
                 method: `PUT`,
                 body
-            })
+            }),
+            invalidatesTags: ['User'],
         }),
     }),
 });
