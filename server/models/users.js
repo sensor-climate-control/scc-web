@@ -65,9 +65,11 @@ async function getUserById(id, includePassword = false) {
 }
 exports.getUserById = getUserById
 
-async function updateUserById(id, user) {
+async function updateUserById(id, user, passwordIsSaltedAndHashed = false) {
     user = extractValidFields(user, UserSchema)
-    user.password = await bcrypt.hash(user.password, 8)
+    if(!passwordIsSaltedAndHashed) {
+        user.password = await bcrypt.hash(user.password, 8)
+    }
     const db = getDbReference()
     const collection = db.collection('users')
     const result = await collection.replaceOne(

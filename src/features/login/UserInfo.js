@@ -34,7 +34,7 @@ function UserInfo () {
 
     return (
         <>
-            <Header page_name='View Your Home' user_first_name={(userdata) ? userdata.name : ''}/>
+            <Header page_name='User Information' user_first_name={(userdata) ? userdata.name : ''}/>
             <MyCard title="User Info">
                 {userInfo}
             </MyCard>

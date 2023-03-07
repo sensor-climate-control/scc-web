@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import CurrentWeather from '../features/weather/CurrentWeather';
 import React, { useEffect } from 'react';
 import { useGetUserDetailsQuery } from '../reduxApi';
+import CreateHome from "../features/home/CreateHome";
 
 const HOME_ID = "63ed9cb48af0fbb8f0201c11";
 
@@ -123,14 +124,24 @@ export default function Home() {
         // }
     }
 
+    const homeToDisplay = (
+            !userdata || 
+            !userdata.homes || 
+            userdata.homes.length == 0
+        ) ? <CreateHome userdata={userdata} /> : (
+            <>
+                <div className="outer-home-sections-wrapper">
+                    <WindowOverview windows={window_data} />
+                    <GraphSection windows={window_data}/>
+                </div>
+                <CurrentWeather />
+            </>
+        )
+
     return (
         <>
             <Header page_name='View Your Home' user_first_name={(userdata) ? userdata.name : ''}/>
-            <div className="outer-home-sections-wrapper">
-                <WindowOverview windows={window_data} />
-                <GraphSection windows={window_data}/>
-            </div>
-            <CurrentWeather />
+            {homeToDisplay}
             {/* <UserInfo userdata={userdata}/> */}
         </>
     );

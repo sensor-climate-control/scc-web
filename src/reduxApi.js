@@ -70,14 +70,28 @@ export const api = createApi({
                 body
             })
         }),
+        createHome: builder.mutation({
+            query: (body) => ({
+                url: `homes`,
+                method: `POST`,
+                body
+            })
+        }),
         modifyUser: builder.mutation({
-            query: (body, user_id) => ({
+            query: ({body, user_id}) => ({
                 url: `users/${user_id}`,
                 method: `PUT`,
                 body
             })
-        })
+        }),
+        addHomeToUser: builder.mutation({
+            query: ({body, user_id}) => ({
+                url: `users/${user_id}/homes`,
+                method: `PUT`,
+                body
+            })
+        }),
     }),
 });
 
-export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation } = api;
+export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation } = api;

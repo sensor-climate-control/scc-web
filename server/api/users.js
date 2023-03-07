@@ -71,6 +71,39 @@ router.put('/:userid', async function (req, res, next) {
     }
 });
 
+// Add homeid to user
+// Requires auth from requested user or admin
+router.put('/:userid/homes', async function (req, res, next) {
+    const userid = req.params.userid
+    const requestBody = req.body
+
+    if(requestBody.homeid) {
+        const homeid = requestBody.homeid
+
+        const user = await getUserById(userid, true)
+        console.log("==== user: ", user)
+        if(!user.homes) {
+            user.homes = []
+        }
+        user.homes.push(homeid)
+        const successfulUpdate = await updateUserById(userid, user, true)
+    
+        if(successfulUpdate) {
+            res.status(200).json({
+                links: {
+                    user: `/api/users/${userid}`
+                }
+            })
+        } else {
+            next();
+        }
+    } else {
+        res.status(400).json({
+            error: "Request body does not contain a homeid"
+        })
+    }
+})
+
 // Deletes user
 // Requires admin auth
 router.delete('/:userid', async function (req, res, next) {
