@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import weatherReducer from './features/redux/weatherSlice'
+import tokenReducer from './features/redux/tokenSlice'
 import { api } from './reduxApi'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
 
 export const store = configureStore({
   reducer: {
     weather: weatherReducer,
+    token: tokenReducer,
     [api.reducerPath]: api.reducer,
   },
 

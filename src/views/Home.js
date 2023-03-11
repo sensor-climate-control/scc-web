@@ -2,14 +2,34 @@ import WindowOverview from "../features/weather/WindowOverview";
 import GraphSection from "../features/weather/graph/GraphSection";
 import './Home.css'
 import { api } from '../reduxApi';
+import { useStore } from 'react-redux'
+import Header from '../features/application/Header';
+import { useNavigate } from 'react-router-dom';
+import CurrentWeather from '../features/weather/CurrentWeather';
+import React, { useEffect } from 'react';
+import { useGetUserDetailsQuery } from '../reduxApi';
+import CreateHome from "../features/home/CreateHome";
 
 const HOME_ID = "63ed9cb48af0fbb8f0201c11";
 
 export default function Home() {
     // useeffect
     const { data } = api.useGetHomeSensorsQuery(HOME_ID, {
-        pollingInterval: 3000,
+        pollingInterval: 300000,
     });
+
+    const store = useStore()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (!store.getState().token.token) {
+            return navigate("/login");
+        }
+        console.log("==== state: ", store.getState().token.token)
+    })
+
+    const userid = store.getState().token.userid
+    const { data: userdata } = useGetUserDetailsQuery(userid);
 
     // const { home_data, home_error, home_isLoading } = api.useGetWeatherQuery(HOME_ID);
 
@@ -104,10 +124,25 @@ export default function Home() {
         // }
     }
 
+    const homeToDisplay = (
+            !userdata || 
+            !userdata.homes || 
+            userdata.homes.length === 0
+        ) ? <CreateHome userdata={userdata} /> : (
+            <>
+                <div className="outer-home-sections-wrapper">
+                    <WindowOverview windows={window_data} />
+                    <GraphSection windows={window_data}/>
+                </div>
+                <CurrentWeather />
+            </>
+        )
+
     return (
-        <div className="outer-home-sections-wrapper">
-            <WindowOverview windows={window_data} />
-            <GraphSection windows={window_data}/>
-        </div>
+        <>
+            <Header page_name='View Your Home' user_first_name={(userdata) ? userdata.name : ''}/>
+            {homeToDisplay}
+            {/* <UserInfo userdata={userdata}/> */}
+        </>
     );
 }
