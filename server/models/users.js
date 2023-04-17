@@ -107,23 +107,25 @@ async function addApiKey(user, api_key) {
         user.api_keys = []
     }
     user.api_keys.push(api_key)
-    result = updateUserById(user._id, user)
+    const result = await updateUserById(user._id, user)
     return result
 }
 exports.addApiKey = addApiKey
 
 async function getUserApiKeysById(id) {
-    const user = getUserById(id)
+    const user = await getUserById(id)
 
     return user.api_keys
 }
 exports.getUserApiKeysById = getUserApiKeysById
 
 async function removeApiKey(user, api_key) {
-    const api_keys = user.api_keys.filter(e => e !== api_key);
+    const api_keys = user.api_keys.filter(e => e === api_key);
     user.api_keys = api_keys
+    console.log("in removeApiKey: user.api_keys == ", user.api_keys)
+    console.log("user.api_keys.filter(e => e !== api_key) == ", user.api_keys.filter(e => e !== api_key))
 
-    result = updateUserById(user.id, user)
+    const result = await updateUserById(user._id, user)
     return result
 }
 exports.removeApiKey = removeApiKey

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs')
 const { generateAuthToken, requireAuthentication } = require('../lib/auth')
 const { validateAgainstSchema, extractValidFields } = require('../lib/validation');
-const { UserSchema, insertNewUser, getAllUsers, getUserById, deleteUserById, updateUserById, getUserByEmail, addApiKey } = require('../models/users');
+const { UserSchema, insertNewUser, getAllUsers, getUserById, deleteUserById, updateUserById, getUserByEmail, addApiKey, getUserApiKeysById, removeApiKey, ApiKeySchema } = require('../models/users');
 
 
 // Creates new user
@@ -47,7 +47,7 @@ router.get('/:userid', async function (req, res, next) {
     }
 });
 
-router.post('/:userid/token', requireAuthentication, async function (req, res) {
+router.post('/:userid/tokens', requireAuthentication, async function (req, res) {
     const userid = req.params.userid
     const user = await getUserById(userid, true)
     if (req.body && req.body.duration && user) {
@@ -73,7 +73,38 @@ router.post('/:userid/token', requireAuthentication, async function (req, res) {
     }
 });
 
-exports.router = router;
+router.get('/:userid/tokens', requireAuthentication, async function (req, res) {
+    const userid = req.params.userid
+    const api_keys = await getUserApiKeysById(userid)
+    console.log("==== api_keys", api_keys)
+
+    if(api_keys) { 
+        res.status(200).send(api_keys)
+    } else {
+        res.status(500).send({
+            error: "Error getting API keys"
+        })
+    }
+});
+
+router.delete('/:userid/tokens', requireAuthentication, async function (req, res) {
+    const userid = req.params.userid
+    const user = await getUserById(userid, true)
+    if ( req.body && validateAgainstSchema(req.body, ApiKeySchema)) {
+        const result = await removeApiKey(user, req.body.api_key)
+        if (result) {
+            res.status(204).send()
+        } else {
+            res.status(500).send({
+                error: "Error deleting api key"
+            })
+        }
+    } else {
+        res.status(400).send({
+            error: "Request body does not contain a valid api key object"
+        })
+    }
+})
 
 // Update user details
 // Requires auth from requested user or admin
@@ -169,3 +200,5 @@ router.post('/login', async function (req, res) {
         })
     }
 })
+
+exports.router = router;
