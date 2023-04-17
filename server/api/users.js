@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs')
-const { generateAuthToken } = require('../lib/auth')
+const { generateAuthToken, requireAuthentication } = require('../lib/auth')
 const { validateAgainstSchema, extractValidFields } = require('../lib/validation');
-const { UserSchema, insertNewUser, getAllUsers, getUserById, deleteUserById, updateUserById, getUserByEmail } = require('../models/users');
+const { UserSchema, insertNewUser, getAllUsers, getUserById, deleteUserById, updateUserById, getUserByEmail, addApiKey } = require('../models/users');
 
 
 // Creates new user
@@ -46,6 +46,34 @@ router.get('/:userid', async function (req, res, next) {
         next();
     }
 });
+
+router.post('/:userid/token', requireAuthentication, async function (req, res) {
+    const userid = req.params.userid
+    const user = await getUserById(userid, true)
+    if (req.body && req.body.duration && user) {
+        const duration = req.body.duration
+        const token = generateAuthToken(user._id, duration)
+        const api_key = {
+            token: token,
+            expires: duration,
+            created: Date.now()
+        }
+        const result = await addApiKey(user, api_key)
+        if (result) {
+            res.status(200).send(api_key)
+        } else {
+            res.status(500).send({
+                error: "Error adding API key"
+            })
+        }
+    } else {
+        res.status(400).json({
+            error: "Request body is missing duration or the userid is incorrect"
+        })
+    }
+});
+
+exports.router = router;
 
 // Update user details
 // Requires auth from requested user or admin
@@ -141,5 +169,3 @@ router.post('/login', async function (req, res) {
         })
     }
 })
-
-exports.router = router;

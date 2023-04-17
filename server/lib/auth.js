@@ -3,9 +3,9 @@ require('dotenv').config();
 
 const secret = process.env.OWM_API_KEY
 
-function generateAuthToken(userId) {
+function generateAuthToken(userId, duration = '24h') {
     const payload = { sub: userId }
-    return jwt.sign(payload, secret, { expiresIn: '24h' })
+    return jwt.sign(payload, secret, { expiresIn: duration })
 }
 exports.generateAuthToken = generateAuthToken
 
