@@ -47,6 +47,8 @@ router.get('/:userid', async function (req, res, next) {
     }
 });
 
+// Creates a persistent auth token for a user, with custom duration
+// Requires auth from requested user or admin
 router.post('/:userid/tokens', requireAuthentication, async function (req, res) {
     const userid = req.params.userid
     const user = await getUserById(userid, true)
@@ -75,6 +77,8 @@ router.post('/:userid/tokens', requireAuthentication, async function (req, res) 
     }
 });
 
+// Gets all persistent auth tokens for a user
+// Requires auth from requested user or admin
 router.get('/:userid/tokens', requireAuthentication, async function (req, res) {
     const userid = req.params.userid
     const api_keys = await getUserApiKeysById(userid)
@@ -89,6 +93,8 @@ router.get('/:userid/tokens', requireAuthentication, async function (req, res) {
     }
 });
 
+// Deletes a persistent auth token for a user
+// Requires auth from requested user or admin
 router.delete('/:userid/tokens', requireAuthentication, async function (req, res, next) {
     const userid = req.params.userid
     const user = await getUserById(userid, true)
