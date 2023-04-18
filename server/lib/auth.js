@@ -35,15 +35,15 @@ async function authorizedToAccessHomeEndpoint(tokenUserid, homeid = null) {
     if(homeid) {
         // check if userid is in home's list of users
         const home = await getHomeById(homeid)
+        // console.log("==== home: ", home)
         if(home.users.includes(tokenUserid)) {
             return true
         }
-    } else {
-        // check if user is admin
-        const user = await getUserById(tokenUserid)
-        if(user.admin) {
-            return true
-        }
+    }
+    // check if user is admin
+    const user = await getUserById(tokenUserid)
+    if(user.admin) {
+        return true
     }
     return false
 }

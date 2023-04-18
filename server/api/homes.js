@@ -113,7 +113,13 @@ router.get('/:homeid/sensors', requireAuthentication, async function (req, res, 
     if(authorizedToAccessHomeEndpoint(req.user, homeid)) {
         const home = await getHomeById(homeid)
         if (home) {
-            res.status(200).send(home.sensors)
+            let sensorDetails = []
+            const sensors = home.sensors
+            for (i = 0; i < sensors.length; i++) {
+                const details = await getSensorById(sensors[i])
+                sensorDetails.push(details)
+            }
+            res.status(200).send(sensorDetails)
         } else {
             next();
         }

@@ -14,9 +14,6 @@ const HOME_ID = "63ed9cb48af0fbb8f0201c11";
 
 export default function Home() {
     // useeffect
-    const { data } = api.useGetHomeSensorsQuery(HOME_ID, {
-        pollingInterval: 300000,
-    });
 
     const store = useStore()
     const navigate = useNavigate()
@@ -29,9 +26,16 @@ export default function Home() {
     })
 
     const userid = store.getState().token.userid
-    const { data: userdata } = useGetUserDetailsQuery(userid);
+    const { data: userdata, isSuccess: skip } = useGetUserDetailsQuery(userid);
 
-    // const { home_data, home_error, home_isLoading } = api.useGetWeatherQuery(HOME_ID);
+    const { data: sensorData } = api.useGetHomeSensorsQuery((userdata) ? userdata.homes[0] : null, {
+        pollingInterval: 300000,
+        skip: !skip
+    });
+
+    const { data } = api.useGetHomeDetailsQuery((userdata) ? userdata.homes[0] : null, {
+        skip: !skip
+    })
 
     // console.log(home_data, home_error, home_isLoading)
 
@@ -92,13 +96,14 @@ export default function Home() {
     //         });
     //     }
     // switch to real data
-    if (data) {
+    if (sensorData) {
+        console.log("==== sensorData: ", sensorData)
         window_data = []
         let window = {}
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].readings.length === 0) {
+        for (let i = 0; i < sensorData.length; i++) {
+            if (sensorData[i].readings.length === 0) {
                 window = {
-                    name: data[i].name,
+                    name: sensorData[i].name,
                     status: "closed",
                     temp: 0,
                     humidity: 0,
@@ -106,11 +111,11 @@ export default function Home() {
                 }
             } else {
                 window = {
-                    name: data[i].name,
+                    name: sensorData[i].name,
                     status: "closed",
-                    temp: data[i].readings[data[i].readings.length - 1].temp_f,
-                    humidity: data[i].readings[data[i].readings.length - 1].humidity,
-                    lastReadings: data[i].readings.slice(Math.max(data[i].readings.length - 100, 0))
+                    temp: sensorData[i].readings[sensorData[i].readings.length - 1].temp_f,
+                    humidity: sensorData[i].readings[sensorData[i].readings.length - 1].humidity,
+                    lastReadings: sensorData[i].readings.slice(Math.max(sensorData[i].readings.length - 100, 0))
                 }
             }
 
@@ -124,7 +129,7 @@ export default function Home() {
         // }
     }
 
-    const homeToDisplay = (
+    const homeDetails = (
             !userdata || 
             !userdata.homes || 
             userdata.homes.length === 0
@@ -134,15 +139,15 @@ export default function Home() {
                     <WindowOverview windows={window_data} />
                     <GraphSection windows={window_data}/>
                 </div>
-                <CurrentWeather />
+                <CurrentWeather zip_code={(data) ? data.zip_code : null} />
             </>
         )
 
     return (
         <>
             <Header page_name='View Your Home' user_first_name={(userdata) ? userdata.name : ''}/>
-            {homeToDisplay}
-            {/* <UserInfo userdata={userdata}/> */}
+
+            {homeDetails}
         </>
     );
 }

@@ -147,9 +147,15 @@ router.delete('/:userid/tokens', requireAuthentication, async function (req, res
 router.put('/:userid', requireAuthentication, async function (req, res, next) {
     const userid = req.params.userid
     if(await authorizedToAccessUserEndpoint(req.user, userid)) {
-        if (validateAgainstSchema(req.body, UserSchema)) {
-            const user = extractValidFields(req.body, UserSchema)
-            const successfulUpdate = await updateUserById(userid, user)
+        let newUserInfo = req.body
+        if(newUserInfo && !newUserInfo.password ) {
+            const user = await getUserById(req.params.userid, true)
+            newUserInfo.password = user.password
+            console.log("==== newUserInfo.password: ", newUserInfo.password)
+        }
+        if (validateAgainstSchema(newUserInfo, UserSchema)) {
+            const user = extractValidFields(newUserInfo, UserSchema)
+            const successfulUpdate = await updateUserById(userid, user, true)
             
             if (successfulUpdate) {
                 res.status(200).json({
