@@ -9,6 +9,11 @@ function generateAuthToken(userId, duration = '24h') {
 }
 exports.generateAuthToken = generateAuthToken
 
+function getTokenExpiration(token) {
+    const payload = jwt.decode(token)
+    return payload.exp * 1000
+}
+exports.getTokenExpiration = getTokenExpiration
 
 function requireAuthentication(req, res, next) {
     const authHeader = req.get('authorization') || ''

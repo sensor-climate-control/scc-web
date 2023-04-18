@@ -20,6 +20,7 @@ exports.UserSchema = UserSchema
 
 const ApiKeySchema = {
     token: { required: true },
+    name: { required: true },
     expires: { required: true },
     created: { required: true }
 }

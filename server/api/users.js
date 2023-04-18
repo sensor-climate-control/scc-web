@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs')
-const { generateAuthToken, requireAuthentication } = require('../lib/auth')
+const { generateAuthToken, requireAuthentication, getTokenExpiration } = require('../lib/auth')
 const { validateAgainstSchema, extractValidFields } = require('../lib/validation');
 const { UserSchema, insertNewUser, getAllUsers, getUserById, deleteUserById, updateUserById, getUserByEmail, addApiKey, getUserApiKeysById, removeApiKey, ApiKeySchema } = require('../models/users');
 
@@ -50,17 +50,19 @@ router.get('/:userid', async function (req, res, next) {
 router.post('/:userid/tokens', requireAuthentication, async function (req, res) {
     const userid = req.params.userid
     const user = await getUserById(userid, true)
-    if (req.body && req.body.duration && user) {
+    if (req.body && req.body.duration && req.body.name && user) {
         const duration = req.body.duration
         const token = generateAuthToken(user._id, duration)
+        const exp = getTokenExpiration(token)
         const api_key = {
+            name: req.body.name,
             token: token,
-            expires: duration,
+            expires: exp,
             created: Date.now()
         }
         const result = await addApiKey(user, api_key)
         if (result) {
-            res.status(200).send(api_key)
+            res.status(201).send(api_key)
         } else {
             res.status(500).send({
                 error: "Error adding API key"
@@ -68,7 +70,7 @@ router.post('/:userid/tokens', requireAuthentication, async function (req, res) 
         }
     } else {
         res.status(400).json({
-            error: "Request body is missing duration or the userid is incorrect"
+            error: "userid is incorrect or request body does not contain name and duration"
         })
     }
 });
@@ -87,7 +89,7 @@ router.get('/:userid/tokens', requireAuthentication, async function (req, res) {
     }
 });
 
-router.delete('/:userid/tokens', requireAuthentication, async function (req, res) {
+router.delete('/:userid/tokens', requireAuthentication, async function (req, res, next) {
     const userid = req.params.userid
     const user = await getUserById(userid, true)
     if ( req.body && validateAgainstSchema(req.body, ApiKeySchema)) {
@@ -95,9 +97,7 @@ router.delete('/:userid/tokens', requireAuthentication, async function (req, res
         if (result) {
             res.status(204).send()
         } else {
-            res.status(500).send({
-                error: "Error deleting api key"
-            })
+            next()
         }
     } else {
         res.status(400).send({
