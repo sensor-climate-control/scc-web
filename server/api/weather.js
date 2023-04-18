@@ -12,7 +12,7 @@ const zip = "97330"
 // Calls OpenWeatherMap API
 // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
 // Requires authentication
-router.get('/', async function (req, res, next) {
+router.get('/', requireAuthentication, async function (req, res, next) {
     res.status(200).send(weather.fiveDay)
 })
 
@@ -32,7 +32,7 @@ router.get('/now', requireAuthentication, async function (req, res, next) {
 // Calls AirNow API
 // https://www.airnowapi.org/aq/forecast/zipCode/?format=application/json&zipCode={zip}&date=2022-11-09&distance=25&API_KEY={API key}
 // Requires authentication
-router.get('/aqi', async function (req, res, next) {
+router.get('/aqi', requireAuthentication, async function (req, res, next) {
     res.status(200).send(weather.aqiForecast)
 })
 
@@ -40,7 +40,7 @@ router.get('/aqi', async function (req, res, next) {
 // Calls AirNow API
 // https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode={zip}&distance=25&API_KEY={API key}
 // Requires authentication
-router.get('/aqi/now', async function (req, res, next) {
+router.get('/aqi/now', requireAuthentication, async function (req, res, next) {
     let response = await fetch(`https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=${zip}&distance=25&API_KEY=${airnowApiKey}`)
     response = await response.json()
 

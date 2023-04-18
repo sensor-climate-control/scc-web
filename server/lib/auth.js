@@ -1,4 +1,6 @@
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { getHomeById } = require('../models/homes');
+const { getUserById } = require('../models/users');
 require('dotenv').config();
 
 const secret = process.env.OWM_API_KEY
@@ -14,6 +16,38 @@ function getTokenExpiration(token) {
     return payload.exp * 1000
 }
 exports.getTokenExpiration = getTokenExpiration
+
+async function authorizedToAccessUserEndpoint(tokenUserid, methodUserid = null) {
+    // check if the userid of the token is the same as the userid of the request
+    if (tokenUserid === methodUserid) {
+        return true
+    }
+    // check if user is admin
+    const user = await getUserById(tokenUserid)
+    if (user.admin) {
+        return true
+    }
+    return false
+}
+exports.authorizedToAccessUserEndpoint = authorizedToAccessUserEndpoint
+
+async function authorizedToAccessHomeEndpoint(tokenUserid, homeid = null) {
+    if(homeid) {
+        // check if userid is in home's list of users
+        const home = await getHomeById(homeid)
+        if(home.users.includes(tokenUserid)) {
+            return true
+        }
+    } else {
+        // check if user is admin
+        const user = await getUserById(tokenUserid)
+        if(user.admin) {
+            return true
+        }
+    }
+    return false
+}
+exports.authorizedToAccessHomeEndpoint = authorizedToAccessHomeEndpoint
 
 function requireAuthentication(req, res, next) {
     const authHeader = req.get('authorization') || ''

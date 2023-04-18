@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs')
-const { generateAuthToken, requireAuthentication, getTokenExpiration } = require('../lib/auth')
+const { generateAuthToken, requireAuthentication, getTokenExpiration, authorizedToAccessUserEndpoint } = require('../lib/auth')
 const { validateAgainstSchema, extractValidFields } = require('../lib/validation');
 const { UserSchema, insertNewUser, getAllUsers, getUserById, deleteUserById, updateUserById, getUserByEmail, addApiKey, getUserApiKeysById, removeApiKey, ApiKeySchema } = require('../models/users');
 
@@ -29,21 +29,33 @@ router.post('/', async function (req, res, next) {
 
 // Returns all the users
 // Requres admin auth
-router.get('/', async function (req, res, next) {
-    const allUsers = await getAllUsers()
-    res.status(200).send(allUsers)
+router.get('/', requireAuthentication, async function (req, res, next) {
+    if(await authorizedToAccessUserEndpoint(req.user)) {
+        const allUsers = await getAllUsers()
+        res.status(200).send(allUsers)
+    } else {
+        res.status(403).send({
+            error: "You are not authorized to access this resource"
+        })
+    }
 });
 
 // Returns requested user details
 // Requires auth from requested user or admin
-router.get('/:userid', async function (req, res, next) {
+router.get('/:userid', requireAuthentication, async function (req, res, next) {
     const userid = req.params.userid
-    const user = await getUserById(userid)
-    if (user) {
-        console.log("==== user: ", user)
-        res.status(200).send(user)
+    if(await authorizedToAccessUserEndpoint(req.user, userid)) {
+        const user = await getUserById(userid)
+        if (user) {
+            console.log("==== user: ", user)
+            res.status(200).send(user)
+        } else {
+            next();
+        }
     } else {
-        next();
+        res.status(403).send({
+            error: "You are not authorized to access this resource"
+        })
     }
 });
 
@@ -51,28 +63,34 @@ router.get('/:userid', async function (req, res, next) {
 // Requires auth from requested user or admin
 router.post('/:userid/tokens', requireAuthentication, async function (req, res) {
     const userid = req.params.userid
-    const user = await getUserById(userid, true)
-    if (req.body && req.body.duration && req.body.name && user) {
-        const duration = req.body.duration
-        const token = generateAuthToken(user._id, duration)
-        const exp = getTokenExpiration(token)
-        const api_key = {
-            name: req.body.name,
-            token: token,
-            expires: exp,
-            created: Date.now()
-        }
-        const result = await addApiKey(user, api_key)
-        if (result) {
-            res.status(201).send(api_key)
+    if(await authorizedToAccessUserEndpoint(req.user, userid)) {
+        const user = await getUserById(userid, true)
+        if (req.body && req.body.duration && req.body.name && user) {
+            const duration = req.body.duration
+            const token = generateAuthToken(user._id, duration)
+            const exp = getTokenExpiration(token)
+            const api_key = {
+                name: req.body.name,
+                token: token,
+                expires: exp,
+                created: Date.now()
+            }
+            const result = await addApiKey(user, api_key)
+            if (result) {
+                res.status(201).send(api_key)
+            } else {
+                res.status(500).send({
+                    error: "Error adding API key"
+                })
+            }
         } else {
-            res.status(500).send({
-                error: "Error adding API key"
+            res.status(400).json({
+                error: "userid is incorrect or request body does not contain name and duration"
             })
         }
     } else {
-        res.status(400).json({
-            error: "userid is incorrect or request body does not contain name and duration"
+        res.status(403).send({
+            error: "You are not authorized to modify this resource"
         })
     }
 });
@@ -81,14 +99,20 @@ router.post('/:userid/tokens', requireAuthentication, async function (req, res) 
 // Requires auth from requested user or admin
 router.get('/:userid/tokens', requireAuthentication, async function (req, res) {
     const userid = req.params.userid
-    const api_keys = await getUserApiKeysById(userid)
-    console.log("==== api_keys", api_keys)
-
-    if(api_keys) { 
-        res.status(200).send(api_keys)
+    if(await authorizedToAccessUserEndpoint(req.user, userid)) {
+        const api_keys = await getUserApiKeysById(userid)
+        console.log("==== api_keys", api_keys)
+    
+        if(api_keys) { 
+            res.status(200).send(api_keys)
+        } else {
+            res.status(500).send({
+                error: "Error getting API keys"
+            })
+        }
     } else {
-        res.status(500).send({
-            error: "Error getting API keys"
+        res.status(403).send({
+            error: "You are not authorized to modify this resource"
         })
     }
 });
@@ -97,87 +121,111 @@ router.get('/:userid/tokens', requireAuthentication, async function (req, res) {
 // Requires auth from requested user or admin
 router.delete('/:userid/tokens', requireAuthentication, async function (req, res, next) {
     const userid = req.params.userid
-    const user = await getUserById(userid, true)
-    if ( req.body && validateAgainstSchema(req.body, ApiKeySchema)) {
-        const result = await removeApiKey(user, req.body.api_key)
-        if (result) {
-            res.status(204).send()
+    if(await authorizedToAccessUserEndpoint(req.user, userid)) {
+        const user = await getUserById(userid, true)
+        if ( req.body && validateAgainstSchema(req.body, ApiKeySchema)) {
+            const result = await removeApiKey(user, req.body.api_key)
+            if (result) {
+                res.status(204).send()
+            } else {
+                next()
+            }
         } else {
-            next()
+            res.status(400).send({
+                error: "Request body does not contain a valid api key object"
+            })
         }
     } else {
-        res.status(400).send({
-            error: "Request body does not contain a valid api key object"
+        res.status(403).send({
+            error: "You are not authorized to modify this resource"
         })
     }
 })
 
 // Update user details
 // Requires auth from requested user or admin
-router.put('/:userid', async function (req, res, next) {
+router.put('/:userid', requireAuthentication, async function (req, res, next) {
     const userid = req.params.userid
-    if (validateAgainstSchema(req.body, UserSchema)) {
-        const user = extractValidFields(req.body, UserSchema)
-        const successfulUpdate = await updateUserById(userid, user)
-        
-        if (successfulUpdate) {
-            res.status(200).json({
-                links: {
-                    user: `/api/users/${userid}`
-                }
-            });
+    if(await authorizedToAccessUserEndpoint(req.user, userid)) {
+        if (validateAgainstSchema(req.body, UserSchema)) {
+            const user = extractValidFields(req.body, UserSchema)
+            const successfulUpdate = await updateUserById(userid, user)
+            
+            if (successfulUpdate) {
+                res.status(200).json({
+                    links: {
+                        user: `/api/users/${userid}`
+                    }
+                });
+            } else {
+                next();
+            }
         } else {
-            next();
+            res.status(400).json({
+                error: "Request body is not a valid user object"
+            })
         }
     } else {
-        res.status(400).json({
-            error: "Request body is not a valid user object"
+        res.status(403).send({
+            error: "You are not authorized to modify this resource"
         })
     }
 });
 
 // Add homeid to user
 // Requires auth from requested user or admin
-router.put('/:userid/homes', async function (req, res, next) {
+router.put('/:userid/homes', requireAuthentication, async function (req, res, next) {
     const userid = req.params.userid
     const requestBody = req.body
 
-    if(requestBody.homeid) {
-        const homeid = requestBody.homeid
-
-        const user = await getUserById(userid, true)
-        console.log("==== user: ", user)
-        if(!user.homes) {
-            user.homes = []
-        }
-        user.homes.push(homeid)
-        const successfulUpdate = await updateUserById(userid, user, true)
+    if(await authorizedToAccessUserEndpoint(req.user, userid)) {
+        if(requestBody.homeid) {
+            const homeid = requestBody.homeid
     
-        if(successfulUpdate) {
-            res.status(200).json({
-                links: {
-                    user: `/api/users/${userid}`
-                }
-            })
+            const user = await getUserById(userid, true)
+            console.log("==== user: ", user)
+            if(!user.homes) {
+                user.homes = []
+            }
+            user.homes.push(homeid)
+            const successfulUpdate = await updateUserById(userid, user, true)
+        
+            if(successfulUpdate) {
+                res.status(200).json({
+                    links: {
+                        user: `/api/users/${userid}`
+                    }
+                })
+            } else {
+                next();
+            }
         } else {
-            next();
+            res.status(400).json({
+                error: "Request body does not contain a homeid"
+            })
         }
     } else {
-        res.status(400).json({
-            error: "Request body does not contain a homeid"
+        res.status(403).send({
+            error: "You are not authorized to modify this resource"
         })
     }
 })
 
 // Deletes user
-// Requires admin auth
-router.delete('/:userid', async function (req, res, next) {
+// Requires auth from requested user or admin
+router.delete('/:userid', requireAuthentication, async function (req, res, next) {
     const userid = req.params.userid
-    const successfulDeletion = await deleteUserById(userid)
-    if (successfulDeletion) {
-        res.status(204).send();
+    if(await authorizedToAccessUserEndpoint(req.user, userid)) {
+        const successfulDeletion = await deleteUserById(userid)
+        if (successfulDeletion) {
+            res.status(204).send();
+        } else {
+            next();
+        }
     } else {
-        next();
+        res.status(403).send({
+            error: "You are not authorized to modify this resource"
+        })
     }
 });
 
