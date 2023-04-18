@@ -151,7 +151,6 @@ router.put('/:userid', requireAuthentication, async function (req, res, next) {
         if(newUserInfo && !newUserInfo.password ) {
             const user = await getUserById(req.params.userid, true)
             newUserInfo.password = user.password
-            console.log("==== newUserInfo.password: ", newUserInfo.password)
         }
         if (validateAgainstSchema(newUserInfo, UserSchema)) {
             const user = extractValidFields(newUserInfo, UserSchema)
