@@ -10,7 +10,7 @@ import React, { useEffect } from 'react';
 import { useGetUserDetailsQuery } from '../reduxApi';
 import CreateHome from "../features/home/CreateHome";
 
-const HOME_ID = "63ed9cb48af0fbb8f0201c11";
+// const HOME_ID = "63ed9cb48af0fbb8f0201c11";
 
 export default function Home() {
     // useeffect
