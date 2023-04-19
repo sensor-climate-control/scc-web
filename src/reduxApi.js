@@ -77,42 +77,6 @@ export const api = createApi({
             }),
             invalidatesTags: ['User'],
         }),
-        login: builder.mutation({
-            query: (body) => ({
-                url: `users/login`,
-                method: 'POST',
-                body,
-            })
-        }),
-        createAccount: builder.mutation({
-            query: (body) => ({
-                url: `users`,
-                method: `POST`,
-                body
-            })
-        }),
-        createHome: builder.mutation({
-            query: (body) => ({
-                url: `homes`,
-                method: `POST`,
-                body
-            })
-        }),
-        modifyUser: builder.mutation({
-            query: ({body, user_id}) => ({
-                url: `users/${user_id}`,
-                method: `PUT`,
-                body
-            })
-        }),
-        addHomeToUser: builder.mutation({
-            query: ({body, user_id}) => ({
-                url: `users/${user_id}/homes`,
-                method: `PUT`,
-                body
-            }),
-            invalidatesTags: ['User'],
-        }),
     }),
 });
 
