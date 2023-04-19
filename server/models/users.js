@@ -13,9 +13,18 @@ const UserSchema = {
     phone: { required: false },
     phone_carrier: { required: false },
     preferences: { required: false },
-    homes: { default: [] }
+    homes: { default: [] },
+    api_keys: { default: [] },
 }
 exports.UserSchema = UserSchema
+
+const ApiKeySchema = {
+    token: { required: true },
+    name: { required: true },
+    expires: { required: true },
+    created: { required: true }
+}
+exports.ApiKeySchema = ApiKeySchema
 
 async function insertNewUser(user) {
     const userToInsert = extractValidFields(user, UserSchema)
@@ -93,3 +102,31 @@ async function deleteUserById(id) {
     return result.deletedCount > 0;
 }
 exports.deleteUserById = deleteUserById
+
+async function addApiKey(user, api_key) {
+    if (!user.api_keys) {
+        user.api_keys = []
+    }
+    user.api_keys.push(api_key)
+    const result = await updateUserById(user._id, user)
+    return result
+}
+exports.addApiKey = addApiKey
+
+async function getUserApiKeysById(id) {
+    const user = await getUserById(id)
+
+    return user.api_keys
+}
+exports.getUserApiKeysById = getUserApiKeysById
+
+async function removeApiKey(user, api_key) {
+    const api_keys = user.api_keys.filter(e => e === api_key);
+    user.api_keys = api_keys
+    console.log("in removeApiKey: user.api_keys == ", user.api_keys)
+    console.log("user.api_keys.filter(e => e !== api_key) == ", user.api_keys.filter(e => e !== api_key))
+
+    const result = await updateUserById(user._id, user)
+    return result
+}
+exports.removeApiKey = removeApiKey

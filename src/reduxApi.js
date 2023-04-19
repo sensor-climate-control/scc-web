@@ -21,7 +21,7 @@ export const api = createApi({
     tagTypes: ['User'],
     endpoints: (builder) => ({
         getWeather: builder.query({
-            query: () => 'weather/now',
+            query: (zip_code) => `weather/now?zip=${zip_code}`,
         }),
         getHomeDetails: builder.query({
             query: (home_id) => `homes/${home_id}`,
@@ -36,27 +36,46 @@ export const api = createApi({
             providesTags: ['User'],
         }),
         getHomeSensors: builder.query({
-            async queryFn(home_id) {
-                const response = await fetch(`${baseurl}/api/homes/${home_id}`);
-                const data = await response.json();
-
-                let sensors = data.sensors;
-
-                let sensors_details = [];
-                for (let i = 0; i < sensors.length; i++) {
-                    const response = await fetch(`${baseurl}/api/homes/${home_id}/sensors/${sensors[i]}`);
-                    const sensor_info = await response.json();
-
-                    sensors_details.push({
-                        id: sensors[i],
-                        name: sensor_info.name,
-                        location: sensor_info.location,
-                        readings: sensor_info.readings,
-                    });
-                }
-
-                return sensors_details ? { data: sensors_details } : { error: "No data" };
-            }
+            query: (home_id) => ({
+                url: `homes/${home_id}/sensors`,
+                method: 'GET'
+            })
+        }),
+        login: builder.mutation({
+            query: (body) => ({
+                url: `users/login`,
+                method: 'POST',
+                body,
+            })
+        }),
+        createAccount: builder.mutation({
+            query: (body) => ({
+                url: `users`,
+                method: `POST`,
+                body
+            })
+        }),
+        createHome: builder.mutation({
+            query: (body) => ({
+                url: `homes`,
+                method: `POST`,
+                body
+            })
+        }),
+        modifyUser: builder.mutation({
+            query: ({body, user_id}) => ({
+                url: `users/${user_id}`,
+                method: `PUT`,
+                body
+            })
+        }),
+        addHomeToUser: builder.mutation({
+            query: ({body, user_id}) => ({
+                url: `users/${user_id}/homes`,
+                method: `PUT`,
+                body
+            }),
+            invalidatesTags: ['User'],
         }),
         login: builder.mutation({
             query: (body) => ({

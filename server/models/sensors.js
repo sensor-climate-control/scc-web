@@ -68,7 +68,7 @@ async function deleteSensorById(id, homeid) {
     })
 
     let home = await getHomeById(homeid)
-    home.sensors = home.sensors.filter(sensor => sensor !== id)
+    home.sensors = home.sensors.filter(sensor => !sensor.equals(id))
     await updateHomeById(homeid, home)
 
     return result.deletedCount > 0;
