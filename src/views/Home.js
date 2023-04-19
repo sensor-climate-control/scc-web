@@ -54,21 +54,23 @@ export default function Home() {
         window_data = []
         let window = {}
         for (let i = 0; i < sensorData.length; i++) {
-            if (sensorData[i].readings.length === 0) {
-                window = {
-                    name: sensorData[i].name,
-                    status: "closed",
-                    temp: 0,
-                    humidity: 0,
-                    lastReadings: [],
-                }
-            } else {
-                window = {
-                    name: sensorData[i].name,
-                    status: "closed",
-                    temp: sensorData[i].readings[sensorData[i].readings.length - 1].temp_f,
-                    humidity: sensorData[i].readings[sensorData[i].readings.length - 1].humidity,
-                    lastReadings: sensorData[i].readings.slice(Math.max(sensorData[i].readings.length - 100, 0))
+            if (sensorData[i].readings) {
+                if (sensorData[i].readings.length === 0) {
+                    window = {
+                        name: sensorData[i].name,
+                        status: "closed",
+                        temp: 0,
+                        humidity: 0,
+                        lastReadings: [],
+                    }
+                } else {
+                    window = {
+                        name: sensorData[i].name,
+                        status: "closed",
+                        temp: sensorData[i].readings[sensorData[i].readings.length - 1].temp_f,
+                        humidity: sensorData[i].readings[sensorData[i].readings.length - 1].humidity,
+                        lastReadings: sensorData[i].readings.slice(Math.max(sensorData[i].readings.length - 100, 0))
+                    }
                 }
             }
 

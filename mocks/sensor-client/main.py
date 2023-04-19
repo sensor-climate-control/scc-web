@@ -4,6 +4,7 @@ import random
 from datetime import time
 from datetime import datetime, date, timedelta
 import math
+from progress.bar import ChargingBar
 
 BASE_URL = 'http://localhost:3001/api'
 EMAIL = 'piperdaniel1@gmail.com'
@@ -60,23 +61,20 @@ class TempFaker:
         return fake_reading
 
 
-def send_reading(sensor_id, home_id, token, temp_f, humidity):
+def send_reading(sensor_id, home_id, token, reading):
     reading_send_url = f"{BASE_URL}/homes/{home_id}/sensors/{sensor_id}/readings"
 
     headers = {
         "Authorization": f"Bearer {token}"
     }
 
-    payload = [{
-        "date_time": clock.time(),
-        "temp_f": temp_f,
-        "temp_c": temp_f - 32 * 5/9,
-        "humidity": humidity,
-    }]
+    reading["date_time"] = clock.mktime(reading["date_time"].timetuple())
 
-    response = requests.post(reading_send_url, headers=headers, json=payload)
+    payload = [reading]
 
-    if response.status_code == 201:
+    response = requests.put(reading_send_url, headers=headers, json=payload)
+
+    if response.status_code == 200:
         return response.json()
     else:
         raise Exception(f"Failed to send reading: {response.json()['error']}")
@@ -116,6 +114,21 @@ def create_sensor(home_id, token, name):
         return response.json()["id"]
     else:
         raise Exception(f"Failed to create sensor: {response}")
+
+def delete_sensor(sensor_id, home_id, token):
+    delete_sensor_url = f"{BASE_URL}/homes/{home_id}/sensors/{sensor_id}"
+
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+
+    response = requests.delete(delete_sensor_url, headers=headers)
+
+    if response.status_code == 204:
+        return
+    else:
+        raise Exception(f"Failed to delete sensor: {response.json()}")
+
 
 def get_home_info(home_id, token):
     home_info_url = f"{BASE_URL}/homes/{home_id}"
@@ -157,6 +170,66 @@ def login():
         return response.json()["token"], response.json()["userid"]
     else:
         raise Exception(f"Login failed: {response.json()['error']}")
+    
+
+def send_batch_data(token, userid, sensors, home_info):
+    offset = 0
+    while True:
+        choice = input("Okay. Enter the number of days to offset the batch by (be careful to not overlap with current readings).\nThe batch will start at this number of days back and march forward: ")
+
+        try:
+            offset = float(choice)
+            break
+        except ValueError:
+            print("Sorry, enter a number please!")
+    
+    days = 0
+    while True:
+        choice = input("Nice. How many days of data do you want to fill? Must be an integer: ")
+
+        try:
+            days = int(choice)
+            break
+        except ValueError:
+            print("Sorry, enter an integer please!")
+    
+    interval = 0
+    while True:
+        choice = input("Alright. How many minutes should be in between each reading? Must be int: ")
+
+        try:
+            interval = int(choice)
+            break
+        except ValueError:
+            print("Sorry, enter an integer please!")
+    
+    id = -1
+    choice = input("Almost there. Enter a specific sensor to target (or hit ENTER to target all): ")
+    try:
+        id = int(choice)
+    except ValueError:
+        pass
+    
+    faker = TempFaker(num_sensors=len(sensors), interval=interval, start_time=datetime.now() - timedelta(offset))
+
+    minutes_to_fill = days * 24 * 60    
+
+    iters = round(minutes_to_fill / interval)
+    
+    bar = ChargingBar('Sending Readings', max=iters)
+    for prog in range(iters):
+        bar.next()
+        if id == -1:
+            for i in range(len(sensors)):
+                reading = faker.fake(i)
+                send_reading(sensors[i]["_id"], sensors[i]["home"], token, reading)
+        else:
+            reading = faker.fake(id)
+            send_reading(sensors[id]["_id"], sensors[id]["home"], token, reading)
+    bar.finish()
+
+def stream_live_data(token, userid, sensors, home_info):
+    pass
 
 def main():
     token, userid = login()
@@ -173,10 +246,11 @@ def main():
     except IndexError:
         raise Exception("Provided user has no homes, please create one in the app first.")
     
-    home_info = get_home_info(home_id, token)
-    print(home_info)
 
     while True:
+        home_info = get_home_info(home_id, token)
+        print(home_info)
+
         print("\n == LOGIN SUCCESSFUL == ")
         print("Authenticated as user:", user_info["name"])
         print("Home name:", home_info["name"])
@@ -187,6 +261,9 @@ def main():
             home_info["sensors"]
         except KeyError:
             HAS_SENSORS = False
+        
+        sensors = []
+        sensor_names = []
 
         if HAS_SENSORS:
             sensors = [get_sensor_details(sensor_id, home_id, token) for sensor_id in home_info["sensors"]]
@@ -196,12 +273,19 @@ def main():
         else:
             print("This home has no sensors yet.")
 
-        choice = input("You can start sending mock readings (1) or create a new sensor (2): ")
+        choice = input("You can start sending mock readings (1), create a new sensor (2), or delete all sensors (3): ")
 
         if choice == "1":
             if not HAS_SENSORS:
                 print("Sorry, you can't send readings if there are no sensors. Please create a sensor first.")
                 continue
+
+            choice = input("Alright, you can either send a day long batch of data (1) or stream data live (2)")
+
+            if choice == "1":
+                send_batch_data(token, userid, sensors, home_info)
+            elif choice == "2":
+                stream_live_data(token, userid, sensors, home_info)
             
         elif choice == "2":
             while True:
@@ -212,6 +296,15 @@ def main():
                 if choice.lower() == "n":
                     print("Done creating sensors. Exiting...")
                     break
+        
+        elif choice == "3":
+            if not HAS_SENSORS:
+                print("Sorry, you can't delete sensors if there are no sensors. Please create a sensor first.")
+                continue
+                
+            for sensor in sensors:
+                print("Deleting sensor: ", sensor["name"])
+                delete_sensor(sensor["_id"], sensor["home"], token)
         else:
             print("Sorry, please enter either 1 or 2.")
 

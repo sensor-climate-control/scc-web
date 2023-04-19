@@ -128,12 +128,14 @@ export default function GraphSection(props) {
         avg_data.push(0)
         let num_skipped = 0;
         for (let j=0; j<props.windows.length; j++) {
-            if (props.windows[j].lastReadings.length < 100) {
-                num_skipped++;
-                continue;
-            }
+            if (props.windows[j].lastReadings) {
+                if (props.windows[j].lastReadings.length < 100) {
+                    num_skipped++;
+                    continue;
+                }
 
-            avg_data[i] += parseFloat(props.windows[j].lastReadings[i].temp_f);
+                avg_data[i] += parseFloat(props.windows[j].lastReadings[i].temp_f);
+            }
         }
 
         avg_data[i] /= props.windows.length-num_skipped;
@@ -146,7 +148,7 @@ export default function GraphSection(props) {
 
         datasets.push({
             label: props.windows[i].name,
-            data: props.windows[i].lastReadings.map((reading) => reading.temp_f),
+            data: props.windows[i].lastReadings ? props.windows[i].lastReadings.map((reading) => reading.temp_f) : [],
             borderColor: colors[i].borderColor,
             backgroundColor: colors[i].backgroundColor,
         })
