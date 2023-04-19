@@ -26,73 +26,28 @@ export default function Home() {
     const userid = store.getState().token.userid
     const { data: userdata, isSuccess: skip } = useGetUserDetailsQuery(userid);
 
-    const { data: sensorData } = api.useGetHomeSensorsQuery((userdata) ? userdata.homes[0] : null, {
+    let selectedHome = null;
+    if (userdata) {
+        // Make sure there is a home field
+        if (userdata.homes) {
+            if (userdata.homes.length > 0) {
+                // We should only have one home for now
+                selectedHome = userdata.homes[0];
+            }
+        }
+    }
+
+    const { data: sensorData } = api.useGetHomeSensorsQuery(selectedHome, {
         pollingInterval: 300000,
         skip: !skip
     });
 
-    const { data } = api.useGetHomeDetailsQuery((userdata) ? userdata.homes[0] : null, {
+    const { data } = api.useGetHomeDetailsQuery(selectedHome, {
         skip: !skip
     })
 
-    // console.log(home_data, home_error, home_isLoading)
-
-    // let sensor_details = [];
-    // if (home_data) {
-    //     console.log("Home data: " + home_data)
-    //     for (let i = 0; i < home_data.sensors.length; i++) {
-    //         console.log("Querying sensor " + home_data.sensors[i] + "...")
-    //         sensor_details.push(api.useGetSensorDetailsQuery(HOME_ID, home_data.sensors[i]));
-    //     }
-    //     // get details of each sensor
-    // }
-
-    // console.log(sensor_details)
-
-
-    // if (isLoading) return <div>Loading...</div>
-    // if (error) return <div>Error: {error.message}</div>
-
-    // fake data while loading
     let window_data = []
 
-    // if (!data) {
-    //     window_data = [
-    //         {
-    //             name: "Bedroom Window",
-    //             status: "open",
-    //             temp: 72,
-    //             humidity: 50,
-    //         },
-    //         {
-    //             name: "Living Room Window",
-    //             status: "open",
-    //             temp: 72,
-    //             humidity: 50,
-    //         },
-    //         {
-    //             name: "Kitchen Window",
-    //             status: "close_soon",
-    //             temp: 72,
-    //             humidity: 50,
-    //         },
-    //         {
-    //             name: "Guest Bedroom Window",
-    //             status: "closed",
-    //             temp: 72,
-    //             humidity: 50,
-    //         }
-    //     ]
-
-    //     faker.seed(123);
-
-    //     points = [];
-    //     for (let i = 0; i < 100; i++) {
-    //         points.push({
-    //             x: i,
-    //             y: faker.datatype.number({min: 62, max: 74})
-    //         });
-    //     }
     // switch to real data
     if (sensorData) {
         console.log("==== sensorData: ", sensorData)
@@ -119,12 +74,6 @@ export default function Home() {
 
             window_data.push(window)
         }
-
-        // use last 100 readings
-        // points = [];
-        // for (let i = data[0].readings.length - 100; i < data[0].readings.length; i++) {
-        //     points.push(data[0].readings[i].temp_f)
-        // }
     }
 
     const homeDetails = (
