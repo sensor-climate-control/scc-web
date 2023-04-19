@@ -10,7 +10,7 @@ EMAIL = 'piperdaniel1@gmail.com'
 PASSWORD = 'password'
 
 class TempFaker:
-    def __init__(self, start_temp=70, start_humidity=50, temp_range=15, humidity_range=30, start_time: time = time(0, 0), interval = 5, max_deviation = 5):
+    def __init__(self, num_sensors, max_sensor_dev = 0.5, max_sensor_hr_offset=1.5, start_temp=70, start_humidity=50, temp_range=20, humidity_range=30, start_time: datetime = datetime.now(), interval = 5, max_deviation = 5):
         self.base_temp = start_temp
         self.base_humidity = start_humidity
         self.temp_range = temp_range
@@ -20,9 +20,16 @@ class TempFaker:
         self.time = start_time
         self.interval = interval
 
-    def fake(self):
+        self.sensor_deviations = [random.uniform(-max_sensor_dev, max_sensor_dev) for _ in range(num_sensors)]
+        self.sensor_hr_offset = [random.uniform(-max_sensor_hr_offset, max_sensor_hr_offset) for _ in range(num_sensors)]
+        self.max_sensor_dev = 5
+
+    def fake(self, sensor_ind = 0):
         # Calculate the time of day as a fraction of 24 hours (0-1)
-        time_fraction = (self.time.hour * 60 + self.time.minute) / (24 * 60)
+        adj_hour = self.time.hour - 5 + self.sensor_hr_offset[sensor_ind]
+        if adj_hour < 0:
+            adj_hour += 24
+        time_fraction = (adj_hour * 60 + self.time.minute) / (24 * 60)
 
         # Generate a sine wave pattern for temperature and humidity
         temp_wave = self.temp_range * ((1 + math.sin(math.pi * time_fraction)) / 2)
@@ -30,19 +37,28 @@ class TempFaker:
 
         self.deviation += random.uniform(-0.2, 0.2)
         self.deviation = max(-self.max_deviation, min(self.deviation, self.max_deviation))
-        
+
+        self.sensor_deviations[sensor_ind] += random.uniform(-0.05, 0.05)
+        self.sensor_deviations[sensor_ind] = max(-self.max_sensor_dev, min(self.sensor_deviations[sensor_ind], self.max_sensor_dev))
+
         # Add some random noise to the readings
         temp_noise = random.uniform(-0.25, 0.25)
         humidity_noise = random.uniform(-0.25, 0.25)
 
         # Calculate the final temperature and humidity
-        temp = self.base_temp + temp_wave + temp_noise + self.deviation
-        humidity = self.base_humidity + humidity_wave + humidity_noise + self.deviation
+        temp = self.base_temp + temp_wave + temp_noise + self.deviation + self.sensor_deviations[sensor_ind]
+        humidity = self.base_humidity + humidity_wave + humidity_noise + self.deviation + self.sensor_deviations[sensor_ind]
+
+        fake_reading = {"date_time": self.time,
+                        "temp_f": temp, 
+                        "temp_c": (temp - 32) * 5/9, 
+                        "humidity": humidity}
 
         # Advance the time by self.interval minutes
-        self.time = (datetime.combine(date.today(), self.time) + timedelta(minutes=self.interval)).time()
+        self.time += timedelta(minutes=self.interval)
 
-        return temp, humidity
+        return fake_reading
+
 
 def send_reading(sensor_id, home_id, token, temp_f, humidity):
     reading_send_url = f"{BASE_URL}/homes/{home_id}/sensors/{sensor_id}/readings"
