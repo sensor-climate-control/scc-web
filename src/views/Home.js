@@ -2,6 +2,7 @@ import WindowOverview from "../features/weather/WindowOverview";
 import GraphSection from "../features/weather/graph/GraphSection";
 import './Home.css'
 import { api } from '../reduxApi';
+import LayoutSection from "../features/weather/home_layout/LayoutSection";
 import { useStore } from 'react-redux'
 import Header from '../features/application/Header';
 import { useNavigate } from 'react-router-dom';
