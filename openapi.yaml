@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 1.0.0
+  version: 1.0.1
   title: OSUSCC API
   description: API for the Sensor-Based In-Home Climate Control OSU Capstone Project.
 
@@ -155,6 +155,121 @@ paths:
       responses:
         '204':
           description: Success
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified User `id` not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/{id}/tokens:
+    parameters:
+      - name: id
+        in: path
+        description: >
+          Unique ID of a User.  Exact type/format will depend on your implementation but will likely be either an integer or a string.
+        schema:
+          oneOf:
+            - type: integer
+            - type: string
+        example: "123"
+        required: true
+
+    post:
+      summary: Create an API key for a User
+      description: >
+        Create and store a new API key and adds it to the User object in the database. User API keys can only be modified by the authenticated user or a user with the 'admin' role 
+      operationId: addApiKey
+      tags:
+        - Users
+      requestBody:
+        required: true
+        description: A name for the API key, and the amount of time the token is valid before expiration. Follows the format of 'expiresIn' documented here https://github.com/auth0/node-jsonwebtoken#usage
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApiKeyBody'
+      responses:
+        '201':
+          description: New API key successfully added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+        '400':
+          description: >
+            The request body was either not present or did not contain a name and duration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      summary: Fetch User's API keys.
+      description: >
+        Returns an array of API key objects
+      operationId: getUserApiKeysById
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+        '403':
+          description: >
+            The request was not made by an authenticated User satisfying the authorization criteria described above.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Specified User `id` not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+    delete:
+      summary: Remove a specific User's API key from the database.
+      description: >
+        Completely removes the data for the specified API key.  Only an authenticated User with 'admin' role or whose ID whose ID matches the ID of the requested User can remove a User.
+      operationId: removeApiKey
+      requestBody:
+        required: true
+        description: The API key to be deleted.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKey'
+      tags:
+        - Users
+      responses:
+        '204':
+          description: Success
+        '400':
+          description: >
+            The request body was either not present or did not contain a valid API key object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '403':
           description: >
             The request was not made by an authenticated User satisfying the authorization criteria described above.
@@ -936,6 +1051,42 @@ components:
                 type: string
                 description: Humidity reading from the sensor
                 example: "0.25"
+          
+    CreateApiKeyBody:
+      description: >
+        An object representing the request body for a call to the POST users/id/tokens endpoint.
+      type: object
+      properties:
+        duration:
+          type: string
+          description: How long the token will be valid for.
+          example: "65d"
+        name:
+          type: string
+          description: Name of the API key for easier management
+          example: "Kitchen Sensor 1"
+          
+    ApiKey:
+      description: >
+        An object representing information about an API key.
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT Token
+          example: "sadlfkjasdvuahere285239r8m23f928mf2"
+        name:
+          type: string
+          description: Name of the API key for easier management
+          example: "Kitchen Sensor 1"
+        expires:
+          type: string
+          description: Unix timestamp in milliseconds that the token expires
+          example: "1681862429000"
+        created:
+          type: string
+          description: Unix timestamp in milliseconds when the token was created
+          example: "1681776029699"
 
     Error:
       description: >
