@@ -79,6 +79,24 @@ def send_reading(sensor_id, home_id, token, reading):
     else:
         raise Exception(f"Failed to send reading: {response.json()['error']}")
 
+def send_readings(sensor_id, home_id, token, readings):
+    reading_send_url = f"{BASE_URL}/homes/{home_id}/sensors/{sensor_id}/readings"
+
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+
+    for i in range(len(readings)):
+        readings[i]["date_time"] = clock.mktime(readings[i]["date_time"].timetuple())
+
+    response = requests.put(reading_send_url, headers=headers, json=readings)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise Exception(f"Failed to send reading: {response.json()['error']}")
+
+
 def get_sensor_details(sensor_id, home_id, token):
     sensor_details_url = f"{BASE_URL}/homes/{home_id}/sensors/{sensor_id}"
 
@@ -217,19 +235,24 @@ def send_batch_data(token, userid, sensors, home_info):
     iters = round(minutes_to_fill / interval)
     
     bar = ChargingBar('Sending Readings', max=iters)
+    readings_arrs = [[] for i in range(len(sensors))]
     for prog in range(iters):
         bar.next()
         if id == -1:
             for i in range(len(sensors)):
                 reading = faker.fake(i)
-                send_reading(sensors[i]["_id"], sensors[i]["home"], token, reading)
+                readings_arrs[i].append(reading)
         else:
             reading = faker.fake(id)
-            send_reading(sensors[id]["_id"], sensors[id]["home"], token, reading)
+            readings_arrs[id].append(reading)
+
+    for i in range(len(sensors)):
+        if len(readings_arrs[i]) > 0:
+            send_readings(sensors[i]["_id"], sensors[i]["home"], token, readings_arrs[i])
     bar.finish()
 
 def stream_live_data(token, userid, sensors, home_info):
-    pass
+    raise NotImplementedError("Streaming live data is not yet implemented.")
 
 def main():
     token, userid = login()

@@ -120,6 +120,10 @@ export default function GraphSection(props) {
     {
         borderColor: 'yellow',
         backgroundColor: 'yellow',
+    },
+    {
+        borderColor: 'purple',
+        backgroundColor: 'purple',
     }]
 
     // average all the data points for each window that has a full 100 data points
