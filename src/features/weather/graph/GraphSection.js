@@ -11,6 +11,7 @@ import {
     Legend,
 } from 'chart.js';
 import './GraphSection.css'
+import zoomPlugin from 'chartjs-plugin-zoom';
 
 ChartJS.register(
     CategoryScale,
@@ -19,9 +20,22 @@ ChartJS.register(
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    zoomPlugin
 );
 
+const zoomOptions = {
+  pan: {
+    enabled: true,
+    modifierKey: 'shift',
+  },
+  zoom: {
+    drag: {
+      enabled: true
+    },
+    mode: 'xy',
+  },
+};
 export const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -33,6 +47,7 @@ export const options = {
             display: false,
             text: '',
         },
+        zoom: zoomOptions,
     },
     scales: {
         x: {
@@ -70,6 +85,28 @@ for (let i = 0; i < 24; i++) {
     }
 }
 
+const colors = [{
+    borderColor: 'red',
+    backgroundColor: 'red',
+},
+{
+    borderColor: 'blue',
+    backgroundColor: 'blue',
+},
+{
+    borderColor: 'green',
+    backgroundColor: 'green',
+},
+{
+    borderColor: 'yellow',
+    backgroundColor: 'yellow',
+},
+{
+    borderColor: 'purple',
+    backgroundColor: 'purple',
+}]
+
+
 export default function GraphSection(props) {
     // In the future, we will want a useEffect to update the data
     // This can pull from RTK query to get the latest data every
@@ -93,27 +130,6 @@ export default function GraphSection(props) {
     } 
 
     const datasets = [];
-    let colors = [{
-        borderColor: 'red',
-        backgroundColor: 'red',
-    },
-    {
-        borderColor: 'blue',
-        backgroundColor: 'blue',
-    },
-    {
-        borderColor: 'green',
-        backgroundColor: 'green',
-    },
-    {
-        borderColor: 'yellow',
-        backgroundColor: 'yellow',
-    },
-    {
-        borderColor: 'purple',
-        backgroundColor: 'purple',
-    }]
-
     // average all the data points for each window that has a full 100 data points
     let avg_data = []
     for (let i=0; i<100; i++) {

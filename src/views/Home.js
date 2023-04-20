@@ -33,9 +33,6 @@ export default function Home() {
             if (userdata.homes.length > 0) {
                 // We should only have one home for now
                 selectedHome = userdata.homes[0];
-
-
-
             }
         }
     }
