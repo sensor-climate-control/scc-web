@@ -70,18 +70,6 @@ for (let i = 0; i < 24; i++) {
     }
 }
 
-// function gen_fake_data(labels, min, max) {
-//     let curr_val = faker.datatype.number({ min: min, max: max, precision: 0.1});
-//     let data = [curr_val];
-
-//     for (let i = 1; i < labels.length; i++) {
-//         curr_val += faker.datatype.number({ min: -0.3, max: 0.3, precision: 0.1 });
-//         data.push(curr_val);
-//     }
-
-//     return data
-// }
-
 export default function GraphSection(props) {
     // In the future, we will want a useEffect to update the data
     // This can pull from RTK query to get the latest data every
@@ -120,6 +108,10 @@ export default function GraphSection(props) {
     {
         borderColor: 'yellow',
         backgroundColor: 'yellow',
+    },
+    {
+        borderColor: 'purple',
+        backgroundColor: 'purple',
     }]
 
     // average all the data points for each window that has a full 100 data points
@@ -128,12 +120,14 @@ export default function GraphSection(props) {
         avg_data.push(0)
         let num_skipped = 0;
         for (let j=0; j<props.windows.length; j++) {
-            if (props.windows[j].lastReadings.length < 100) {
-                num_skipped++;
-                continue;
-            }
+            if (props.windows[j].lastReadings) {
+                if (props.windows[j].lastReadings.length < 100) {
+                    num_skipped++;
+                    continue;
+                }
 
-            avg_data[i] += parseFloat(props.windows[j].lastReadings[i].temp_f);
+                avg_data[i] += parseFloat(props.windows[j].lastReadings[i].temp_f);
+            }
         }
 
         avg_data[i] /= props.windows.length-num_skipped;
@@ -146,7 +140,7 @@ export default function GraphSection(props) {
 
         datasets.push({
             label: props.windows[i].name,
-            data: props.windows[i].lastReadings.map((reading) => reading.temp_f),
+            data: props.windows[i].lastReadings ? props.windows[i].lastReadings.map((reading) => reading.temp_f) : [],
             borderColor: colors[i].borderColor,
             backgroundColor: colors[i].backgroundColor,
         })

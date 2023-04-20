@@ -28,6 +28,9 @@ async function insertNewSensor(sensor) {
     const result = await collection.insertOne(sensor)
 
     let home = await getHomeById(sensor.home)
+    if (!home.sensors) {
+        home.sensors = []
+    }
     home.sensors.push(result.insertedId)
     await updateHomeById(sensor.home, home)
 
