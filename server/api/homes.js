@@ -253,9 +253,9 @@ router.put('/:homeid/sensors/:sensorid/readings', requireAuthentication, async f
     const homeid = req.params.homeid
     if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
         const sensorid = req.params.sensorid
-        const readings = req.body
         let validReadings = []
-        if (readings) {
+        if (req.body && req.body.length > 0) {
+            const readings = req.body
             validReadings = readings.filter(reading => validateAgainstSchema(reading, SensorReadingSchema))
             if (validReadings.length > 0) {
                 let sensor = await getSensorById(sensorid)
