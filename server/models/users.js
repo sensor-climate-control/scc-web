@@ -1,4 +1,3 @@
-/* commented out to appease ESLint */
 const { ObjectId } = require('mongodb')
 const bcrypt = require('bcryptjs')
 

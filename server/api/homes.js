@@ -30,7 +30,7 @@ router.post('/', requireAuthentication, async function (req, res, next) {
 // Fetches all homes
 // Requires admin auth
 router.get('/', requireAuthentication, async function (req, res, next) {
-    if(authorizedToAccessHomeEndpoint(req.user)) {
+    if(await authorizedToAccessHomeEndpoint(req.user)) {
         const allHomes = await getAllHomes()
         res.status(200).send(allHomes)
     } else {
@@ -44,7 +44,7 @@ router.get('/', requireAuthentication, async function (req, res, next) {
 // Requires admin or home member auth
 router.get('/:homeid', requireAuthentication, async function (req, res, next) {
     const homeid = req.params.homeid
-    if(authorizedToAccessHomeEndpoint(req.user)) {
+    if(await authorizedToAccessHomeEndpoint(req.user)) {
         const home = await getHomeById(homeid)
         if (home) {
             res.status(200).send(home)
@@ -62,7 +62,7 @@ router.get('/:homeid', requireAuthentication, async function (req, res, next) {
 // Requires admin or home admin auth
 router.put('/:homeid', requireAuthentication, async function (req, res, next) {
     const homeid = req.params.homeid
-    if(authorizedToAccessHomeEndpoint(req.user, homeid)) {
+    if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
         if (validateAgainstSchema(req.body, HomeSchema)) {
             const home = extractValidFields(req.body, HomeSchema)
             const successfulUpdate = await updateHomeById(homeid, home)
@@ -92,7 +92,7 @@ router.put('/:homeid', requireAuthentication, async function (req, res, next) {
 // Requires admin or home admin auth
 router.delete('/:homeid', requireAuthentication, async function (req, res, next) {
     const homeid = req.params.homeid
-    if(authorizedToAccessHomeEndpoint(req.user, homeid)) {
+    if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
         const successfulDeletion = await deleteHomeById(homeid)
         if (successfulDeletion) {
             res.status(204).send();
@@ -110,7 +110,7 @@ router.delete('/:homeid', requireAuthentication, async function (req, res, next)
 // Requires admin or home member auth
 router.get('/:homeid/sensors', requireAuthentication, async function (req, res, next) {
     const homeid = req.params.homeid
-    if(authorizedToAccessHomeEndpoint(req.user, homeid)) {
+    if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
         const home = await getHomeById(homeid)
         if (home) {
             let sensorDetails = []
@@ -135,7 +135,7 @@ router.get('/:homeid/sensors', requireAuthentication, async function (req, res, 
 // Adds new sensor to home
 // Requires admin or home admin auth
 router.post('/:homeid/sensors', requireAuthentication, async function (req, res, next) {
-    if(authorizedToAccessHomeEndpoint(req.user, req.params.homeid)) {
+    if(await authorizedToAccessHomeEndpoint(req.user, req.params.homeid)) {
         if (validateAgainstSchema(req.body, SensorSchema)) {
             try {
                 const id = await insertNewSensor(req.body)
@@ -163,7 +163,7 @@ router.post('/:homeid/sensors', requireAuthentication, async function (req, res,
 // Fetches info for single sensor
 // Requires admin or home member auth
 router.get('/:homeid/sensors/:sensorid', requireAuthentication, async function (req, res, next) {
-    if(authorizedToAccessHomeEndpoint(req.user, req.params.homeid)) {
+    if(await authorizedToAccessHomeEndpoint(req.user, req.params.homeid)) {
         const sensorid = req.params.sensorid
         const sensor = await getSensorById(sensorid)
         if (sensor) {
@@ -182,7 +182,7 @@ router.get('/:homeid/sensors/:sensorid', requireAuthentication, async function (
 // Requires admin or home admin auth
 router.put('/:homeid/sensors/:sensorid', requireAuthentication, async function (req, res, next) {
     const homeid = req.params.homeid
-    if(authorizedToAccessHomeEndpoint(req.user, homeid)) {
+    if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
         const sensorid = req.params.sensorid
         if (validateAgainstSchema(req.body, SensorSchema)) {
                 const sensor = extractValidFields(req.body, SensorSchema)
@@ -213,7 +213,7 @@ router.put('/:homeid/sensors/:sensorid', requireAuthentication, async function (
 // Requires admin or home admin auth
 router.delete('/:homeid/sensors/:sensorid', requireAuthentication, async function (req, res, next) {
     const homeid = req.params.homeid
-    if(authorizedToAccessHomeEndpoint(req.user, homeid)) {
+    if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
         const sensorid = req.params.sensorid
         const successfulDeletion = await deleteSensorById(sensorid, homeid)
         if (successfulDeletion) {
@@ -231,7 +231,7 @@ router.delete('/:homeid/sensors/:sensorid', requireAuthentication, async functio
 // Fetches readings from single sensor
 // Requires admin or home member auth
 router.get('/:homeid/sensors/:sensorid/readings', requireAuthentication, async function (req, res, next) {
-    if(authorizedToAccessHomeEndpoint(req.user, req.params.homeid)) {
+    if(await authorizedToAccessHomeEndpoint(req.user, req.params.homeid)) {
         const sensorid = req.params.sensorid
         const sensor = await getSensorById(sensorid)
         if (sensor) {
@@ -251,32 +251,39 @@ router.get('/:homeid/sensors/:sensorid/readings', requireAuthentication, async f
 // Optional: API key
 router.put('/:homeid/sensors/:sensorid/readings', requireAuthentication, async function (req, res, next) {
     const homeid = req.params.homeid
-    if(authorizedToAccessHomeEndpoint(req.user, homeid)) {
+    if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
         const sensorid = req.params.sensorid
         const readings = req.body
-        const validReadings = readings.filter(reading => validateAgainstSchema(reading, SensorReadingSchema))
-        if (validReadings.length > 0) {
-            let sensor = await getSensorById(sensorid)
-            if (!sensor.readings) {
-                sensor.readings = []
-            }
-
-            validReadings.forEach(reading => {
-                if (!reading.date_time) {
-                    reading.date_time = Date.now()
+        let validReadings = []
+        if (readings) {
+            validReadings = readings.filter(reading => validateAgainstSchema(reading, SensorReadingSchema))
+            if (validReadings.length > 0) {
+                let sensor = await getSensorById(sensorid)
+                if (!sensor.readings) {
+                    sensor.readings = []
                 }
-                sensor.readings.push(reading)
-            })
-    
-            const successfulUpdate = await updateSensorById(sensorid, sensor)
-            if (successfulUpdate) {
-                res.status(200).json({
-                    links: {
-                        readings: `/api/homes/${homeid}/sensors/${sensorid}/readings`
+
+                validReadings.forEach(reading => {
+                    if (!reading.date_time) {
+                        reading.date_time = Date.now()
                     }
-                });
+                    sensor.readings.push(reading)
+                })
+
+                const successfulUpdate = await updateSensorById(sensorid, sensor)
+                if (successfulUpdate) {
+                    res.status(200).json({
+                        links: {
+                            readings: `/api/homes/${homeid}/sensors/${sensorid}/readings`
+                        }
+                    });
+                } else {
+                    next();
+                }
             } else {
-                next();
+                res.status(400).json({
+                    error: "Request body does not contain an array of valid sensor reading objects"
+                })
             }
         } else {
             res.status(400).json({
