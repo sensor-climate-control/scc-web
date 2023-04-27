@@ -40,8 +40,8 @@ export default function Home() {
         }
     }
 
-    const { data: homePrefs, isSuccess: prefsSkip } = useGetHomeDetailsQuery(selectedHome);
-    const { data: weather, isSuccess: weatherSkip } = api.useGetWeatherQuery((homePrefs) ? homePrefs.zip_code : null);
+    const { data: homePrefs } = useGetHomeDetailsQuery(selectedHome);
+    const { data: weather } = api.useGetWeatherQuery((homePrefs) ? homePrefs.zip_code : null);
 
     console.log("==== selectedHome: ", selectedHome)
 
