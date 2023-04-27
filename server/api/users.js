@@ -148,13 +148,15 @@ router.put('/:userid', requireAuthentication, async function (req, res, next) {
     const userid = req.params.userid
     if(await authorizedToAccessUserEndpoint(req.user, userid)) {
         let newUserInfo = req.body
+        let passwordIsSaltedAndHashed = false
         if(newUserInfo && !newUserInfo.password ) {
             const user = await getUserById(req.params.userid, true)
             newUserInfo.password = user.password
+            passwordIsSaltedAndHashed = true
         }
         if (validateAgainstSchema(newUserInfo, UserSchema)) {
             const user = extractValidFields(newUserInfo, UserSchema)
-            const successfulUpdate = await updateUserById(userid, user, true)
+            const successfulUpdate = await updateUserById(userid, user, passwordIsSaltedAndHashed)
             
             if (successfulUpdate) {
                 res.status(200).json({
@@ -184,7 +186,7 @@ router.put('/:userid/homes', requireAuthentication, async function (req, res, ne
     const requestBody = req.body
 
     if(await authorizedToAccessUserEndpoint(req.user, userid)) {
-        if(requestBody.homeid) {
+        if(requestBody && requestBody.homeid) {
             const homeid = requestBody.homeid
     
             const user = await getUserById(userid, true)

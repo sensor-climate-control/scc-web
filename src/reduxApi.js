@@ -41,6 +41,12 @@ export const api = createApi({
                 method: 'GET'
             })
         }),
+        getApiKeys: builder.query({
+            query: (user_id) => ({
+                url: `users/${user_id}/tokens`,
+                method: `GET`
+            })
+        }),
         login: builder.mutation({
             query: (body) => ({
                 url: `users/login`,
@@ -80,4 +86,4 @@ export const api = createApi({
     }),
 });
 
-export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation } = api;
+export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation } = api;

@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 
+import { Grid } from '@mui/material';
 import MyCard from "../application/MyCard";
 import { useGetUserDetailsQuery } from '../../reduxApi';
 import { useStore } from 'react-redux'
 import Header from '../application/Header';
 import { useNavigate } from 'react-router-dom';
+import ApiKeys from './ApiKeys';
 
 function UserInfo () {
     const store = useStore()
@@ -36,9 +38,16 @@ function UserInfo () {
     return (
         <>
             <Header page_name='User Information' user_first_name={(userdata) ? userdata.name : ''}/>
-            <MyCard title="User Info">
-                {userInfo}
-            </MyCard>
+            <Grid container spacing={1}>
+                <Grid item xs={3}>
+                    <MyCard title="User Info">
+                        {userInfo}
+                    </MyCard>
+                </Grid>
+                <Grid item xs={8}>
+                    <ApiKeys api_keys={userdata.api_keys} />
+                </Grid>
+            </Grid>
         </>
     )
 }

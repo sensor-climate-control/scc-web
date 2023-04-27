@@ -24,7 +24,7 @@ async function authorizedToAccessUserEndpoint(tokenUserid, methodUserid = null) 
     }
     // check if user is admin
     const user = await getUserById(tokenUserid)
-    if (user.admin) {
+    if (user && user.admin) {
         return true
     }
     return false
@@ -41,13 +41,13 @@ async function authorizedToAccessHomeEndpoint(tokenUserid, homeid = null) {
         }
 
         // console.log("==== home: ", home)
-        if(home.users.includes(tokenUserid)) {
+        if(home.users && home.users.includes(tokenUserid)) {
             return true
         }
     }
     // check if user is admin
     const user = await getUserById(tokenUserid)
-    if(user.admin) {
+    if(user && user.admin) {
         return true
     }
     return false
@@ -60,6 +60,7 @@ function requireAuthentication(req, res, next) {
     const token = authParts[0] === 'Bearer' ? authParts[1] : null
 
     try {
+
         const payload = jwt.verify(token, secret)
         console.log("== payload:", payload)
         req.user = payload.sub

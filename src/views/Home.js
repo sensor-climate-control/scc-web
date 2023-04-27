@@ -1,7 +1,7 @@
 import WindowOverview from "../features/weather/WindowOverview";
 import GraphSection from "../features/weather/graph/GraphSection";
 import './Home.css'
-import { api } from '../reduxApi';
+import { api, useGetHomeDetailsQuery } from '../reduxApi';
 import { useStore } from 'react-redux'
 import Header from '../features/application/Header';
 import { useNavigate } from 'react-router-dom';
@@ -33,9 +33,17 @@ export default function Home() {
             if (userdata.homes.length > 0) {
                 // We should only have one home for now
                 selectedHome = userdata.homes[0];
+
+
+
             }
         }
     }
+
+    const { data: homePrefs } = useGetHomeDetailsQuery(selectedHome);
+    const { data: weather } = api.useGetWeatherQuery((homePrefs) ? homePrefs.zip_code : null);
+
+    console.log("==== selectedHome: ", selectedHome)
 
     const { data: sensorData } = api.useGetHomeSensorsQuery(selectedHome, {
         pollingInterval: 300000,
@@ -54,21 +62,35 @@ export default function Home() {
         window_data = []
         let window = {}
         for (let i = 0; i < sensorData.length; i++) {
-            if (sensorData[i].readings.length === 0) {
-                window = {
-                    name: sensorData[i].name,
-                    status: "closed",
-                    temp: 0,
-                    humidity: 0,
-                    lastReadings: [],
+            if (sensorData[i].readings) {
+                let status = "closed"
+
+                if (homePrefs && weather) {
+                    let lastReadingF = sensorData[i].readings[sensorData[i].readings.length - 1].temp_f
+
+                    // we open if the outside temp is cooler and the house is too hot
+                    if (lastReadingF - parseInt(homePrefs.preferences.temperature) > 1) {
+                        if (lastReadingF > weather.main.temp) {
+                            status = "open"
+                        }
+                    }
                 }
-            } else {
-                window = {
-                    name: sensorData[i].name,
-                    status: "closed",
-                    temp: sensorData[i].readings[sensorData[i].readings.length - 1].temp_f,
-                    humidity: sensorData[i].readings[sensorData[i].readings.length - 1].humidity,
-                    lastReadings: sensorData[i].readings.slice(Math.max(sensorData[i].readings.length - 100, 0))
+                if (sensorData[i].readings.length === 0) {
+                    window = {
+                        name: sensorData[i].name,
+                        status: status,
+                        temp: 0,
+                        humidity: 0,
+                        lastReadings: [],
+                    }
+                } else {
+                    window = {
+                        name: sensorData[i].name,
+                        status: status,
+                        temp: sensorData[i].readings[sensorData[i].readings.length - 1].temp_f,
+                        humidity: sensorData[i].readings[sensorData[i].readings.length - 1].humidity,
+                        lastReadings: sensorData[i].readings.slice(Math.max(sensorData[i].readings.length - 100, 0))
+                    }
                 }
             }
 

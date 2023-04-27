@@ -20,6 +20,14 @@ app.use(express.static('build'));
 app.use(cors());
 app.use(limiter)
 
+
+app.use('/api', function (req, res, next) {
+	console.log("==========================================")
+	console.log(`Incoming API request: ${req.originalUrl}`)
+	console.log(`HEADERS: ${JSON.stringify(req.headers)}`)
+	console.log(`BODY: ${JSON.stringify(req.body)}`)
+	next();
+})
 app.use('/api', api);
 
 app.use('*', function (req, res, next) {
