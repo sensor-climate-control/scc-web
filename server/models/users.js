@@ -107,7 +107,7 @@ async function addApiKey(user, api_key) {
         user.api_keys = []
     }
     user.api_keys.push(api_key)
-    const result = await updateUserById(user._id, user)
+    const result = await updateUserById(user._id, user, true)
     return result
 }
 exports.addApiKey = addApiKey
