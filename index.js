@@ -22,10 +22,12 @@ app.use(limiter)
 
 
 app.use('/api', function (req, res, next) {
-	console.log("==========================================")
-	console.log(`Incoming API request: ${req.originalUrl}`)
+	console.log("============ START API REQUEST LOG ===========")
+	console.log(`Incoming API request: ${req.method} ${req.originalUrl} from ${req.ip}`)
 	console.log(`HEADERS: ${JSON.stringify(req.headers)}`)
+	console.log(`QUERY: ${JSON.stringify(req.query)}`)
 	console.log(`BODY: ${JSON.stringify(req.body)}`)
+	console.log("============= END API REQUEST LOG ============")
 	next();
 })
 app.use('/api', api);

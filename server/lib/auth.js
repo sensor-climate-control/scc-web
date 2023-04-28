@@ -60,9 +60,8 @@ function requireAuthentication(req, res, next) {
     const token = authParts[0] === 'Bearer' ? authParts[1] : null
 
     try {
-
         const payload = jwt.verify(token, secret)
-        console.log("== payload:", payload)
+        // console.log("== payload:", payload)
         req.user = payload.sub
         next()
     } catch (err) {
