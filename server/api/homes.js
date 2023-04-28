@@ -44,7 +44,7 @@ router.get('/', requireAuthentication, async function (req, res, next) {
 // Requires admin or home member auth
 router.get('/:homeid', requireAuthentication, async function (req, res, next) {
     const homeid = req.params.homeid
-    if(await authorizedToAccessHomeEndpoint(req.user)) {
+    if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
         const home = await getHomeById(homeid)
         if (home) {
             res.status(200).send(home)
