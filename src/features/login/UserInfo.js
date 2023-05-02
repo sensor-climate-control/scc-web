@@ -29,7 +29,7 @@ function UserInfo () {
 
     const userid = store.getState().token.userid
     const { data: userdata, error, isError, isLoading } = useGetUserDetailsQuery(userid);
-    const [triggerModify, { data: modifyData, error: modifyError, isError: isModifyError, isLoading: isModifyLoading, isSuccess: isModifySuccess, isUninitialized: isModifyUninitialized }] = useModifyUserMutation();
+    const [triggerModify, { error: modifyError, isError: isModifyError}] = useModifyUserMutation();
     
     async function handleEditButton(e) {
         e.preventDefault();

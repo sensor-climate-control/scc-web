@@ -7,10 +7,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-import MyCard from "../application/MyCard";
+// import MyCard from "../application/MyCard";
 
 const MyTable = props => {
-    const styling = (props.style) ? props.style : { width: '18rem', backgroundColor: '#646c7a' }
+    // const styling = (props.style) ? props.style : { width: '18rem', backgroundColor: '#646c7a' }
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
