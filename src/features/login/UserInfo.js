@@ -1,17 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-import { Button, Grid } from '@mui/material';
+import { Button } from '@mui/material';
 import MyCard from "../application/MyCard";
-import { useGetUserDetailsQuery, useModifyUserMutation } from '../../reduxApi';
-import { useStore } from 'react-redux'
-import Header from '../application/Header';
-import { useNavigate } from 'react-router-dom';
-import ApiKeys from './ApiKeys';
+import { useModifyUserMutation } from '../../reduxApi';
 import MyTable from '../application/MyTable';
 
-function UserInfo () {
-    const store = useStore()
-    const navigate = useNavigate()
+function UserInfo (props) {
     const [ editInfo, setEditInfo ] = useState(false)
     const [ email, setEmail ] = useState("")
     const [ password, setPassword ] = useState("")
@@ -19,18 +13,9 @@ function UserInfo () {
     const [ phoneCarrier, setPhoneCarrier ] = useState("")
     const [ name, setName ] = useState("")
 
-
-    useEffect(() => {
-        if (!store.getState().token.token) {
-            return navigate("/login");
-        }
-        console.log("==== state: ", store.getState().token.token)
-    })
-
-    const userid = store.getState().token.userid
-    const { data: userdata, error, isError, isLoading } = useGetUserDetailsQuery(userid);
     const [triggerModify, { error: modifyError, isError: isModifyError}] = useModifyUserMutation();
-    
+    const userdata = props.userdata
+
     async function handleEditButton(e) {
         e.preventDefault();
         setName(userdata.name)
@@ -45,12 +30,10 @@ function UserInfo () {
         e.preventDefault();
         setEditInfo(!editInfo)
 
-        triggerModify({body: {name, email, password, phone: phoneNumber, phone_carrier: phoneCarrier, homes: userdata.homes, api_keys: userdata.api_keys, admin: userdata.admin}, user_id: userid})
+        triggerModify({body: {name, email, password, phone: phoneNumber, phone_carrier: phoneCarrier, homes: userdata.homes, api_keys: userdata.api_keys, admin: userdata.admin}, user_id: userdata._id})
     }
 
     const userInfo = 
-        (isLoading) ? (<p>Loading...</p>) :
-        (isError) ? (<p>{JSON.stringify(error)}</p>) :
         (isModifyError) ? (<p>{JSON.stringify(modifyError)}</p>) :
         (editInfo) ? (<form onSubmit={handleSubmit} >
             <p>UserID: {userdata._id}</p>
@@ -100,19 +83,9 @@ function UserInfo () {
         </div>)
 
     return (
-        <>
-            <Header page_name='User Information' user_first_name={(userdata) ? userdata.name : ''}/>
-            <Grid container spacing={1}>
-                <Grid item xs={3}>
-                    <MyCard title="User Info">
-                        {userInfo}
-                    </MyCard>
-                </Grid>
-                <Grid item xs={8}>
-                    {(userdata) ? <ApiKeys api_keys={userdata.api_keys} /> : <p />}
-                </Grid>
-            </Grid>
-        </>
+        <MyCard title="User Info">
+            {userInfo}
+        </MyCard>
     )
 }
 

@@ -18,7 +18,7 @@ export const api = createApi({
             return headers
         }
     }),
-    tagTypes: ['User'],
+    tagTypes: ['User', 'Keys'],
     endpoints: (builder) => ({
         getWeather: builder.query({
             query: (zip_code) => `weather/now?zip=${zip_code}`,
@@ -45,7 +45,8 @@ export const api = createApi({
             query: (user_id) => ({
                 url: `users/${user_id}/tokens`,
                 method: `GET`
-            })
+            }),
+            providesTags: ['Keys'],
         }),
         login: builder.mutation({
             query: (body) => ({
@@ -84,7 +85,15 @@ export const api = createApi({
             }),
             invalidatesTags: ['User'],
         }),
+        addApiKey: builder.mutation({
+            query: ({body, user_id}) => ({
+                url: `users/${user_id}/tokens`,
+                method: `POST`,
+                body
+            }),
+            invalidatesTags: ['Keys', 'User'],
+        })
     }),
 });
 
-export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation } = api;
+export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation } = api;
