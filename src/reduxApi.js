@@ -73,7 +73,8 @@ export const api = createApi({
                 url: `users/${user_id}`,
                 method: `PUT`,
                 body
-            })
+            }),
+            invalidatesTags: ['User'],
         }),
         addHomeToUser: builder.mutation({
             query: ({body, user_id}) => ({
