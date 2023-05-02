@@ -85,7 +85,8 @@ function UserInfo () {
                 />
             <p>Site Admin: {String(userdata.admin)}</p>
             <MyTable headers={["Homes"]} rows={[userdata.homes]} />
-            <input type="submit" value="Update Information" />
+            <br />
+            <Button variant="contained" type="submit">Update Info</Button>
         </form>) :
         (<div>
             <p>UserID: {userdata._id}</p>
@@ -94,7 +95,8 @@ function UserInfo () {
             <p>Phone Number: {userdata.phone}</p>
             <p>Site Admin: {String(userdata.admin)}</p>
             <MyTable headers={["Homes"]} rows={[userdata.homes]} />
-            <Button onClick={handleEditButton}>Edit Info</Button>
+            <br />
+            <Button variant="contained" onClick={handleEditButton}>Edit Info</Button>
         </div>)
 
     return (
@@ -107,7 +109,7 @@ function UserInfo () {
                     </MyCard>
                 </Grid>
                 <Grid item xs={8}>
-                    <ApiKeys api_keys={userdata.api_keys} />
+                    {(userdata) ? <ApiKeys api_keys={userdata.api_keys} /> : <p />}
                 </Grid>
             </Grid>
         </>

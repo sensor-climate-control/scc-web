@@ -13,7 +13,7 @@ const MyTable = props => {
     // const styling = (props.style) ? props.style : { width: '18rem', backgroundColor: '#646c7a' }
     return (
         <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+            <Table sx={props.sx} size="small" aria-label="a dense table">
                 <TableHead>
                     <TableRow
                         key={props.headers[0]}

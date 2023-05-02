@@ -13,7 +13,7 @@ function ApiKeys (props) {
 
     return (
         <MyCard title="API Keys" style={{ width: '50rem', backgroundColor: '#646c7a' }}>
-            <MyTable headers={['Name', 'Token', 'Created', 'Expires']} rows={rows} />
+            <MyTable headers={['Name', 'Token', 'Created', 'Expires']} rows={rows} sx={{ minWidth: 650 }}/>
         </MyCard>
     )
 }
