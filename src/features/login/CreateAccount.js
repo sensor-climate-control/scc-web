@@ -67,7 +67,7 @@ function CreateAccount () {
                     type="tel"
                     id="phone"
                     placeholder="123-456-7890"
-                    // pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                    pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
                 />

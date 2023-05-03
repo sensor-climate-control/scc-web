@@ -5,7 +5,8 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-import UserInfo from './features/login/UserInfo';
+// import UserInfo from './features/login/UserInfo';
+import UserPage from './features/login/UserPage';
 
 const baseurl = process.env.REACT_APP_BASEURL || "http://localhost:3001"
 
@@ -15,7 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Auth />} />
-        <Route path="/user" element={<UserInfo />} />
+        <Route path="/user" element={<UserPage />} />
       </Routes>
       
     </div>
