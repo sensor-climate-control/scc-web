@@ -38,7 +38,7 @@ function CreateApiKey (props) {
             />
             <br />
             <br />
-            <Button variant="contained" type="submit">Create Api Key:</Button>
+            <Button variant="contained" type="submit">Create Api Key</Button>
         </form>
     )
 

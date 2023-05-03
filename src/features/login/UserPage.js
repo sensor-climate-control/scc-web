@@ -7,6 +7,7 @@ import { useGetUserDetailsQuery } from '../../reduxApi';
 import { Grid, CircularProgress } from '@mui/material';
 import Header from '../application/Header';
 import CreateApiKey from './CreateApiKey';
+import RemoveApiKey from './RemoveApiKey';
 
 function UserPage () {
     const store = useStore()
@@ -35,6 +36,9 @@ function UserPage () {
                     </Grid>
                     <Grid item xs={5}>
                         <CreateApiKey userid={userid} />
+                    </Grid>
+                    <Grid item xs={5}>
+                        <RemoveApiKey api_keys={userdata.api_keys} userid={userid} />
                     </Grid>
                 </Grid>
             )}

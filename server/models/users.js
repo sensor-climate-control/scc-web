@@ -18,8 +18,8 @@ const UserSchema = {
 exports.UserSchema = UserSchema
 
 const ApiKeySchema = {
-    token: { required: true },
     name: { required: true },
+    token: { required: true },
     expires: { required: true },
     created: { required: true }
 }
@@ -120,12 +120,11 @@ async function getUserApiKeysById(id) {
 exports.getUserApiKeysById = getUserApiKeysById
 
 async function removeApiKey(user, api_key) {
-    const api_keys = user.api_keys.filter(e => e === api_key);
+    const api_keys = user.api_keys.filter(e => JSON.stringify(e) !== JSON.stringify(api_key))
+    console.log("user.api_keys.filter(e => e === api_key) == ", user.api_keys.filter(e => JSON.stringify(e) !== JSON.stringify(api_key)))
     user.api_keys = api_keys
-    console.log("in removeApiKey: user.api_keys == ", user.api_keys)
-    console.log("user.api_keys.filter(e => e !== api_key) == ", user.api_keys.filter(e => e !== api_key))
 
-    const result = await updateUserById(user._id, user)
+    const result = await updateUserById(user._id, user, true)
     return result
 }
 exports.removeApiKey = removeApiKey

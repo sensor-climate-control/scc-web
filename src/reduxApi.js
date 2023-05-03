@@ -92,8 +92,16 @@ export const api = createApi({
                 body
             }),
             invalidatesTags: ['Keys', 'User'],
+        }),
+        removeApiKey: builder.mutation({
+            query: ({body, user_id}) => ({
+                url: `users/${user_id}/tokens`,
+                method: `DELETE`,
+                body
+            }),
+            invalidatesTags: ['Keys', 'User'],
         })
     }),
 });
 
-export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation } = api;
+export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation, useRemoveApiKeyMutation } = api;

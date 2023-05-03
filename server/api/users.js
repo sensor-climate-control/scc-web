@@ -123,8 +123,8 @@ router.delete('/:userid/tokens', requireAuthentication, async function (req, res
     const userid = req.params.userid
     if(await authorizedToAccessUserEndpoint(req.user, userid)) {
         const user = await getUserById(userid, true)
-        if ( req.body && validateAgainstSchema(req.body, ApiKeySchema)) {
-            const result = await removeApiKey(user, req.body.api_key)
+        if ( req.body && await validateAgainstSchema(req.body, ApiKeySchema)) {
+            const result = await removeApiKey(user, extractValidFields(req.body, ApiKeySchema))
             if (result) {
                 res.status(204).send()
             } else {
@@ -149,7 +149,7 @@ router.put('/:userid', requireAuthentication, async function (req, res, next) {
     if(await authorizedToAccessUserEndpoint(req.user, userid)) {
         let newUserInfo = req.body
         let passwordIsSaltedAndHashed = false
-        if(newUserInfo && (!newUserInfo.password || newUserInfo.password.length !== 0)) {
+        if(newUserInfo && (!newUserInfo.password || newUserInfo.password.length === 0)) {
             const user = await getUserById(req.params.userid, true)
             newUserInfo.password = user.password
             passwordIsSaltedAndHashed = true
