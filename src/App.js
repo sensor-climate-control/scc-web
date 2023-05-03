@@ -6,7 +6,7 @@ import {
   Route,
 } from 'react-router-dom';
 // import UserInfo from './features/login/UserInfo';
-import { useStore } from 'react-redux'
+import { useStore } from 'react-redux';
 import UserPage from './features/login/UserPage';
 import { useEffect } from 'react';
 import { tokenReducer } from './features/redux/tokenSlice';
