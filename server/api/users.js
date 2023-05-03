@@ -248,7 +248,8 @@ router.post('/login', async function (req, res) {
             const token = generateAuthToken(user._id)
             res.status(200).send({
                 token: token,
-                userid: user._id
+                userid: user._id,
+                expires: Date.now() + 86400000
             })
         } else {
             res.status(401).send({
