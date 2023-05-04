@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import MyCard from "../application/MyCard";
 import { useModifyUserMutation } from '../../reduxApi';
 import MyTable from '../application/MyTable';
@@ -13,7 +13,7 @@ function UserInfo (props) {
     const [ phoneCarrier, setPhoneCarrier ] = useState("")
     const [ name, setName ] = useState("")
 
-    const [triggerModify, { error: modifyError, isError: isModifyError}] = useModifyUserMutation();
+    const [triggerModify, { isLoading: isModifyLoading, error: modifyError, isError: isModifyError}] = useModifyUserMutation();
     const userdata = props.userdata
 
     async function handleEditButton(e) {
@@ -34,6 +34,7 @@ function UserInfo (props) {
     }
 
     const userInfo = 
+        (isModifyLoading) ? <CircularProgress /> :
         (isModifyError) ? (<p>{JSON.stringify(modifyError)}</p>) :
         (editInfo) ? (<form onSubmit={handleSubmit} >
             <p>UserID: {userdata._id}</p>
