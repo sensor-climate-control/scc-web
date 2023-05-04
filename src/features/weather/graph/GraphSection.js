@@ -1,5 +1,6 @@
 import { Line } from 'react-chartjs-2';
-import React from 'react';
+import React, { useState } from 'react';
+import { useRef } from 'react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -12,7 +13,6 @@ import {
 } from 'chart.js';
 import './GraphSection.css'
 import zoomPlugin from 'chartjs-plugin-zoom';
-
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -25,16 +25,16 @@ ChartJS.register(
 );
 
 const zoomOptions = {
-  pan: {
-    enabled: true,
-    modifierKey: 'shift',
-  },
-  zoom: {
-    drag: {
-      enabled: true
+    pan: {
+        enabled: true,
+        modifierKey: 'shift',
     },
-    mode: 'xy',
-  },
+    zoom: {
+        drag: {
+            enabled: true
+        },
+        mode: 'xy',
+    },
 };
 export const options = {
     responsive: true,
@@ -76,8 +76,8 @@ for (let i = 0; i < 24; i++) {
             strI = `0${i}`;
         }
 
-        let strJ = (j*15).toString();
-        if (j*15 < 10) {
+        let strJ = (j * 15).toString();
+        if (j * 15 < 10) {
             strJ = `0${j}`;
         }
 
@@ -106,72 +106,37 @@ const colors = [{
     backgroundColor: 'purple',
 }]
 
-
-export default function GraphSection(props) {
-    // In the future, we will want a useEffect to update the data
-    // This can pull from RTK query to get the latest data every
-    // fifteen minutes or so
-
-    // We won't need to propgate the data down from the parent
-    // because the parent doesn't need to know about the data
-
-    if (props.windows === []) {
-        return (
-            <div className='outer-graph-section-wrapper'>
-                <div className='inner-graph-section-wrapper'>
-                    <h1 className='graph-overview-header-text'>Datapoints</h1>
-                    <hr className="window-overview-header-line" />
-                    <div className='graph-section-wrapper-div'>
-                        <Line options={{}} data={{}} />
-                    </div>
-                </div>
-            </div>
-        );
-    } 
-
+function getDataByDate(windows, timeScale) {
     const datasets = [];
-    // average all the data points for each window that has a full 100 data points
-    let avg_data = []
-    for (let i=0; i<100; i++) {
-        avg_data.push(0)
-        let num_skipped = 0;
-        for (let j=0; j<props.windows.length; j++) {
-            if (props.windows[j].lastReadings) {
-                if (props.windows[j].lastReadings.length < 100) {
-                    num_skipped++;
-                    continue;
-                }
+    // get curr epoch time
+    let cuttoffTime = Date.now() / 1000;
 
-                avg_data[i] += parseFloat(props.windows[j].lastReadings[i].temp_f);
-            }
-        }
-
-        avg_data[i] /= props.windows.length-num_skipped;
+    if (timeScale === 'hour') {
+        cuttoffTime -= 3600;
+    } else if (timeScale === 'day') {
+        cuttoffTime -= 86400;
+    } else if (timeScale === 'week') {
+        cuttoffTime -= 604800;
+    } else if (timeScale === 'month') {
+        cuttoffTime -= 2592000;
     }
 
-    for (let i = 0; i < props.windows.length; i++) {
-        if (props.windows[i].lastReadings === []) {
+    for (let i = 0; i < windows.length; i++) {
+        if (windows[i].lastReadings === []) {
             continue;
         }
 
         datasets.push({
-            label: props.windows[i].name,
-            data: props.windows[i].lastReadings ? props.windows[i].lastReadings.map((reading) => reading.temp_f) : [],
+            label: windows[i].name,
+            data: windows[i].lastReadings ? windows[i].lastReadings.filter(reading => reading.date_time > cuttoffTime).map((reading) => reading.temp_f) : [],
             borderColor: colors[i].borderColor,
             backgroundColor: colors[i].backgroundColor,
         })
     }
 
-    datasets.push({
-        label: 'Average',
-        data: avg_data,
-        borderColor: 'black',
-        backgroundColor: 'black',
-    })
-
     const data = {
         labels,
-        datasets: datasets, 
+        datasets: datasets,
         xAxes: [
             {
                 type: 'time',
@@ -191,13 +156,90 @@ export default function GraphSection(props) {
         ],
     };
 
+    return data;
+}
+
+
+export default function GraphSection(props) {
+    const chartRef = useRef(null);
+    const [timeScale, setTimeScale] = useState('day');
+    const data = getDataByDate(props.windows, timeScale);
+
+    // In the future, we will want a useEffect to update the data
+    // This can pull from RTK query to get the latest data every
+    // fifteen minutes or so
+
+    // We won't need to propgate the data down from the parent
+    // because the parent doesn't need to know about the data
+
+    if (props.windows === []) {
+        return (
+            <div className='outer-graph-section-wrapper'>
+                <div className='inner-graph-section-wrapper'>
+                    <h1 className='graph-overview-header-text'>Datapoints</h1>
+                    <hr className="window-overview-header-line" />
+                    <div className='graph-section-wrapper-div'>
+                        <Line options={{}} data={{}} />
+                    </div> </div>
+            </div>
+        );
+    }
+
+
     return (
         <div className='outer-graph-section-wrapper'>
             <div className='inner-graph-section-wrapper'>
                 <h1 className='graph-overview-header-text'>Datapoints</h1>
                 <hr className="window-overview-header-line" />
+
+                <div className='graph-options-div'>
+                    <div className="window-dropdown">
+                        <button className="window-dropdown-button">Window</button>
+                        <div className="window-dropdown-content">
+                            <label className="window-checkbox">
+                                <input
+                                    type="checkbox"
+                                    value="windows"
+                                // Add the appropriate event handler and checked state
+                                />
+                                All windows
+                            </label>
+
+                            {props.windows.map((window, index) => {
+                                return (
+                                    <label key={index} className="window-checkbox">
+                                        <input
+                                            type="checkbox"
+                                            value={"window" + index}
+                                        // Add the appropriate event handler and checked state
+                                        />
+                                        {window.name}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    <label>
+                        Time Scale:
+                        <select className='time-scale-selector' onChange={(e) => {
+                            e.preventDefault();
+                            setTimeScale(e.target.value);
+                        }}>
+                            <option value='hour'>Hour</option>
+                            <option value='day'>Day</option>
+                                                                        <option value='week'>Week</option>
+                                                                        <option value='month'>Month</option>
+                                                                    </select>
+                                                                </label>
+                    <button className='reset-button' onClick={() => {
+                        if (chartRef.current) {
+                            chartRef.current.resetZoom();
+                        }
+                    }}>Reset</button>
+                </div>
+
                 <div className='graph-section-wrapper-div'>
-                    <Line options={options} data={data} />
+                    <Line ref={chartRef} options={options} data={data} />
                 </div>
             </div>
         </div>

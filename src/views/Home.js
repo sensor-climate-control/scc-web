@@ -57,6 +57,7 @@ export default function Home() {
     // switch to real data
     if (sensorData) {
         console.log("==== sensorData: ", sensorData)
+
         window_data = []
         let window = {}
         for (let i = 0; i < sensorData.length; i++) {
@@ -87,7 +88,7 @@ export default function Home() {
                         status: status,
                         temp: sensorData[i].readings[sensorData[i].readings.length - 1].temp_f,
                         humidity: sensorData[i].readings[sensorData[i].readings.length - 1].humidity,
-                        lastReadings: sensorData[i].readings.slice(Math.max(sensorData[i].readings.length - 100, 0))
+                        lastReadings: sensorData[i].readings,
                     }
                 }
             }
