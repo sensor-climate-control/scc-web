@@ -1,0 +1,24 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+  textbelt:
+    image: zimmerry/textbelt:latest
+    container_name: textbelt
+    ports:
+      - "9099:9099"
+    env_file: .env
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+  web:
+    image: zimmerry/scc-web:latest
+    container_name: scc-web
+    ports:
+      - "8080:8080"
+    env_file: .env

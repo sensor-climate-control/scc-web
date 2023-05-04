@@ -22,7 +22,7 @@ function RemoveApiKey (props) {
         // setName("")
     }
 
-    const removeApiKeyForm = (
+    const removeApiKeyForm = (props.api_keys) ? (
         <form onSubmit={handleRemoveApiKey}>
             <label for="keys">Select an API Key: </label>
             <select
@@ -38,7 +38,7 @@ function RemoveApiKey (props) {
             <br />
             <Button variant="contained" type="submit">Remove Api Key</Button>
         </form>
-    )
+    ) : (<p>No API Keys</p>)
 
     return (
         <MyCard title="Remove API Key">
