@@ -81,7 +81,6 @@ function UserInfo (props) {
             <br />
             <Button variant="contained" type="submit">Update Info</Button>
             <br />
-            <br />
             <Button variant="contained" onClick={() => {setEditInfo(false)}} >Cancel</Button>
         </form>) :
         (<div>

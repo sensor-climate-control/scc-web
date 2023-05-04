@@ -64,9 +64,7 @@ function HomeInfo (props) {
                 onChange={e => setTemperature(e.target.value)}
             />
             <p>{temperature}</p>
-            <br />
             <Button variant="contained" type="submit">Update Info</Button>
-            <br />
             <br />
             <Button variant="contained" onClick={() => {setEditInfo(false)}} >Cancel</Button>
         </form>) :
@@ -75,10 +73,8 @@ function HomeInfo (props) {
             <p>Name: {homeData.name}</p>
             <p>Zip Code: {homeData.zip_code}</p>
             <p>Desired Temperature: {homeData.preferences.temperature}</p>
-            {(homeData.users) ? <MyTable headers={["Users"]} rows={[homeData.users]} /> : <></>}
-            <br />
-            {(homeData.sensors) ? <MyTable headers={["Sensors"]} rows={[homeData.sensors]} /> : <></> }
-            <br />
+            {(homeData.users) ? (<><MyTable headers={["Users"]} rows={[homeData.users]} /><br /></>) : <></>}
+            {(homeData.sensors) ? (<><MyTable headers={["Sensors"]} rows={[homeData.sensors]} /><br /></>) : <></> }
             <Button variant="contained" onClick={handleEditButton}>Edit Info</Button>
         </div>)
 

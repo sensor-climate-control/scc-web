@@ -3,14 +3,17 @@ import { useGetCurrentAqiQuery } from '../../reduxApi';
 import { CircularProgress } from "@mui/material";
 
 const CurrentAqi = (props) => {
-    const { data, error, isLoading } = useGetCurrentAqiQuery(
+    const { data, error, isError, isLoading } = useGetCurrentAqiQuery(
         props.zip_code, 
         { pollingInterval: 30000, }
     );
 
     return (
         <MyCard title="Current AQI">
-            {(isLoading || error || data.length < 1) ? <CircularProgress /> : (
+            {(isError) ? (<p>Error: {JSON.stringify(error)}</p>) :
+            (isLoading) ? <CircularProgress /> : 
+            (data.length < 1) ? (<p>No results found</p>) :
+            (
                 <div className="weather-stats-wrapper">
                     <p>AQI: {data[0].AQI}</p>
                     <p>Category: {data[0].Category.Number} ({data[0].Category.Name})</p>
