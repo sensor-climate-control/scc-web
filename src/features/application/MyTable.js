@@ -19,19 +19,19 @@ const MyTable = props => {
                         key={props.headers[0]}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            {props.headers.map((cell) => (
-                                <TableCell>{cell}</TableCell>
+                            {props.headers.map((cell, index) => (
+                                <TableCell key={index}>{cell}</TableCell>
                             ))}
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {props.rows.map((row) => (
+                    {props.rows.map((row, index) => (
                         <TableRow
-                        key={row[0]}
+                        key={index}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            {row.map((cell) => (
-                                <TableCell style={{ whiteSpace: "normal", overflowWrap: "anywhere" }}>{cell}</TableCell>
+                            {row.map((cell, index) => (
+                                <TableCell key={index} style={{ whiteSpace: "normal", overflowWrap: "anywhere" }}>{cell}</TableCell>
                             ))}
                         </TableRow>
                     ))}

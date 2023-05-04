@@ -18,13 +18,17 @@ export const api = createApi({
             return headers
         }
     }),
-    tagTypes: ['User', 'Keys'],
+    tagTypes: ['User', 'Keys', 'Home'],
     endpoints: (builder) => ({
         getWeather: builder.query({
             query: (zip_code) => `weather/now?zip=${zip_code}`,
         }),
+        getCurrentAqi: builder.query({
+            query: (zip_code) => `weather/aqi/now?zip=${zip_code}`,
+        }),
         getHomeDetails: builder.query({
             query: (home_id) => `homes/${home_id}`,
+            providesTags: ['Home']
         }),
         getSensorDetails: builder.query({
             query: (home_id, sensor_id) => `homes/${home_id}/sensors/${sensor_id}`,
@@ -100,8 +104,16 @@ export const api = createApi({
                 body
             }),
             invalidatesTags: ['Keys', 'User'],
+        }),
+        modifyHome: builder.mutation({
+            query: ({body, home_id}) => ({
+                url: `homes/${home_id}`,
+                method: `PUT`,
+                body
+            }),
+            invalidatesTags: ['Home']
         })
     }),
 });
 
-export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation, useRemoveApiKeyMutation } = api;
+export const { useGetWeatherQuery, useGetCurrentAqiQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation, useRemoveApiKeyMutation, useModifyHomeMutation } = api;
