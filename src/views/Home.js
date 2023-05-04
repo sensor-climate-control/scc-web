@@ -9,6 +9,7 @@ import CurrentWeather from '../features/weather/CurrentWeather';
 import React, { useEffect } from 'react';
 import { useGetUserDetailsQuery } from '../reduxApi';
 import CreateHome from "../features/home/CreateHome";
+import CurrentAqi from "../features/weather/CurrentAqi";
 
 export default function Home() {
     // useeffect
@@ -109,6 +110,7 @@ export default function Home() {
                     <GraphSection windows={window_data}/>
                 </div>
                 <CurrentWeather zip_code={(data) ? data.zip_code : null} />
+                <CurrentAqi zip_code={(data) ? data.zip_code : null} />
             </>
         )
 
