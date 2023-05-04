@@ -71,7 +71,7 @@ export default function Home() {
 
                     // we open if the outside temp is cooler and the house is too hot
                     if (lastReadingF - parseInt(homePrefs.preferences.temperature) > 1) {
-                        if (lastReadingF > weather.main.temp) {
+                        if (weather.main && lastReadingF > weather.main.temp) {
                             status = "open"
                         }
                     }

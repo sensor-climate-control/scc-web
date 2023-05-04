@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Button, CircularProgress } from '@mui/material';
+import { Button, CircularProgress, Switch } from '@mui/material';
 import MyCard from "../application/MyCard";
 import { useModifyUserMutation } from '../../reduxApi';
 import MyTable from '../application/MyTable';
@@ -12,6 +12,8 @@ function UserInfo (props) {
     const [ phoneNumber, setPhoneNumber ] = useState("")
     const [ phoneCarrier, setPhoneCarrier ] = useState("")
     const [ name, setName ] = useState("")
+    const [ phoneNotifications, setPhoneNotifications ] = useState("")
+    const [ emailNotifications, setEmailNotifications ] = useState("")
 
     const [triggerModify, { isLoading: isModifyLoading, error: modifyError, isError: isModifyError}] = useModifyUserMutation();
     const userdata = props.userdata
@@ -22,6 +24,8 @@ function UserInfo (props) {
         setEmail(userdata.email)
         setPhoneNumber(userdata.phone)
         setPhoneCarrier(userdata.phone_carrier)
+        setPhoneNotifications((userdata.preferences && userdata.preferences.notifications && userdata.preferences.notifications.phone) ? userdata.preferences.notifications.phone : false)
+        setEmailNotifications((userdata.preferences && userdata.preferences.notifications && userdata.preferences.notifications.email) ? userdata.preferences.notifications.email : false)
 
         setEditInfo(!editInfo)
     }
@@ -30,7 +34,7 @@ function UserInfo (props) {
         e.preventDefault();
         setEditInfo(!editInfo)
 
-        triggerModify({body: {name, email, password, phone: phoneNumber, phone_carrier: phoneCarrier, homes: userdata.homes, api_keys: userdata.api_keys, admin: userdata.admin}, user_id: userdata._id})
+        triggerModify({body: {name, email, password, phone: phoneNumber, phone_carrier: phoneCarrier, homes: userdata.homes, api_keys: userdata.api_keys, admin: userdata.admin, preferences: {notifications: {phone: phoneNotifications, email: emailNotifications}}}, user_id: userdata._id})
     }
 
     const userInfo = 
@@ -68,6 +72,11 @@ function UserInfo (props) {
                     onChange={e => setPhoneNumber(e.target.value)}
                 />
             <p>Site Admin: {String(userdata.admin)}</p>
+            <h4>Preferences</h4>
+            <label for="emailNotif">Email Notifications:</label>
+            <Switch id="emailNotif" checked={emailNotifications} onChange={() => {setEmailNotifications(!emailNotifications)}} />
+            <label for="phoneNotif">Phone Notifications</label>
+            <Switch id="phoneNotif" checked={phoneNotifications} onChange={() => {setPhoneNotifications(!phoneNotifications)}} />
             <MyTable headers={["Homes"]} rows={[userdata.homes]} />
             <br />
             <Button variant="contained" type="submit">Update Info</Button>
@@ -78,6 +87,9 @@ function UserInfo (props) {
             <p>Email: {userdata.email}</p>
             <p>Phone Number: {userdata.phone}</p>
             <p>Site Admin: {String(userdata.admin)}</p>
+            <h4>Preferences</h4>
+            <p>Email Notifications: {(userdata.preferences && userdata.preferences.notifications && userdata.preferences.notifications.email) ? "On" : "Off"}</p>
+            <p>Phone Notifications: {(userdata.preferences && userdata.preferences.notifications && userdata.preferences.notifications.phone) ? "On" : "Off"}</p>
             <MyTable headers={["Homes"]} rows={[userdata.homes]} />
             <br />
             <Button variant="contained" onClick={handleEditButton}>Edit Info</Button>
