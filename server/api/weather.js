@@ -4,7 +4,7 @@ const { geoLocation } = require('../lib/geo');
 require('dotenv').config();
 
 const openweathermapApiKey = process.env.OWM_API_KEY
-const airnowApiKey = process.env.AIRNOW_API_KEY
+// const airnowApiKey = process.env.AIRNOW_API_KEY
 
 // Fetches and returns 3-hour, 5-day weather forecast
 // Calls OpenWeatherMap API
@@ -49,7 +49,8 @@ router.get('/now', requireAuthentication, async function (req, res, next) {
 // Requires authentication
 router.get('/aqi', requireAuthentication, async function (req, res, next) {
     if(req.query && req.query.zip) {
-        let response = await fetch(`https://www.airnowapi.org/aq/forecast/zipCode/?format=application/json&zipCode=${req.query.zip}&date=2022-11-09&distance=25&API_KEY=${airnowApiKey}`)
+        const geo = await geoLocation(req.query.zip, "US")
+        let response = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${geo.lat}&lon=${geo.lon}&appid=${openweathermapApiKey}`)
         response = await response.json()
 
         res.status(200).send(response)
@@ -66,7 +67,8 @@ router.get('/aqi', requireAuthentication, async function (req, res, next) {
 // Requires authentication
 router.get('/aqi/now', requireAuthentication, async function (req, res, next) {
     if(req.query && req.query.zip) {
-        let response = await fetch(`https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=${req.query.zip}&distance=25&API_KEY=${airnowApiKey}`)
+        const geo = await geoLocation(req.query.zip, "US")
+        let response = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${geo.lat}&lon=${geo.lon}&appid=${openweathermapApiKey}`)
         response = await response.json()
     
         res.status(200).send(response)
