@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 import MyCard from "../application/MyCard";
 // import Header from '../application/Header';
+import { Button, Switch } from '@mui/material';
 import { useCreateAccountMutation } from '../../reduxApi';
 import { useStore } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +11,9 @@ function CreateAccount () {
     const [ email, setEmail ] = useState("")
     const [ password, setPassword ] = useState("")
     const [ name, setName ] = useState("")
-    // const [ phone, setPhone ] = useState("")
+    const [ phone, setPhone ] = useState("")
+    const [ phoneNotifications, setPhoneNotifications ] = useState(false)
+    const [ emailNotifications, setEmailNotifications ] = useState(false)
 
     const [triggerCreateAccount, { data, error, isLoading, isSuccess, isUninitialized }] = useCreateAccountMutation()
 
@@ -61,7 +64,7 @@ function CreateAccount () {
                     onChange={e => setPassword(e.target.value)}
                 />
             </div>
-            {/* <div>
+            <div>
                 <label for="phone">Telephone Number:</label>
                 <input
                     type="tel"
@@ -71,11 +74,15 @@ function CreateAccount () {
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
                 />
-            </div> */}
-            <br />
-            <div>
-                <input type="submit" value="Create Account" />
             </div>
+            <br />
+            <label for="emailNotif">Email Notifications:</label>
+            <Switch id="emailNotif" checked={emailNotifications} onChange={() => {setEmailNotifications(!emailNotifications)}} />
+            <label for="phoneNotif">Phone Notifications</label>
+            <Switch id="phoneNotif" checked={phoneNotifications} onChange={() => {setPhoneNotifications(!phoneNotifications)}} />
+            <br />
+            <br />
+            <Button variant="contained" type="submit">Create Account</Button>
         </form>
     )
 

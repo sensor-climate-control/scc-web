@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import MyCard from "../application/MyCard";
+import { Button } from '@mui/material';
 import { useLoginMutation } from '../../reduxApi';
 import { useStore } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
@@ -44,9 +45,8 @@ function Login () {
                     onChange={e => setPassword(e.target.value)}
                 />
             </div>
-            <div>
-                <input type="submit" value="Login" />
-            </div>
+            <br />
+            <Button variant="contained" type="submit">Login</Button>
         </form>
     )
 

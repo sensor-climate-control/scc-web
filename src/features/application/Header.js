@@ -1,9 +1,7 @@
 import './Header.css';
 import { useState } from 'react';
 import { RxHamburgerMenu } from 'react-icons/rx';
-import {
-  NavLink
-} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useStore } from 'react-redux';
 import { tokenReducer } from '../redux/tokenSlice';
 
@@ -32,9 +30,10 @@ export default function Header(props) {
               </div>
 
               <div className="inner-header-dropdown-items" style={showDropdown ? {display: "block"} : {display: "none"}}>
-                <p className='header-dropdown-option-text'><NavLink to="/user">Account Summary</NavLink></p>
+                <p className='header-dropdown-option-text'><NavLink to="/">Dashboard</NavLink></p>
+                <p className='header-dropdown-option-text'><NavLink to="/user">Account</NavLink></p>
+                <p className='header-dropdown-option-text'><NavLink to="/home">Home Information</NavLink></p>
                 <p className='header-dropdown-option-text' onClick={handleLogout}><NavLink to="/login">Logout</NavLink></p>
-                {/* <p className='header-dropdown-option-text'>Dropdown Item 4</p> */}
               </div>
             </div>
         </button>
