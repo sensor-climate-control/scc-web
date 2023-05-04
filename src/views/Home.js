@@ -21,7 +21,6 @@ export default function Home() {
         if (!store.getState().token.token) {
             return navigate("/login");
         }
-        console.log("==== state: ", store.getState().token.token)
     })
 
     const userid = store.getState().token.userid
@@ -41,8 +40,6 @@ export default function Home() {
     const { data: homePrefs } = useGetHomeDetailsQuery(selectedHome);
     const { data: weather } = api.useGetWeatherQuery((homePrefs) ? homePrefs.zip_code : null);
 
-    console.log("==== selectedHome: ", selectedHome)
-
     const { data: sensorData } = api.useGetHomeSensorsQuery(selectedHome, {
         pollingInterval: 300000,
         skip: !skip
@@ -56,8 +53,6 @@ export default function Home() {
 
     // switch to real data
     if (sensorData) {
-        console.log("==== sensorData: ", sensorData)
-
         window_data = []
         let window = {}
         for (let i = 0; i < sensorData.length; i++) {

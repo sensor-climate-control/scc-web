@@ -106,32 +106,35 @@ const colors = [{
     backgroundColor: 'purple',
 }]
 
-function getDataByDate(windows, timeScale) {
+function getDataByDate(windows, timeScale, windowState) {
     const datasets = [];
     // get curr epoch time
-    let cuttoffTime = Date.now() / 1000;
 
-    if (timeScale === 'hour') {
-        cuttoffTime -= 3600;
-    } else if (timeScale === 'day') {
-        cuttoffTime -= 86400;
-    } else if (timeScale === 'week') {
-        cuttoffTime -= 604800;
-    } else if (timeScale === 'month') {
-        cuttoffTime -= 2592000;
-    }
+    if (windowState.length === windows.length) {
+        let cuttoffTime = Date.now() / 1000;
 
-    for (let i = 0; i < windows.length; i++) {
-        if (windows[i].lastReadings === []) {
-            continue;
+        if (timeScale === 'hour') {
+            cuttoffTime -= 3600;
+        } else if (timeScale === 'day') {
+            cuttoffTime -= 86400;
+        } else if (timeScale === 'week') {
+            cuttoffTime -= 604800;
+        } else if (timeScale === 'month') {
+            cuttoffTime -= 2592000;
         }
 
-        datasets.push({
-            label: windows[i].name,
-            data: windows[i].lastReadings ? windows[i].lastReadings.filter(reading => reading.date_time > cuttoffTime).map((reading) => reading.temp_f) : [],
-            borderColor: colors[i].borderColor,
-            backgroundColor: colors[i].backgroundColor,
-        })
+        for (let i = 0; i < windows.length; i++) {
+            if (windows[i].lastReadings === [] || !windowState[i]) {
+                continue;
+            }
+
+            datasets.push({
+                label: windows[i].name,
+                data: windows[i].lastReadings ? windows[i].lastReadings.filter(reading => reading.date_time > cuttoffTime).map((reading) => reading.temp_f) : [],
+                borderColor: colors[i].borderColor,
+                backgroundColor: colors[i].backgroundColor,
+            })
+        }
     }
 
     const data = {
@@ -163,7 +166,18 @@ function getDataByDate(windows, timeScale) {
 export default function GraphSection(props) {
     const chartRef = useRef(null);
     const [timeScale, setTimeScale] = useState('day');
-    const data = getDataByDate(props.windows, timeScale);
+    const [windowState, setWindowState] = useState([]);
+
+    const data = getDataByDate(props.windows, timeScale, windowState);
+
+    if (windowState.length !== props.windows.length) {
+        console.log("Resetting.")
+        let newState = []
+        for (let _ of props.windows) {
+            newState.push(true);
+        }
+        setWindowState(newState);
+    }
 
     // In the future, we will want a useEffect to update the data
     // This can pull from RTK query to get the latest data every
@@ -196,22 +210,18 @@ export default function GraphSection(props) {
                     <div className="window-dropdown">
                         <button className="window-dropdown-button">Window</button>
                         <div className="window-dropdown-content">
-                            <label className="window-checkbox">
-                                <input
-                                    type="checkbox"
-                                    value="windows"
-                                // Add the appropriate event handler and checked state
-                                />
-                                All windows
-                            </label>
-
                             {props.windows.map((window, index) => {
                                 return (
                                     <label key={index} className="window-checkbox">
                                         <input
                                             type="checkbox"
                                             value={"window" + index}
-                                        // Add the appropriate event handler and checked state
+                                            defaultChecked={true}
+                                            onChange={() => {
+                                                let newState = [...windowState];
+                                                newState[index] = !newState[index];
+                                                setWindowState(newState);
+                                            }}
                                         />
                                         {window.name}
                                     </label>
@@ -227,10 +237,10 @@ export default function GraphSection(props) {
                         }}>
                             <option value='hour'>Hour</option>
                             <option value='day'>Day</option>
-                                                                        <option value='week'>Week</option>
-                                                                        <option value='month'>Month</option>
-                                                                    </select>
-                                                                </label>
+                            <option value='week'>Week</option>
+                            <option value='month'>Month</option>
+                        </select>
+                    </label>
                     <button className='reset-button' onClick={() => {
                         if (chartRef.current) {
                             chartRef.current.resetZoom();

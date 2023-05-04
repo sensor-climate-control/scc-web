@@ -35,7 +35,7 @@ function CreateAccount () {
     const createAccountForm = (
         <form onSubmit={handleCreateAccount}>
             <div>
-                <label for="name">Name:</label>
+                <label htmlFor="name">Name:</label>
                 <input
                     type="text"
                     id="name"
@@ -45,7 +45,7 @@ function CreateAccount () {
                 />
             </div>
             <div>
-                <label for="email">Email Address:</label>
+                <label htmlFor="email">Email Address:</label>
                 <input
                     type="email"
                     id="email"
@@ -55,7 +55,7 @@ function CreateAccount () {
                 />
             </div>
             <div>
-                <label for="password">Create a Password:</label>
+                <label htmlFor="password">Create a Password:</label>
                 <input
                     type="password"
                     id="password"
@@ -65,7 +65,7 @@ function CreateAccount () {
                 />
             </div>
             <div>
-                <label for="phone">Telephone Number:</label>
+                <label htmlFor="phone">Telephone Number:</label>
                 <input
                     type="tel"
                     id="phone"
@@ -76,9 +76,9 @@ function CreateAccount () {
                 />
             </div>
             <br />
-            <label for="emailNotif">Email Notifications:</label>
+            <label htmlFor="emailNotif">Email Notifications:</label>
             <Switch id="emailNotif" checked={emailNotifications} onChange={() => {setEmailNotifications(!emailNotifications)}} />
-            <label for="phoneNotif">Phone Notifications</label>
+            <label htmlFor="phoneNotif">Phone Notifications</label>
             <Switch id="phoneNotif" checked={phoneNotifications} onChange={() => {setPhoneNotifications(!phoneNotifications)}} />
             <br />
             <br />
