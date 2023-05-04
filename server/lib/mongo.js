@@ -9,7 +9,7 @@ require('dotenv').config();
 const mongoDbName = process.env.MONGO_DB_NAME || 'prod'
 
 const mongoUrl = (process.env.MONGO_URL) ? (process.env.MONGO_URL) : 
-	(`mongodb://${process.env.MONGO_ROOT_USER}:${process.env.MONGO_ROOT_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB_NAME}`)
+	(`mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB_NAME}`)
 console.log("==== mongoUrl: ", mongoUrl)
 
 let db = null
