@@ -80,6 +80,9 @@ function UserInfo (props) {
             <MyTable headers={["Homes"]} rows={[userdata.homes]} />
             <br />
             <Button variant="contained" type="submit">Update Info</Button>
+            <br />
+            <br />
+            <Button variant="contained" onClick={() => {setEditInfo(false)}} >Cancel</Button>
         </form>) :
         (<div>
             <p>UserID: {userdata._id}</p>

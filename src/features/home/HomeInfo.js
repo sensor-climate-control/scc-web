@@ -66,6 +66,9 @@ function HomeInfo (props) {
             <p>{temperature}</p>
             <br />
             <Button variant="contained" type="submit">Update Info</Button>
+            <br />
+            <br />
+            <Button variant="contained" onClick={() => {setEditInfo(false)}} >Cancel</Button>
         </form>) :
         (<div>
             <p>HomeID: {homeData._id}</p>
