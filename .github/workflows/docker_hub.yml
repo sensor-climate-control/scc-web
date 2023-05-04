@@ -1,9 +1,9 @@
-name: ci
+name: "Docker Hub Build and Push" 
 
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
 
 jobs:
   docker:
