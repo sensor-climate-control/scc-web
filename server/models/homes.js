@@ -27,7 +27,7 @@ async function getAllHomes() {
     const db = getDbReference()
     const collection = db.collection('homes')
     const homes = await collection.find({}).toArray()
-    console.log("==== homes: ", homes)
+    // console.log("==== homes: ", homes)
     return homes
 }
 exports.getAllHomes = getAllHomes
@@ -39,7 +39,7 @@ async function getHomeById(id) {
         _id: id
     }).toArray()
 
-    console.log("==== home: ", home)
+    // console.log("==== home: ", home)
 
     return home[0]
 }

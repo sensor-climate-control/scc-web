@@ -18,13 +18,17 @@ export const api = createApi({
             return headers
         }
     }),
-    tagTypes: ['User'],
+    tagTypes: ['User', 'Keys', 'Home'],
     endpoints: (builder) => ({
         getWeather: builder.query({
             query: (zip_code) => `weather/now?zip=${zip_code}`,
         }),
+        getCurrentAqi: builder.query({
+            query: (zip_code) => `weather/aqi/now?zip=${zip_code}`,
+        }),
         getHomeDetails: builder.query({
             query: (home_id) => `homes/${home_id}`,
+            providesTags: ['Home']
         }),
         getSensorDetails: builder.query({
             query: (home_id, sensor_id) => `homes/${home_id}/sensors/${sensor_id}`,
@@ -40,6 +44,13 @@ export const api = createApi({
                 url: `homes/${home_id}/sensors`,
                 method: 'GET'
             })
+        }),
+        getApiKeys: builder.query({
+            query: (user_id) => ({
+                url: `users/${user_id}/tokens`,
+                method: `GET`
+            }),
+            providesTags: ['Keys'],
         }),
         login: builder.mutation({
             query: (body) => ({
@@ -67,7 +78,8 @@ export const api = createApi({
                 url: `users/${user_id}`,
                 method: `PUT`,
                 body
-            })
+            }),
+            invalidatesTags: ['User'],
         }),
         addHomeToUser: builder.mutation({
             query: ({body, user_id}) => ({
@@ -77,7 +89,31 @@ export const api = createApi({
             }),
             invalidatesTags: ['User'],
         }),
+        addApiKey: builder.mutation({
+            query: ({body, user_id}) => ({
+                url: `users/${user_id}/tokens`,
+                method: `POST`,
+                body
+            }),
+            invalidatesTags: ['Keys', 'User'],
+        }),
+        removeApiKey: builder.mutation({
+            query: ({body, user_id}) => ({
+                url: `users/${user_id}/tokens`,
+                method: `DELETE`,
+                body
+            }),
+            invalidatesTags: ['Keys', 'User'],
+        }),
+        modifyHome: builder.mutation({
+            query: ({body, home_id}) => ({
+                url: `homes/${home_id}`,
+                method: `PUT`,
+                body
+            }),
+            invalidatesTags: ['Home']
+        })
     }),
 });
 
-export const { useGetWeatherQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation } = api;
+export const { useGetWeatherQuery, useGetCurrentAqiQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation, useRemoveApiKeyMutation, useModifyHomeMutation } = api;

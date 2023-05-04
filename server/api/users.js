@@ -123,8 +123,8 @@ router.delete('/:userid/tokens', requireAuthentication, async function (req, res
     const userid = req.params.userid
     if(await authorizedToAccessUserEndpoint(req.user, userid)) {
         const user = await getUserById(userid, true)
-        if ( req.body && validateAgainstSchema(req.body, ApiKeySchema)) {
-            const result = await removeApiKey(user, req.body.api_key)
+        if ( req.body && await validateAgainstSchema(req.body, ApiKeySchema)) {
+            const result = await removeApiKey(user, extractValidFields(req.body, ApiKeySchema))
             if (result) {
                 res.status(204).send()
             } else {
@@ -148,13 +148,15 @@ router.put('/:userid', requireAuthentication, async function (req, res, next) {
     const userid = req.params.userid
     if(await authorizedToAccessUserEndpoint(req.user, userid)) {
         let newUserInfo = req.body
-        if(newUserInfo && !newUserInfo.password ) {
+        let passwordIsSaltedAndHashed = false
+        if(newUserInfo && (!newUserInfo.password || newUserInfo.password.length === 0)) {
             const user = await getUserById(req.params.userid, true)
             newUserInfo.password = user.password
+            passwordIsSaltedAndHashed = true
         }
         if (validateAgainstSchema(newUserInfo, UserSchema)) {
             const user = extractValidFields(newUserInfo, UserSchema)
-            const successfulUpdate = await updateUserById(userid, user, true)
+            const successfulUpdate = await updateUserById(userid, user, passwordIsSaltedAndHashed)
             
             if (successfulUpdate) {
                 res.status(200).json({
@@ -184,7 +186,7 @@ router.put('/:userid/homes', requireAuthentication, async function (req, res, ne
     const requestBody = req.body
 
     if(await authorizedToAccessUserEndpoint(req.user, userid)) {
-        if(requestBody.homeid) {
+        if(requestBody && requestBody.homeid) {
             const homeid = requestBody.homeid
     
             const user = await getUserById(userid, true)
@@ -246,7 +248,8 @@ router.post('/login', async function (req, res) {
             const token = generateAuthToken(user._id)
             res.status(200).send({
                 token: token,
-                userid: user._id
+                userid: user._id,
+                expires: Date.now() + 86400000
             })
         } else {
             res.status(401).send({

@@ -17,9 +17,22 @@ var app = express();
 
 app.use(express.json());
 app.use(express.static('build'));
+app.use('/login', express.static('build'));
+app.use('/user', express.static('build'));
+app.use('/home', express.static('build'));
 app.use(cors());
 app.use(limiter)
 
+
+app.use('/api', function (req, res, next) {
+	console.log("============ START API REQUEST LOG ===========")
+	console.log(`Incoming API request: ${req.method} ${req.originalUrl} from ${req.ip}`)
+	console.log(`HEADERS: ${JSON.stringify(req.headers)}`)
+	console.log(`QUERY: ${JSON.stringify(req.query)}`)
+	console.log(`BODY: ${JSON.stringify(req.body)}`)
+	console.log("============= END API REQUEST LOG ============")
+	next();
+})
 app.use('/api', api);
 
 app.use('*', function (req, res, next) {
