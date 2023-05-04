@@ -10,15 +10,53 @@ services:
     container_name: textbelt
     ports:
       - "9099:9099"
-    env_file: .env
+    environment:
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: ${SMTP_FROM}
+    depends_on:
+      - redis
   mongo:
     image: mongo:latest
+    container_name: mongo
     ports:
-      - 27017:27017
+      - "27017:27017"
     restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+  mongo-init:
+    build: .
+    environment:
+      MONGO_HOST: mongo
+      MONGO_USER: ${MONGO_ROOT_USER}
+      MONGO_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
+    depends_on:
+      - mongo
+    restart: on-failure
+    command: node initDb.js
   web:
     image: zimmerry/scc-web:latest
     container_name: scc-web
     ports:
       - "8080:8080"
-    env_file: .env
+    environment:
+      MONGO_HOST: mongo
+      MONGO_USER: ${MONGO_ROOT_USER}
+      MONGO_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
+      OWM_API_KEY: ${OWM_API_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - textbelt
+      - mongo
+      - mongo-init
+
+volumes:
+  mongo-data:
