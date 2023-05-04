@@ -13,10 +13,8 @@ import CurrentAqi from "../features/weather/CurrentAqi";
 
 export default function Home() {
     // useeffect
-
     const store = useStore()
     const navigate = useNavigate()
-
     useEffect(() => {
         if (!store.getState().token.token) {
             return navigate("/login");
@@ -93,23 +91,23 @@ export default function Home() {
     }
 
     const homeDetails = (
-            !userdata || 
-            !userdata.homes || 
-            userdata.homes.length === 0
-        ) ? <CreateHome userdata={userdata} /> : (
-            <>
-                <div className="outer-home-sections-wrapper">
-                    <WindowOverview windows={window_data} />
-                    <GraphSection windows={window_data}/>
-                </div>
-                <CurrentWeather zip_code={(data) ? data.zip_code : null} />
-                <CurrentAqi zip_code={(data) ? data.zip_code : null} />
-            </>
-        )
+        !userdata ||
+        !userdata.homes ||
+        userdata.homes.length === 0
+    ) ? <CreateHome userdata={userdata} /> : (
+        <>
+            <div className="outer-home-sections-wrapper">
+                <WindowOverview windows={window_data} />
+                <GraphSection windows={window_data} />
+            </div>
+            <CurrentWeather zip_code={(data) ? data.zip_code : null} />
+            <CurrentAqi zip_code={(data) ? data.zip_code : null} />
+        </>
+    )
 
     return (
         <>
-            <Header page_name='View Your Home' user_first_name={(userdata) ? userdata.name : ''}/>
+            <Header page_name='View Your Home' user_first_name={(userdata) ? userdata.name : ''} />
 
             {homeDetails}
         </>
