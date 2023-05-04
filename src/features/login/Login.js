@@ -46,7 +46,7 @@ function Login () {
                 />
             </div>
             <br />
-            <Button variant="contained" type="submit">Create Account</Button>
+            <Button variant="contained" type="submit">Login</Button>
         </form>
     )
 
