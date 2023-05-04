@@ -17,6 +17,9 @@ var app = express();
 
 app.use(express.json());
 app.use(express.static('build'));
+app.use('/login', express.static('build'));
+app.use('/user', express.static('build'));
+app.use('/home', express.static('build'));
 app.use(cors());
 app.use(limiter)
 
