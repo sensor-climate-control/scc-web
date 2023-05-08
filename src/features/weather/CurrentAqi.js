@@ -16,12 +16,12 @@ const CurrentAqi = (props) => {
             {
                 (isError) ? (<p>Error: {JSON.stringify(error)}</p>) :
                 (isLoading) ? <CircularProgress /> : 
-                (data.list && data.list.length < 1) ? (<p>No results found</p>) :
+                (data.list && data.list.length > 0) ? 
                 (<div className="weather-stats-wrapper">
                         <p>AQI (PM2.5): {data.list[0].components.pm2_5 * 10}</p>
                         <p>Category: {data.list[0].main.aqi} ({aqi_description[data.list[0].main.aqi - 1]})</p>
                         <p>Last Reading: {TimestampToDateTime(data.list[0].dt * 1000)}</p>
-                </div>)
+                </div>) : (<p>No results found</p>)
             }
         </MyCard>
     )
