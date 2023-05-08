@@ -21,6 +21,8 @@ export default function WindowOverview(props) {
         );
     }
 
+    console.log(props.windows[0]);
+
     return (
         <div className="outer-window-overview-wrapper">
             <div className="inner-window-overview-wrapper">

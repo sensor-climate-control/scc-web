@@ -52,8 +52,8 @@ export default function Home() {
     // switch to real data
     if (sensorData) {
         window_data = []
-        let window = {}
         for (let i = 0; i < sensorData.length; i++) {
+            console.log(sensorData[i])
             if (sensorData[i].readings) {
                 let status = "closed"
 
@@ -68,26 +68,34 @@ export default function Home() {
                     }
                 }
                 if (sensorData[i].readings.length === 0) {
-                    window = {
+                    window_data.push({
                         name: sensorData[i].name,
                         status: status,
                         temp: 0,
                         humidity: 0,
                         lastReadings: [],
-                    }
+                    })
                 } else {
-                    window = {
+                    window_data.push({
                         name: sensorData[i].name,
                         status: status,
                         temp: sensorData[i].readings[sensorData[i].readings.length - 1].temp_f,
                         humidity: sensorData[i].readings[sensorData[i].readings.length - 1].humidity,
                         lastReadings: sensorData[i].readings,
-                    }
+                    })
                 }
+            } else {
+                window_data.push({
+                    name: sensorData[i].name,
+                    status: "closed",
+                    temp: 0,
+                    humidity: 0,
+                    lastReadings: [],
+                })
             }
 
-            window_data.push(window)
         }
+        console.log(window_data)
     }
 
     const homeDetails = (
