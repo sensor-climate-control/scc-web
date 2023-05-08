@@ -9,7 +9,7 @@ services:
     image: zimmerry/textbelt:latest
     container_name: textbelt
     ports:
-      - "9099:9099"
+      - 9090:9090
     environment:
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
@@ -18,11 +18,17 @@ services:
       SMTP_FROM: ${SMTP_FROM}
     depends_on:
       - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
   mongo:
     image: mongo:latest
     container_name: mongo
     ports:
-      - "27017:27017"
+      - 27017:27017
     restart: unless-stopped
     volumes:
       - mongo-data:/data/db
@@ -30,15 +36,27 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+    healthcheck:
+      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
   mongo-init:
-    build: .
+    image: zimmerry/scc-web:latest
+    container_name: mongo-init
     environment:
       MONGO_HOST: mongo
       MONGO_PORT: 27017
       MONGO_USER: ${MONGO_ROOT_USER}
       MONGO_PASSWORD: ${MONGO_ROOT_PASSWORD}
       MONGO_DB_NAME: ${MONGO_DB_NAME}
+      WEB_ADMIN_EMAIL: ${WEB_ADMIN_EMAIL}
+      WEB_ADMIN_PASS: ${WEB_ADMIN_PASS}
     depends_on:
+      mongo:
+        condition: service_healthy
+    links:
       - mongo
     restart: on-failure
     command: node initDb.js
@@ -46,8 +64,9 @@ services:
     image: zimmerry/scc-web:latest
     container_name: scc-web
     ports:
-      - "8080:8080"
+      - 3001:3001
     environment:
+      PORT: 3001
       MONGO_HOST: mongo
       MONGO_PORT: 27017
       MONGO_USER: ${MONGO_ROOT_USER}
@@ -56,9 +75,19 @@ services:
       OWM_API_KEY: ${OWM_API_KEY}
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
-      - textbelt
+      textbelt:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      mongo-init:
+        condition: service_completed_successfully
+    links:
       - mongo
-      - mongo-init
+    restart: unless-stopped
 
 volumes:
   mongo-data:
+
+networks:
+  scc-web:
+    driver: bridge
