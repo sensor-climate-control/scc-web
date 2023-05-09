@@ -194,8 +194,8 @@ async function shouldWeUpdateRecommendationsNow(recommendation, previous_recomme
     } else if(recommendation.future.rec !== previous_recommendation.future.rec || recommendation.future.reason !== previous_recommendation.future.reason) {
         // if the recommendation or reason has changed for the future window state recommendation
         return true
-    } else if(recommendation.dt - previous_recommendation.dt > 10800000) {
-        // if more than 3 hours have elapsed since 
+    } else if(recommendation.dt - previous_recommendation.dt > 21600000) {
+        // if more than 6 hours have elapsed since last recommendation update
         return true
     }
     return false
