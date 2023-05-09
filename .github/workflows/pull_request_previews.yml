@@ -56,11 +56,11 @@ jobs:
           echo OWM_API_KEY="$OWM_API_KEY" >> .env
           echo AIRNOW_API_KEY="$AIRNOW_API_KEY" >> .env
           echo JWT_SECRET="$JWT_SECRET" >> .env
-          echo SMTP_HOST="$SMTP_HOST" >> .env
-          echo SMTP_PORT="$SMTP_PORT" >> .env
-          echo SMTP_USER="$SMTP_USER" >> .env
-          echo SMTP_PASS="$SMTP_PASS" >> .env
-          echo SMTP_FROM="$SMTP_FROM" >> .env
+          echo SMTP_HOST="\"$SMTP_HOST\"" >> .env
+          echo SMTP_PORT="\"$SMTP_PORT\"" >> .env
+          echo SMTP_USER="\"$SMTP_USER\"" >> .env
+          echo SMTP_PASS="\"$SMTP_PASS\"" >> .env
+          echo SMTP_FROM="\"$SMTP_FROM\"" >> .env
 
       - name: Azure Login
         uses: Azure/login@v1.4.3
@@ -145,11 +145,11 @@ jobs:
           echo MONGO_URL="$MONGODB_URL" >> .env
           echo OWM_API_KEY="$OWM_API_KEY" >> .env
           echo AIRNOW_API_KEY="$AIRNOW_API_KEY" >> .env
-          echo SMTP_HOST="$SMTP_HOST" >> .env
-          echo SMTP_PORT="$SMTP_PORT" >> .env
-          echo SMTP_USER="$SMTP_USER" >> .env
-          echo SMTP_PASS="$SMTP_PASS" >> .env
-          echo SMTP_FROM="$SMTP_FROM" >> .env
+          echo SMTP_HOST="\"$SMTP_HOST\"" >> .env
+          echo SMTP_PORT="\"$SMTP_PORT\"" >> .env
+          echo SMTP_USER="\"$SMTP_USER\"" >> .env
+          echo SMTP_PASS="\"$SMTP_PASS\"" >> .env
+          echo SMTP_FROM="\"$SMTP_FROM\"" >> .env
 
       - name: Azure Login
         uses: Azure/login@v1.4.3
