@@ -10,7 +10,7 @@ router.post('/', async function (req, res, next) {
     if (validateAgainstSchema(req.body, UserSchema)) {
         try {
             const id = await insertNewUser(req.body)
-            console.log("==== new user id: ", id)
+            // console.log("==== new user id: ", id)
             res.status(201).send({
                 id: id
             })
@@ -47,7 +47,7 @@ router.get('/:userid', requireAuthentication, async function (req, res, next) {
     if(await authorizedToAccessUserEndpoint(req.user, userid)) {
         const user = await getUserById(userid)
         if (user) {
-            console.log("==== user: ", user)
+            // console.log("==== user: ", user)
             res.status(200).send(user)
         } else {
             next();
@@ -101,7 +101,7 @@ router.get('/:userid/tokens', requireAuthentication, async function (req, res) {
     const userid = req.params.userid
     if(await authorizedToAccessUserEndpoint(req.user, userid)) {
         const api_keys = await getUserApiKeysById(userid)
-        console.log("==== api_keys", api_keys)
+        // console.log("==== api_keys", api_keys)
     
         if(api_keys) { 
             res.status(200).send(api_keys)
@@ -190,7 +190,7 @@ router.put('/:userid/homes', requireAuthentication, async function (req, res, ne
             const homeid = requestBody.homeid
     
             const user = await getUserById(userid, true)
-            console.log("==== user: ", user)
+            // console.log("==== user: ", user)
             if(!user.homes) {
                 user.homes = []
             }
