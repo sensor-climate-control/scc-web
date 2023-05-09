@@ -22,7 +22,7 @@ async function getCurrentWeather(zip_code) {
 
     // check if 15 minutes have passed since last reading
     if (lastReading && ((lastReading.dt * 1000) + 900000) > currentTime) {
-        console.log(`==== last weather reading for ${zip_code} happened less than 15 minutes ago, re-using`)
+        // console.log(`==== last weather reading for ${zip_code} happened less than 15 minutes ago, re-using`)
         return {code: 200, content: lastReading}
     } else {
         console.log(`==== last weather reading for ${zip_code} happened more than 15 minutes ago, calling API`)
@@ -54,7 +54,7 @@ async function getWeatherForecast(zip_code) {
 
     // check if 30 minutes have passed since forecast was updated
     if (lastForecast && ((lastForecast.dt + 1800000) > currentTime)) {
-        console.log(`==== weather forecast for ${zip_code} retrieved less than 30 minutes ago, re-using`)
+        // console.log(`==== weather forecast for ${zip_code} retrieved less than 30 minutes ago, re-using`)
         // res.status(200).send(lastForecast.forecast)
         return {code: 200, content: lastForecast.forecast}
     } else {
@@ -89,7 +89,7 @@ async function getCurrentAqi(zip_code) {
 
     // check if 15 minutes have passed since last reading
     if (lastReading && (!lastReading.cod) && ((lastReading.list[0].dt * 1000) + 900000) > currentTime) {
-        console.log(`==== last aqi reading for ${zip_code} happened less than 15 minutes ago, re-using`)
+        // console.log(`==== last aqi reading for ${zip_code} happened less than 15 minutes ago, re-using`)
         return {code: 200, content: lastReading}
     } else {
         console.log(`==== last aqi reading for ${zip_code} happened more than 15 minutes ago, calling API`)
@@ -119,7 +119,7 @@ async function getAqiForecast(zip_code) {
 
     // check if 30 minutes have passed since forecast was updated
     if (lastForecast && ((lastForecast.dt + 1800000) > currentTime)) {
-        console.log(`==== aqi forecast for ${zip_code} retrieved less than 30 minutes ago, re-using`)
+        // console.log(`==== aqi forecast for ${zip_code} retrieved less than 30 minutes ago, re-using`)
         return {code: 200, content: lastForecast.forecast}
     } else {
         console.log(`==== aqi forecast for ${zip_code} retrieved more than 30 minutes ago, calling API`)

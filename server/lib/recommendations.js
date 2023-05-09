@@ -1,5 +1,7 @@
 const { getHomeById, getAllHomes, updateHomeById } = require("../models/homes");
 const { getSensorById } = require("../models/sensors");
+const { getUserById } = require("../models/users");
+const { sendMail } = require("./mail");
 // const { getLatestAqiReadingByZip, getLatestWeatherReadingByZip, getFiveThreeForecastByZip, getAqiForecastByZip } = require("../models/weather");
 const { getCurrentWeather, getWeatherForecast, getCurrentAqi, getAqiForecast } = require("./weather");
 
@@ -218,10 +220,14 @@ async function shouldWeUpdateRecommendationsNow(recommendation, previous_recomme
         return true
     } else if(recommendation.now.rec !== previous_recommendation.now.rec || recommendation.now.reason !== previous_recommendation.now.reason) {
         // if the recommendation or reason has changed for the current window state recommendation
-        return true
+        if(recommendation.now.rec !== "none") {
+            return true
+        }
     } else if(recommendation.future.rec !== previous_recommendation.future.rec || recommendation.future.reason !== previous_recommendation.future.reason) {
         // if the recommendation or reason has changed for the future window state recommendation
-        return true
+        if(recommendation.future.rec !== "none") {
+            return true
+        }
     } else if(recommendation.dt - previous_recommendation.dt > 10800000) {
         // if more than 3 hours have elapsed since last recommendation update
         return true
@@ -229,6 +235,36 @@ async function shouldWeUpdateRecommendationsNow(recommendation, previous_recomme
     return false
 }
 exports.shouldWeUpdateRecommendationsNow = shouldWeUpdateRecommendationsNow
+
+async function sendNotification(home, recommendation) {
+    console.log("=============== sending notification =============")
+    const recommendationContent = {
+        heatIndexWarm: `To help warm your home to your desired temperature of ${home.preferences.temperature}, you should `,
+        heatIndexCool: `To help cool your home to your desired temperature of ${home.preferences.temperature}, you should `,
+        airQuality: "Due to poor air quality, you should ",
+        smallTempDiff: "The indoor/outdoor temperature difference is small, so you can ",
+        closed: "close your windows.",
+        open: "open your windows.",
+        none: "leave your windows as they are."
+    }
+    const futureTime = Math.ceil((recommendation.future.dt - Date.now()) / 3600000)
+    let recommendationText = recommendationContent[recommendation.now.reason] + recommendationContent[recommendation.now.rec] + `\n\nBased on the weather forecast, in ${futureTime} hours: ` + recommendationContent[recommendation.future.reason] + recommendationContent[recommendation.future.rec]
+
+    home.users.forEach(async (userid) => {
+        const user = await getUserById(userid)
+        if(user.preferences && user.preferences.notifications) {
+            if(user.preferences.notifications.phone) {
+                //send sms
+                console.log(`==== sending sms notification to ${user.phone}`)
+            } 
+            if(user.preferences.notifications.email) {
+                console.log(`==== sending email notification to ${user.email}`)
+                await sendMail(user.email, "SCC-Web window recommendation", recommendationText)
+            }
+        }
+    })
+}
+exports.sendNotification = sendNotification
 
 async function checkForRecommendationUpdates() {
     let homes = await getAllHomes()
@@ -244,6 +280,7 @@ async function checkForRecommendationUpdates() {
                 newHome.recommendations = new_rec
                 const result = await updateHomeById(home._id, newHome)
                 console.log("==== recUpdateResult: ", result)
+                await sendNotification(home, new_rec)
             }
         } else {
             console.log(`==== unable to create a proper recommendation for ${home._id}`)

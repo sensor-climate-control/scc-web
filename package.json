@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^4.12.0",
     "node-cron": "^3.0.2",
+    "nodemailer": "^6.9.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.6.0",
     "react-chartjs-2": "^5.2.0",
