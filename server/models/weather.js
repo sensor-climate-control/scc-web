@@ -11,7 +11,7 @@ const WeatherSchema = {
 exports.WeatherSchema = WeatherSchema
 
 async function initializeWeatherByZip(zip_code) {
-    weather = {
+    const weather = {
         zip_code: zip_code,
         weather_readings: [],
         aqi_readings: [],

@@ -79,7 +79,7 @@ function HomeInfo (props) {
         </div>)
 
     return (
-        <MyCard title="Home Info" >
+        <MyCard title="Home Info" style={{ width: '25rem', backgroundColor: '#646c7a' }}>
             {homeInfo}
         </MyCard>
     )
