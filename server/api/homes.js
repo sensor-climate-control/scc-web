@@ -11,7 +11,7 @@ router.post('/', requireAuthentication, async function (req, res, next) {
     if (validateAgainstSchema(req.body, HomeSchema)) {
         try {
             const id = await insertNewHome(req.body)
-            console.log("==== new home id: ", id)
+            // console.log("==== new home id: ", id)
             res.status(201).send({
                 id: id
             })

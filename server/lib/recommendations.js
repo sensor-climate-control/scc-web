@@ -1,13 +1,14 @@
-const { getHomeById } = require("../models/homes");
+const { getHomeById, getAllHomes, updateHomeById } = require("../models/homes");
 const { getSensorById } = require("../models/sensors");
-const { getLatestAqiReadingByZip, getLatestWeatherReadingByZip, getFiveThreeForecastByZip, getAqiForecastByZip } = require("../models/weather");
+// const { getLatestAqiReadingByZip, getLatestWeatherReadingByZip, getFiveThreeForecastByZip, getAqiForecastByZip } = require("../models/weather");
+const { getCurrentWeather, getWeatherForecast, getCurrentAqi, getAqiForecast } = require("./weather");
 
 async function HeatIndex(temp, humidity) {
     /* Adapted from https://github.com/mcci-catena/heat-index */
     temp = parseFloat(temp)
     humidity = parseFloat(humidity)
 
-    if (humidity < 0 || humidity > 100)
+    if (humidity < 0 || humidity > 100 || humidity === "NaN")
         return null;
 
     let easyHeatIndex = 0.5 * (temp + 61.0 + ((temp - 68.0) * 1.2) + (humidity * 0.094));
@@ -29,7 +30,7 @@ async function HeatIndex(temp, humidity) {
         (-0.00000199 * t2 * rh2);
 
     
-    console.log("==== tResult: ", tResult)
+    // console.log("==== tResult: ", tResult)
     // these adjustments come from the NWA page, and are needed to
     // match the reference table.
     var tAdjust;
@@ -75,13 +76,23 @@ async function getLatestReadings(homeid) {
 
 async function whatShouldYouDoWithTheWindows(homeid, previous_dt=Date.now()) {
     const home = await getHomeById(homeid)
+    if(!home.preferences || !home.preferences.temperature) {
+        return {}
+    }
     const desired_temp = home.preferences.temperature
     const zip_code = home.zip_code
+
     const latest_readings = await getLatestReadings(homeid)
+    if(latest_readings === []) {
+        return {}
+    }
 
     let average_humidity = 0
     let average_temp = 0
     for(let i = 0; i < latest_readings.length; i++) {
+        if(!latest_readings[i].reading) {
+            continue
+        }
         average_humidity += latest_readings[i].reading.humidity
         average_temp += latest_readings[i].reading.temp_f
     }
@@ -90,31 +101,43 @@ async function whatShouldYouDoWithTheWindows(homeid, previous_dt=Date.now()) {
     const desired_heat_index = await HeatIndex(desired_temp, average_humidity)
     const current_heat_index = await HeatIndex(average_temp, average_humidity)
 
-    const current_weather = await getLatestWeatherReadingByZip(zip_code)
+    const current_weather = await (await getCurrentWeather(zip_code)).content
+    if(!current_weather) {
+        return {}
+    }
     const current_humidity = current_weather.main.humidity
     const current_temp = current_weather.main.temp
     const current_outdoor_heat_index = await HeatIndex(current_temp, current_humidity)
     const current_time = Date.now()
 
-    const weather_forecast = await getFiveThreeForecastByZip(zip_code)
-    console.log("==== weather_forecast: ", weather_forecast)
-    let near_forecast = weather_forecast.forecast.list[0]
+    const weather_forecast = await (await getWeatherForecast(zip_code)).content
+    if(!weather_forecast) {
+        return {}
+    }
+
+    let near_forecast = weather_forecast.list[0]
     let near_time = near_forecast.dt * 1000
     if(near_time - current_time < 3600000) {
-        near_forecast = weather_forecast.forecast.list[1]
-        near_time = weather_forecast.forecast.list[1].dt * 1000
+        near_forecast = weather_forecast.list[1]
+        near_time = weather_forecast.list[1].dt * 1000
     }
     const near_humidity = near_forecast.main.humidity
     const near_temp = near_forecast.main.temp
     const near_outdoor_heat_index = await HeatIndex(near_temp, near_humidity)
 
-    const current_aqi = await getLatestAqiReadingByZip(zip_code)
+    const current_aqi = await (await getCurrentAqi(zip_code)).content
+    if(!current_aqi) {
+        return {}
+    }
 
-    const aqi_forecast = await getAqiForecastByZip(zip_code)
-    const next_aqi_prediction = await get_next_aqi_prediction(aqi_forecast.forecast.list, current_time)
-    console.log("==== next_aqi_prediction: ", next_aqi_prediction)
+    const aqi_forecast = await (await getAqiForecast(zip_code)).content
+    if(!aqi_forecast) {
+        return {}
+    }
+    const next_aqi_prediction = await get_next_aqi_prediction(aqi_forecast.list, current_time)
+    // console.log("==== next_aqi_prediction: ", next_aqi_prediction)
 
-    console.log("==== current_aqi: ", current_aqi)
+    // console.log("==== current_aqi: ", current_aqi)
     // console.log("==== desired_heat_index: ", desired_heat_index)
     // console.log("==== current_heat_index: ", current_heat_index)
     // console.log("==== current_outdoor_heat_index: ", current_outdoor_heat_index)
@@ -126,61 +149,64 @@ async function whatShouldYouDoWithTheWindows(homeid, previous_dt=Date.now()) {
         // windows should always be closed if the AQI ategory is
         // 3 (unhealthy for sensitive groups) or greater
         recommendations.now = {rec: "closed", reason: "airQuality"}
-    } else if(current_heat_index > current_outdoor_heat_index) {
+    } else if(current_heat_index > current_outdoor_heat_index && (Math.abs(current_heat_index - current_outdoor_heat_index) >= 3)) {
         if(desired_heat_index > current_heat_index) {
             // if it's warmer inside
             // and you want it to be warmer
             console.log("windows closed")
-            recommendations.now = {rec: "closed", reason: "heatIndex"}
+            recommendations.now = {rec: "closed", reason: "heatIndexWarm"}
         } else {
             // if it's warmer inside
             // and you want it to be cooler
             console.log("open windows w/o sun")
-            recommendations.now = {rec: "open", reason: "heatIndex"}
+            recommendations.now = {rec: "open", reason: "heatIndexCool"}
         }
-    } else {
+    } else if (Math.abs(current_heat_index - current_outdoor_heat_index) >= 3){
         if(desired_heat_index > current_heat_index) {
             // if it's warmer outside
             // and you want it to be warmer
             console.log("open windows")
-            recommendations.now = {rec: "open", reason: "heatIndex"}
+            recommendations.now = {rec: "open", reason: "heatIndexWarm"}
         } else {
             // if it's warmer outside
             // and you want it to be cooler
             console.log("close windows")
-            recommendations.now = {rec: "closed", reason: "heatIndex"}
+            recommendations.now = {rec: "closed", reason: "heatIndexCool"}
         }
+    } else {
+        recommendations.now = {rec: "none", reason: "smallTempDiff"}
     }
 
     if(next_aqi_prediction.main.aqi > 2) {
         // windows should always be closed if the AQI ategory is
         // 3 (unhealthy for sensitive groups) or greater
         recommendations.future = {rec: "closed", reason: "airQuality", dt: next_aqi_prediction.dt}
-    }
-    if(current_heat_index > near_outdoor_heat_index) {
+    } else if(current_heat_index > near_outdoor_heat_index && (Math.abs(current_heat_index - near_outdoor_heat_index) >= 3)) {
         if(desired_heat_index > current_heat_index) {
             // if it's warmer inside
             // and you want it to be warmer
             console.log("windows closed")
-            recommendations.future = {rec: "closed", reason: "heatIndex", dt: near_time}
+            recommendations.future = {rec: "closed", reason: "heatIndexWarm", dt: near_time}
         } else {
             // if it's warmer inside
             // and you want it to be cooler
             console.log("open windows w/o sun")
-            recommendations.future = {rec: "open", reason: "heatIndex", dt: near_time}
+            recommendations.future = {rec: "open", reason: "heatIndexCool", dt: near_time}
         }
-    } else {
+    } else if (Math.abs(current_heat_index - near_outdoor_heat_index) >= 3) {
         if(desired_heat_index > current_heat_index) {
             // if it's warmer outside
             // and you want it to be warmer
             console.log("open windows")
-            recommendations.future = {rec: "open", reason: "heatIndex", dt: near_time}
+            recommendations.future = {rec: "open", reason: "heatIndexWarm", dt: near_time}
         } else {
             // if it's warmer outside
             // and you want it to be cooler
             console.log("close windows")
-            recommendations.future = {rec: "closed", reason: "heatIndex", dt: near_time}
+            recommendations.future = {rec: "closed", reason: "heatIndexCool", dt: near_time}
         }
+    } else {
+        recommendations.future = {rec: "none", reason: "smallTempDiff", dt:near_time}
     }
 
     return recommendations
@@ -188,16 +214,43 @@ async function whatShouldYouDoWithTheWindows(homeid, previous_dt=Date.now()) {
 exports.whatShouldYouDoWithTheWindows = whatShouldYouDoWithTheWindows
 
 async function shouldWeUpdateRecommendationsNow(recommendation, previous_recommendation) {
-    if(recommendation.now.rec !== previous_recommendation.now.rec || recommendation.now.reason !== previous_recommendation.now.reason) {
+    if(!previous_recommendation) {
+        return true
+    } else if(recommendation.now.rec !== previous_recommendation.now.rec || recommendation.now.reason !== previous_recommendation.now.reason) {
         // if the recommendation or reason has changed for the current window state recommendation
         return true
     } else if(recommendation.future.rec !== previous_recommendation.future.rec || recommendation.future.reason !== previous_recommendation.future.reason) {
         // if the recommendation or reason has changed for the future window state recommendation
         return true
-    } else if(recommendation.dt - previous_recommendation.dt > 21600000) {
-        // if more than 6 hours have elapsed since last recommendation update
+    } else if(recommendation.dt - previous_recommendation.dt > 10800000) {
+        // if more than 3 hours have elapsed since last recommendation update
         return true
     }
     return false
 }
 exports.shouldWeUpdateRecommendationsNow = shouldWeUpdateRecommendationsNow
+
+async function checkForRecommendationUpdates() {
+    let homes = await getAllHomes()
+
+    homes.forEach(async (home) => {
+        let new_rec = await whatShouldYouDoWithTheWindows(home._id)
+
+        if(new_rec && new_rec.dt) {
+            const updateRec = await shouldWeUpdateRecommendationsNow(new_rec, home.recommendations)
+            console.log(`==== updateRec for ${home._id}: `, updateRec)
+            if(updateRec) {
+                let newHome = home
+                newHome.recommendations = new_rec
+                const result = await updateHomeById(home._id, newHome)
+                console.log("==== recUpdateResult: ", result)
+            }
+        } else {
+            console.log(`==== unable to create a proper recommendation for ${home._id}`)
+        }
+    });
+    console.log("here")
+
+    return
+}
+exports.checkForRecommendationUpdates = checkForRecommendationUpdates
