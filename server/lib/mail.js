@@ -2,6 +2,11 @@ const nodemailer = require("nodemailer")
 require('dotenv')
 
 async function sendMail(to, subject, text) {
+    console.log("==== process.env.SMTP_HOST: ", process.env.SMTP_HOST)
+    console.log("==== process.env.SMTP_PORT: ", process.env.SMTP_PORT)
+    console.log("==== process.env.SMTP_USER: ", process.env.SMTP_USER)
+    console.log("==== process.env.SMTP_PASS: ", process.env.SMTP_PASS)
+    console.log("==== process.env.SMTP_FROM: ", process.env.SMTP_FROM)
     let transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: process.env.SMTP_PORT,
