@@ -1,9 +1,9 @@
 import MyCard from "../application/MyCard";
-import { useGetWeatherQuery } from '../../reduxApi';
+import { useGetCurrentWeatherQuery } from '../../reduxApi';
 import { CircularProgress } from "@mui/material";
 
 const CurrentWeather = (props) => {
-    const { data, isError, error, isLoading, isUninitialized } = useGetWeatherQuery(
+    const { data, isError, error, isLoading, isUninitialized } = useGetCurrentWeatherQuery(
         props.zip_code,
         { 
             pollingInterval: 30000,

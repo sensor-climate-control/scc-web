@@ -5,6 +5,7 @@ import { useStore } from 'react-redux'
 import { useGetUserDetailsQuery } from '../../reduxApi';
 import { Grid, CircularProgress } from '@mui/material';
 import Header from '../application/Header';
+import WeatherForecast from '../weather/WeatherForecast';
 
 function HomeDetailPage () {
     const store = useStore()
@@ -30,6 +31,10 @@ function HomeDetailPage () {
                             <HomeInfo homeid={home} />
                         </Grid>
                     ))}
+
+                    <Grid item xs={8}>
+                        <WeatherForecast zip_code={97330} />
+                    </Grid>
                 </Grid>
             )}
         </>
