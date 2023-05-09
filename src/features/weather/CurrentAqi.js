@@ -4,9 +4,12 @@ import { CircularProgress } from "@mui/material";
 import TimestampToDateTime from "../application/TimestampToDateTime";
 
 const CurrentAqi = (props) => {
-    const { data, error, isError, isLoading } = useGetCurrentAqiQuery(
+    const { data, error, isError, isLoading, isUninitialized } = useGetCurrentAqiQuery(
         props.zip_code, 
-        { pollingInterval: 30000, }
+        { 
+            pollingInterval: 30000,
+            skip: !props.zip_code, 
+        }
     );
 
     const aqi_description = ["Good", "Fair", "Moderate", "Poor", "Very Poor"]
@@ -15,7 +18,7 @@ const CurrentAqi = (props) => {
         <MyCard title="Current Air Quality">
             {
                 (isError) ? (<p>Error: {JSON.stringify(error)}</p>) :
-                (isLoading) ? <CircularProgress /> : 
+                (isLoading || isUninitialized) ? <CircularProgress /> : 
                 (data.list && data.list.length > 0) ? 
                 (<div className="weather-stats-wrapper">
                         <p>AQI (PM2.5): {data.list[0].components.pm2_5 * 10}</p>
