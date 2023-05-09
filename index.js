@@ -6,6 +6,7 @@ const RateLimit = require('express-rate-limit');
 const cron = require('node-cron');
 const { updateWeatherInfo } = require('./server/lib/weather');
 const { checkForRecommendationUpdates } = require('./server/lib/recommendations');
+const { connectToSMTP } = require('./server/lib/mail');
 require('dotenv').config();
 
 const limiter = RateLimit({
@@ -45,16 +46,19 @@ app.use('*', function (req, res, next) {
 });
 
 connectToDb(function ()  {
-	app.listen(port, function() {
-		console.log(`Server running at http://${hostname}:${port}/`);
-	});
+	connectToSMTP(function () {
+		app.listen(port, function() {
+			console.log(`Server running at http://${hostname}:${port}/`);
+		});
 
-	cron.schedule("*/15 * * * *", async () => {
-		console.log("======== Updating weather information ========")
-		await updateWeatherInfo();
-	})
-	cron.schedule("*/15 * * * *", async () => {
-		console.log("======== Updating recommendation information ========")
-		await checkForRecommendationUpdates();
+		cron.schedule("*/15 * * * *", async () => {
+			console.log("======== Updating weather information ========")
+			await updateWeatherInfo();
+		});
+		cron.schedule("*/15 * * * *", async () => {
+			console.log("======== Updating recommendation information ========")
+			await checkForRecommendationUpdates();
+		});
+
 	})
 })

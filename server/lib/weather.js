@@ -7,7 +7,7 @@ const openweathermapApiKey = process.env.OWM_API_KEY
 async function updateWeatherInfo() {
     const zip_codes = await getAllZipCodes()
 
-    for(const zip in zip_codes) {
+    for(const zip of zip_codes) {
         await getCurrentWeather(zip.zip_code)
         await getWeatherForecast(zip.zip_code)
         await getCurrentAqi(zip.zip_code)
