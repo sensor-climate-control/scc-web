@@ -278,7 +278,7 @@ router.put('/:homeid/sensors/:sensorid/readings', requireAuthentication, async f
                     sensor.readings = []
                 }
 
-                for(const reading in validReadings) {
+                for(const reading of validReadings) {
                     if (!reading.date_time) {
                         reading.date_time = Date.now()
                     }

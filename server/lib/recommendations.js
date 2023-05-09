@@ -274,7 +274,7 @@ exports.sendNotification = sendNotification
 async function checkForRecommendationUpdates() {
     let homes = await getAllHomes()
 
-    for(const home in homes) {
+    for(const home of homes) {
         let new_rec = await whatShouldYouDoWithTheWindows(home._id)
 
         if(new_rec && new_rec.dt) {
