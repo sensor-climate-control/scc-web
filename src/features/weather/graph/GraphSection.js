@@ -68,22 +68,6 @@ export const options = {
 // labels should be times for the last 24 hours
 // i.e. 4:15am, 4:30am, 4:45am
 // should be programmatically generated
-let labels = [];
-for (let i = 0; i < 24; i++) {
-    for (let j = 0; j < 4; j++) {
-        let strI = i.toString();
-        if (i < 10) {
-            strI = `0${i}`;
-        }
-
-        let strJ = (j * 15).toString();
-        if (j * 15 < 10) {
-            strJ = `0${j}`;
-        }
-
-        labels.push(strI + ':' + strJ);
-    }
-}
 
 const colors = [{
     borderColor: 'red',
@@ -105,6 +89,30 @@ const colors = [{
     borderColor: 'purple',
     backgroundColor: 'purple',
 }]
+
+function generate_labels(datasets) {
+    const labels = [];
+
+    if (datasets.length === 0) {
+        return labels;
+    }
+
+    // get longest dataset
+    let longest = 0;
+    let longest_ind = 0;
+    for (let i = 0; i < datasets.length; i++) {
+        if (datasets[i].data.length > longest) {
+            longest = datasets[i].data.length;
+            longest_ind = i;
+        }
+    }
+
+    for (let i = 0; i < datasets[longest_ind].data.length; i++) {
+        labels.push(i.toString());
+    }
+
+    return labels;
+}
 
 function getDataByDate(windows, timeScale, windowState) {
     const datasets = [];
@@ -135,7 +143,11 @@ function getDataByDate(windows, timeScale, windowState) {
                 backgroundColor: colors[i].backgroundColor,
             })
         }
+
+        // console.log("Narrowed to " + datasets[0].data.length + " datapoints");
     }
+
+    const labels = generate_labels(datasets);
 
     const data = {
         labels,
@@ -151,10 +163,6 @@ function getDataByDate(windows, timeScale, windowState) {
         yAxes: [
             {
                 type: 'linear',
-                ticks: {
-                    min: 60,
-                    max: 70,
-                },
             },
         ],
     };
@@ -171,7 +179,6 @@ export default function GraphSection(props) {
     const data = getDataByDate(props.windows, timeScale, windowState);
 
     if (windowState.length !== props.windows.length) {
-        console.log("Resetting.")
         let newState = []
         for (let _ of props.windows) {
             newState.push(true);

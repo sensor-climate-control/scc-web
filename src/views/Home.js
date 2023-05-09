@@ -53,7 +53,6 @@ export default function Home() {
     if (sensorData) {
         window_data = []
         for (let i = 0; i < sensorData.length; i++) {
-            console.log(sensorData[i])
             if (sensorData[i].readings) {
                 let status = "closed"
 
@@ -95,7 +94,6 @@ export default function Home() {
             }
 
         }
-        console.log(window_data)
     }
 
     const homeDetails = (

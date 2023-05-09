@@ -94,7 +94,7 @@ def send_readings(sensor_id, home_id, token, readings):
     if response.status_code == 200:
         return response.json()
     else:
-        raise Exception(f"Failed to send reading: {response.json()['error']}")
+        raise Exception(f"Failed to send reading: {response.text}")
 
 
 def get_sensor_details(sensor_id, home_id, token):
