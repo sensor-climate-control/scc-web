@@ -22,5 +22,6 @@ async function sendMail(to, subject, text) {
         text: text
     })
     console.log("==== Message sent: ", info.messageId)
+    return info
 }
 exports.sendMail = sendMail

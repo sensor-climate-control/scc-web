@@ -64,8 +64,8 @@ router.get('/:homeid/rec', requireAuthentication, async function (req, res, next
     if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
         const result = await whatShouldYouDoWithTheWindows(homeid)
         const home = await getHomeById(homeid)
-        await sendNotification(home, result)
-        res.status(200).send(result)
+        const info = await sendNotification(home, result)
+        res.status(200).send({recommendation: result, notifications: info})
     } else {
         res.status(403).send({
             error: "You are not authorized to access this resource"
@@ -278,12 +278,12 @@ router.put('/:homeid/sensors/:sensorid/readings', requireAuthentication, async f
                     sensor.readings = []
                 }
 
-                validReadings.forEach(reading => {
+                for(const reading in validReadings) {
                     if (!reading.date_time) {
                         reading.date_time = Date.now()
                     }
                     sensor.readings.push(reading)
-                })
+                }
 
                 const successfulUpdate = await updateSensorById(sensorid, sensor)
                 if (successfulUpdate) {

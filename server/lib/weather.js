@@ -6,13 +6,13 @@ const openweathermapApiKey = process.env.OWM_API_KEY
 
 async function updateWeatherInfo() {
     const zip_codes = await getAllZipCodes()
-    // console.log(`==== zip_codes: `, zip_codes)
-    zip_codes.forEach(async (zip) => {
+
+    for(const zip in zip_codes) {
         await getCurrentWeather(zip.zip_code)
         await getWeatherForecast(zip.zip_code)
         await getCurrentAqi(zip.zip_code)
         await getAqiForecast(zip.zip_code)
-    });
+    };
 }
 exports.updateWeatherInfo = updateWeatherInfo
 

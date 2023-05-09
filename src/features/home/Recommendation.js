@@ -12,7 +12,7 @@ const Recommendation = (props) => {
         open: "open your windows.",
         none: "leave your windows as they are."
     }
-    const futureTime = Math.ceil((recommendations.future.dt - Date.now()) / 3600000)
+    const futureTime = recommendations ? Math.ceil((recommendations.future.dt - Date.now()) / 3600000) : null
 
     const recommendationContent = (recommendations) ? (
         <div>

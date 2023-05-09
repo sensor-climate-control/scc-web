@@ -53,7 +53,7 @@ connectToDb(function ()  {
 		console.log("======== Updating weather information ========")
 		await updateWeatherInfo();
 	})
-	cron.schedule("*/5 * * * *", async () => {
+	cron.schedule("*/15 * * * *", async () => {
 		console.log("======== Updating recommendation information ========")
 		await checkForRecommendationUpdates();
 	})
