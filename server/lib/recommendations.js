@@ -46,7 +46,7 @@ async function HeatIndex(temp, humidity) {
     return tResult;
 }
 
-async function getnext_aqi_prediction(aqi_forecast, current_time) {
+async function get_next_aqi_prediction(aqi_forecast, current_time) {
     for(let i = 0; i < aqi_forecast.length; i++) {
         if((aqi_forecast[i].dt * 1000) - current_time > 3600000) {
             aqi_forecast[i].dt = aqi_forecast[i].dt * 1000
@@ -111,7 +111,7 @@ async function whatShouldYouDoWithTheWindows(homeid, previous_dt=Date.now()) {
     const current_aqi = await getLatestAqiReadingByZip(zip_code)
 
     const aqi_forecast = await getAqiForecastByZip(zip_code)
-    const next_aqi_prediction = await getnext_aqi_prediction(aqi_forecast.forecast.list, current_time)
+    const next_aqi_prediction = await get_next_aqi_prediction(aqi_forecast.forecast.list, current_time)
     console.log("==== next_aqi_prediction: ", next_aqi_prediction)
 
     console.log("==== current_aqi: ", current_aqi)
