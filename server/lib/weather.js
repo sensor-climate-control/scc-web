@@ -32,13 +32,18 @@ async function getCurrentWeather(zip_code) {
             return {code: geo.cod, content: geo.message}
         }
 
-        let currentWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${geo.lat}&lon=${geo.lon}&units=imperial&appid=${openweathermapApiKey}`)
-        currentWeather = await currentWeather.json()
+        try {
+            let currentWeather = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${geo.lat}&lon=${geo.lon}&units=imperial&appid=${openweathermapApiKey}`)
+            currentWeather = await currentWeather.json()
 
-        await insertWeatherReadingByZip(zip_code, currentWeather)
+            await insertWeatherReadingByZip(zip_code, currentWeather)
+
+            return {code: 200, content: currentWeather}
+        } catch(e) {
+            throw(e)
+        }
         // console.log(`==== insertWeatherReading result: `, result)
 
-        return {code: 200, content: currentWeather}
     }
 }
 exports.getCurrentWeather = getCurrentWeather
@@ -61,14 +66,19 @@ async function getWeatherForecast(zip_code) {
             return {code: geo.cod, content: geo.message}
         }
 
-        let fiveDayWeather = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${geo.lat}&lon=${geo.lon}&units=imperial&appid=${openweathermapApiKey}`)
-        fiveDayWeather = await fiveDayWeather.json()
+        try {
+            let fiveDayWeather = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${geo.lat}&lon=${geo.lon}&units=imperial&appid=${openweathermapApiKey}`)
+            fiveDayWeather = await fiveDayWeather.json()
+    
+            await updateFiveThreeForecastByZip(zip_code, fiveDayWeather)
 
-        await updateFiveThreeForecastByZip(zip_code, fiveDayWeather)
+            return {code: 200, content: fiveDayWeather}
+        } catch (e) {
+            throw(e)
+        }
         // console.log(`==== updateFiveThreeForecastByZip: `, result)
 
         // res.status(200).send(fiveDayWeather)
-        return {code: 200, content: fiveDayWeather}
     }
 }
 exports.getWeatherForecast = getWeatherForecast
@@ -88,12 +98,17 @@ async function getCurrentAqi(zip_code) {
         if(geo.cod) {
             return {code: geo.cod, content: geo.message}
         }
-        let response = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${geo.lat}&lon=${geo.lon}&appid=${openweathermapApiKey}`)
-        response = await response.json()
-        await insertAqiReadingByZip(zip_code, response)
+        try {
+            let response = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${geo.lat}&lon=${geo.lon}&appid=${openweathermapApiKey}`)
+            response = await response.json()
+            await insertAqiReadingByZip(zip_code, response)
+
+            return {code: 200, content: response}
+        } catch (e) {
+            throw(e)
+        }
         // console.log(`==== insertWeatherReading result: `, result)
     
-        return {code: 200, content: response}
     }
 }
 exports.getCurrentAqi = getCurrentAqi
@@ -112,13 +127,18 @@ async function getAqiForecast(zip_code) {
         if(geo.cod) {
             return {code: geo.cod, content: geo.message}
         }
-        let response = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${geo.lat}&lon=${geo.lon}&appid=${openweathermapApiKey}`)
-        response = await response.json()
 
-        await updateAqiForecastByZip(zip_code, response)
+        try {
+            let response = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${geo.lat}&lon=${geo.lon}&appid=${openweathermapApiKey}`)
+            response = await response.json()
+    
+            await updateAqiForecastByZip(zip_code, response)
+
+            return {code: 200, content: response}
+        } catch (e) {
+            throw(e)
+        }
         // console.log(`==== updateFiveThreeForecastByZip: `, result)
-
-        return {code: 200, content: response}
     }
 }
 exports.getAqiForecast = getAqiForecast
