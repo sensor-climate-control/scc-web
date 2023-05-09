@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { whatShouldYouDoWithTheWindows } = require('../lib/recommendations');
 const { validateAgainstSchema, extractValidFields } = require('../lib/validation');
 const { requireAuthentication, authorizedToAccessHomeEndpoint } = require('../lib/auth')
 const { HomeSchema, insertNewHome, getAllHomes, getHomeById, deleteHomeById, updateHomeById } = require('../models/homes');
@@ -51,6 +52,18 @@ router.get('/:homeid', requireAuthentication, async function (req, res, next) {
         } else {
             next();
         }
+    } else {
+        res.status(403).send({
+            error: "You are not authorized to access this resource"
+        })
+    }
+})
+
+router.get('/:homeid/rec', requireAuthentication, async function (req, res, next) {
+    const homeid = req.params.homeid
+    if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
+        const result = await whatShouldYouDoWithTheWindows(homeid)
+        res.status(200).send(result)
     } else {
         res.status(403).send({
             error: "You are not authorized to access this resource"
