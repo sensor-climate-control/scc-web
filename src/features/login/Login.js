@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import MyCard from "../application/MyCard";
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import { useLoginMutation } from '../../reduxApi';
 import { useStore } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
@@ -54,7 +54,7 @@ function Login () {
         <MyCard title="Login">
 
             {(isUninitialized) ? loginForm :
-                (isLoading) ? (<p>Loading...</p>) :
+                (isLoading) ? <CircularProgress /> :
                 (isSuccess) ? (<p>{JSON.stringify(data)}</p>) :
                 (<p>{JSON.stringify(error)}</p>)}
             
