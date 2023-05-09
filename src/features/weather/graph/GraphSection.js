@@ -90,6 +90,33 @@ const colors = [{
     backgroundColor: 'purple',
 }]
 
+function epochToDateString(epochSeconds) {
+    // Convert seconds to milliseconds
+    const epochMilliseconds = epochSeconds * 1000;
+
+    // Create a new Date object from milliseconds
+    const date = new Date(epochMilliseconds);
+
+    // Define an array with month names
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    // Get the required date values
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    // Format the hours and minutes
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    const amOrPm = hours >= 12 ? 'pm' : 'am';
+
+    // Create the final date string
+    const dateString = `${month} ${day} - ${formattedHours}:${formattedMinutes}${amOrPm}`;
+
+    return dateString;
+}
+
 function generate_labels(datasets) {
     const labels = [];
 
@@ -107,8 +134,10 @@ function generate_labels(datasets) {
         }
     }
 
+
     for (let i = 0; i < datasets[longest_ind].data.length; i++) {
-        labels.push(i.toString());
+        let label_str = epochToDateString(datasets[longest_ind].epochs[i]);
+        labels.push(label_str);
     }
 
     return labels;
@@ -131,6 +160,8 @@ function getDataByDate(windows, timeScale, windowState) {
             cuttoffTime -= 2592000;
         }
 
+        console.log(timeScale, cuttoffTime);
+
         for (let i = 0; i < windows.length; i++) {
             if (windows[i].lastReadings === [] || !windowState[i]) {
                 continue;
@@ -139,6 +170,7 @@ function getDataByDate(windows, timeScale, windowState) {
             datasets.push({
                 label: windows[i].name,
                 data: windows[i].lastReadings ? windows[i].lastReadings.filter(reading => reading.date_time > cuttoffTime).map((reading) => reading.temp_f) : [],
+                epochs: windows[i].lastReadings ? windows[i].lastReadings.filter(reading => reading.date_time > cuttoffTime).map((reading) => reading.date_time) : [], 
                 borderColor: colors[i].borderColor,
                 backgroundColor: colors[i].backgroundColor,
             })
