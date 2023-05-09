@@ -48,7 +48,7 @@ connectToDb(function ()  {
 		console.log(`Server running at http://${hostname}:${port}/`);
 	});
 
-	cron.schedule("*/12 * * * *", async () => {
+	cron.schedule("*/15 * * * *", async () => {
 		console.log("======== Updating weather information ========")
 		await updateWeatherInfo();
 	})
