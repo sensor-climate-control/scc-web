@@ -41,8 +41,8 @@ export default function Home() {
         }
     }
 
-    const { data: homePrefs } = useGetHomeDetailsQuery(selectedHome);
-    const { data: weather } = api.useGetWeatherQuery((homePrefs) ? homePrefs.zip_code : null);
+    const { data: homePrefs } = useGetHomeDetailsQuery(selectedHome, {skip: !selectedHome});
+    const { data: weather } = api.useGetWeatherQuery((homePrefs) ? homePrefs.zip_code : null, {skip: !homePrefs});
 
     console.log("==== selectedHome: ", selectedHome)
 
@@ -109,8 +109,8 @@ export default function Home() {
                     <WindowOverview windows={window_data} />
                     <GraphSection windows={window_data}/>
                 </div>
-                <CurrentWeather zip_code={(data) ? data.zip_code : null} />
-                <CurrentAqi zip_code={(data) ? data.zip_code : null} />
+                <CurrentWeather zip_code={(data) ? data.zip_code : false} />
+                <CurrentAqi zip_code={(data) ? data.zip_code : false} />
             </>
         )
 

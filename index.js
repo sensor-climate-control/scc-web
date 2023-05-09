@@ -1,13 +1,15 @@
-const express = require('express')
-const api = require('./server/api')
+const express = require('express');
+const api = require('./server/api');
 const cors = require('cors');
 const { connectToDb } = require('./server/lib/mongo');
-const RateLimit = require('express-rate-limit')
+const RateLimit = require('express-rate-limit');
+const cron = require('node-cron');
+const { updateWeatherInfo } = require('./server/lib/weather');
 require('dotenv').config();
 
 const limiter = RateLimit({
 	windowMs: 1*60*1000,
-	max: 5000
+	max: 50000
 })
 
 const hostname = '127.0.0.1';
@@ -45,4 +47,9 @@ connectToDb(function ()  {
 	app.listen(port, function() {
 		console.log(`Server running at http://${hostname}:${port}/`);
 	});
+
+	cron.schedule("*/12 * * * *", async () => {
+		console.log("======== Updating weather information ========")
+		await updateWeatherInfo();
+	})
 })

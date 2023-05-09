@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 import MyCard from "../application/MyCard";
 // import Header from '../application/Header';
-import { Button, Switch } from '@mui/material';
+import { Button, Switch, CircularProgress } from '@mui/material';
 import { useCreateAccountMutation } from '../../reduxApi';
 import { useStore } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +15,7 @@ function CreateAccount () {
     const [ phoneNotifications, setPhoneNotifications ] = useState(false)
     const [ emailNotifications, setEmailNotifications ] = useState(false)
 
-    const [triggerCreateAccount, { data, error, isLoading, isSuccess, isUninitialized }] = useCreateAccountMutation()
+    const [triggerCreateAccount, { error, isLoading, isSuccess, isUninitialized }] = useCreateAccountMutation()
 
     const store = useStore()
     const navigate = useNavigate()
@@ -90,8 +90,8 @@ function CreateAccount () {
         <MyCard title="Create Account">
 
             {(isUninitialized) ? createAccountForm :
-                (isLoading) ? (<p>Loading...</p>) :
-                (isSuccess) ? (<p>{JSON.stringify(data)}</p>) :
+                (isLoading) ? <CircularProgress /> :
+                (isSuccess) ? (<p>Success! Please log in with your email and password</p>) :
                 (<p>{JSON.stringify(error)}</p>)}
 
         </MyCard>
