@@ -26,7 +26,7 @@ export default function Home() {
     })
 
     const userid = store.getState().token.userid
-    const { data: userdata, isSuccess: skip } = useGetUserDetailsQuery(userid);
+    const { data: userdata, isSuccess: skip } = useGetUserDetailsQuery(userid, {skip: !userid});
 
     let selectedHome = null;
     if (userdata) {
