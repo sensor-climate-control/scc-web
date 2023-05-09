@@ -1,9 +1,9 @@
 const { getHomeById } = require("../models/homes");
 const { getSensorById } = require("../models/sensors");
 const { getLatestAqiReadingByZip, getLatestWeatherReadingByZip, getFiveThreeForecastByZip, getAqiForecastByZip } = require("../models/weather");
-const { getCurrentWeather, getWeatherForecast } = require("./weather");
 
 async function HeatIndex(temp, humidity) {
+    /* Adapted from https://github.com/mcci-catena/heat-index */
     temp = parseFloat(temp)
     humidity = parseFloat(humidity)
 
