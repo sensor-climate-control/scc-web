@@ -5,6 +5,7 @@ const { connectToDb } = require('./server/lib/mongo');
 const RateLimit = require('express-rate-limit');
 const cron = require('node-cron');
 const { updateWeatherInfo } = require('./server/lib/weather');
+const { checkForRecommendationUpdates } = require('./server/lib/recommendations');
 require('dotenv').config();
 
 const limiter = RateLimit({
@@ -51,5 +52,9 @@ connectToDb(function ()  {
 	cron.schedule("*/15 * * * *", async () => {
 		console.log("======== Updating weather information ========")
 		await updateWeatherInfo();
+	})
+	cron.schedule("*/15 * * * *", async () => {
+		console.log("======== Updating recommendation information ========")
+		await checkForRecommendationUpdates();
 	})
 })

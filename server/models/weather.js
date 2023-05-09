@@ -18,8 +18,8 @@ async function initializeWeatherByZip(zip_code) {
     }
     const db = getDbReference()
     const collection = db.collection('weather')
-    let result = await collection.insertOne(weather)
-    return result.insertedId
+    await collection.insertOne(weather)
+    return weather
 }
 
 async function getAllZipCodes() {
@@ -96,7 +96,7 @@ async function insertWeatherReadingByZip(zip_code, reading) {
     result = result[0]
 
     if(!result) {
-        initializeWeatherByZip(zip_code)
+        result = initializeWeatherByZip(zip_code)
     } else if (!result.weather_readings) {
         result.weather_readings = []
     }
@@ -119,7 +119,7 @@ async function insertAqiReadingByZip(zip_code, reading) {
     result = result[0]
 
     if(!result) {
-        initializeWeatherByZip(zip_code)
+        result = initializeWeatherByZip(zip_code)
     } else if (!result.aqi_readings) {
         result.aqi_readings = []
     }
@@ -174,7 +174,7 @@ async function updateFiveThreeForecastByZip(zip_code, forecast) {
     result = result[0]
 
     if(!result) {
-        initializeWeatherByZip(zip_code)
+        result = initializeWeatherByZip(zip_code)
     }
     result.weather_forecast = {forecast: forecast, dt: Date.now()}
     
@@ -195,7 +195,7 @@ async function updateAqiForecastByZip(zip_code, forecast) {
     result = result[0]
 
     if(!result) {
-        initializeWeatherByZip(zip_code)
+        result = initializeWeatherByZip(zip_code)
     }
     result.aqi_forecast = {forecast: forecast, dt: Date.now()}
     

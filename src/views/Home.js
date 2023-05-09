@@ -10,6 +10,7 @@ import React, { useEffect } from 'react';
 import { useGetUserDetailsQuery } from '../reduxApi';
 import CreateHome from "../features/home/CreateHome";
 import CurrentAqi from "../features/weather/CurrentAqi";
+import Recommendation from "../features/home/Recommendation";
 
 export default function Home() {
     // useeffect
@@ -111,6 +112,7 @@ export default function Home() {
                 </div>
                 <CurrentWeather zip_code={(data) ? data.zip_code : false} />
                 <CurrentAqi zip_code={(data) ? data.zip_code : false} />
+                <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
             </>
         )
 
