@@ -15,7 +15,7 @@ function CreateAccount () {
     const [ phoneNotifications, setPhoneNotifications ] = useState(false)
     const [ emailNotifications, setEmailNotifications ] = useState(false)
 
-    const [triggerCreateAccount, { data, error, isLoading, isSuccess, isUninitialized }] = useCreateAccountMutation()
+    const [triggerCreateAccount, { error, isLoading, isSuccess, isUninitialized }] = useCreateAccountMutation()
 
     const store = useStore()
     const navigate = useNavigate()

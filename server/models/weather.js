@@ -26,7 +26,7 @@ async function getWeatherReadingsByZip(zip_code) {
     const db = getDbReference()
     const collection = db.collection('weather')
     let result = await collection.find({
-        zip_code: zip_code
+        zip_code: {$eq: zip_code}
     }).toArray()
     
     return result[0].weather_readings
@@ -37,7 +37,7 @@ async function getAqiReadingsByZip(zip_code) {
     const db = getDbReference()
     const collection = db.collection('weather')
     let result = await collection.find({
-        zip_code: zip_code
+        zip_code: {$eq: zip_code}
     }).toArray()
     
     return result[0].aqi_readings
@@ -48,7 +48,7 @@ async function getLatestWeatherReadingByZip(zip_code) {
     const db = getDbReference()
     const collection = db.collection('weather')
     let result = await collection.find({
-        zip_code: zip_code
+        zip_code: {$eq: zip_code}
     }).toArray()
     result = result[0]
 
@@ -65,7 +65,7 @@ async function getLatestAqiReadingByZip(zip_code) {
     const db = getDbReference()
     const collection = db.collection('weather')
     let result = await collection.find({
-        zip_code: zip_code
+        zip_code: {$eq: zip_code}
     }).toArray()
     result = result[0]
 
@@ -82,7 +82,7 @@ async function insertWeatherReadingByZip(zip_code, reading) {
     const db = getDbReference()
     const collection = db.collection('weather')
     let result = await collection.find({
-        zip_code: zip_code
+        zip_code: {$eq: zip_code}
     }).toArray()
     result = result[0]
 
@@ -105,7 +105,7 @@ async function insertAqiReadingByZip(zip_code, reading) {
     const db = getDbReference()
     const collection = db.collection('weather')
     let result = await collection.find({
-        zip_code: zip_code
+        zip_code: {$eq: zip_code}
     }).toArray()
     result = result[0]
 
@@ -128,7 +128,7 @@ async function getFiveThreeForecastByZip(zip_code) {
     const db = getDbReference()
     const collection = db.collection('weather')
     let result = await collection.find({
-        zip_code: zip_code
+        zip_code: {$eq: zip_code}
     }).toArray()
     result = result[0]
 
@@ -144,7 +144,7 @@ async function getAqiForecastByZip(zip_code) {
     const db = getDbReference()
     const collection = db.collection('weather')
     let result = await collection.find({
-        zip_code: zip_code
+        zip_code: {$eq: zip_code}
     }).toArray()
     result = result[0]
 
@@ -160,7 +160,7 @@ async function updateFiveThreeForecastByZip(zip_code, forecast) {
     const db = getDbReference()
     const collection = db.collection('weather')
     let result = await collection.find({
-        zip_code: zip_code
+        zip_code: {$eq: zip_code}
     }).toArray()
     result = result[0]
 
@@ -181,7 +181,7 @@ async function updateAqiForecastByZip(zip_code, forecast) {
     const db = getDbReference()
     const collection = db.collection('weather')
     let result = await collection.find({
-        zip_code: zip_code
+        zip_code: {$eq: zip_code}
     }).toArray()
     result = result[0]
 
