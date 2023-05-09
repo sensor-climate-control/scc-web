@@ -1,7 +1,7 @@
 # scc-web
 Web frontend and backend repository for the Oregon State University Sensor-Based In-Home Climate Control Capstone Project
 
-### Development
+## Development
 
 Install [NodeJS](https://nodejs.org/en/download/) and ensure you have [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
 
@@ -13,73 +13,41 @@ Run `npm run react` and `npm run dev` in separate terminal windows to run both t
 
 Builds the React app and serves it with NodeJS. Use for testing, not development.
 
-# Getting Started with Create React App
+## Self-hosting
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The supported method of self-hosting is using Docker Compose:
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Setup Steps:
+1. Install [Docker Engine](https://docs.docker.com/engine/install/)
+2. (optional) including the [post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/)
+3. Clone this repository:
+```
+git clone git@github.com:sensor-climate-control/scc-web.git
+cd scc-web
+```
+4. Rename `example.env` to `.env` and enter the proper information
+    - Create an [OpenWeatherMap](https://openweathermap.org/api) account and API Key. Enter the API key into the OWM_API_KEY field.
+    - Generate a secret for the authentication provider and enter it into the JWT_SECRET field. You can obtain sufficiently random strings from the [Wordpress API](https://api.wordpress.org/secret-key/1.1/salt/), or you can generate it with a terminal command like `pwgen -s 32 1`
+    - Set MONGO_ROOT_USER and MONGO_ROOT_PASSWORD to a username and password of your choice (they will be used by the web server to communicate with the MongoDB database)
+    - Set WEB_ADMIN_EMAIL and WEB_ADMIN_PASS to an email and password of your choice. This will be the initial administrator account that you can use to interact with the API.
+    - You can use your own mail server, or use an email service like Gmail as the SMTP relay
+    - If you're using Gmail, you have to set up an App Password:
+        1. Go to https://security.google.com/settings/security/apppasswords
+        2. Under "Select the app and device you want to generate the app password for.", select "Mail" as the app and "Other (custom name)" as the device. Enter an identifiable name. Then click Generate.
+        3. Copy this app password and enter it into the SMTP_PASS field of .env
+    - Using Gmail, .env would look something like this:
+```
+OWM_API_KEY="OpenWeatherMapApiKey"
+JWT_SECRET="FakeSecret"
+MONGO_ROOT_USER="root"
+MONGO_ROOT_PASSWORD="password"
+WEB_ADMIN_EMAIL="example@gmail.com"
+WEB_ADMIN_PASS="password"
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="example@gmail.com"
+SMTP_PASS="exampleapppassword"
+SMTP_FROM="'Alerts' <example@gmail.com>"
+```
+5. Run `docker compose up -d`  (will likely take a few minutes to run)
+6. Success! The web server is now available at http://localhost:3001
