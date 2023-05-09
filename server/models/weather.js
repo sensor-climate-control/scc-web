@@ -22,6 +22,15 @@ async function initializeWeatherByZip(zip_code) {
     return result.insertedId
 }
 
+async function getAllZipCodes() {
+    const db = getDbReference()
+    const collection = db.collection('weather')
+    const zip_codes = await collection.find({}, {projection: {zip_code: 1, _id: 0}}).toArray()
+
+    return zip_codes
+}
+exports.getAllZipCodes = getAllZipCodes
+
 async function getWeatherReadingsByZip(zip_code) {
     const db = getDbReference()
     const collection = db.collection('weather')
