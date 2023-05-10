@@ -23,7 +23,7 @@ function HomeDetailPage () {
 
     return (
         <>
-            <Header page_name='User Information' user_first_name={(userdata) ? userdata.name : ''} />
+            <Header page_name='Home Information' user_first_name={(userdata) ? userdata.name : ''} />
             {(!userdata) ? <CircularProgress /> : (
                 <Grid container spacing={1} >
                     {userdata.homes.map((home, index) => (
