@@ -16,11 +16,11 @@ const CurrentWeather = (props) => {
         <MyCard title="Current Weather">
             {
                 (isError) ? (<p>Error: {JSON.stringify(error)}</p>) :
-                (isLoading || isUninitialized) ? <CircularProgress /> :  (
-                <div className="weather-stats-wrapper">
+                (isLoading || isUninitialized) ? <CircularProgress /> :
+                (<div className="weather-stats-wrapper">
                     <WeatherCard key={data.dt} weather={data} feels_like={true}/>
-                </div>
-            )}
+                </div>)
+            }
         </MyCard>
     )
 }
