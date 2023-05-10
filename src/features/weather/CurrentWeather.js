@@ -1,6 +1,7 @@
 import MyCard from "../application/MyCard";
 import { useGetCurrentWeatherQuery } from '../../reduxApi';
 import { CircularProgress } from "@mui/material";
+import WeatherCard from "./WeatherCard";
 
 const CurrentWeather = (props) => {
     const { data, isError, error, isLoading, isUninitialized } = useGetCurrentWeatherQuery(
@@ -17,9 +18,7 @@ const CurrentWeather = (props) => {
                 (isError) ? (<p>Error: {JSON.stringify(error)}</p>) :
                 (isLoading || isUninitialized) ? <CircularProgress /> :  (
                 <div className="weather-stats-wrapper">
-                    <p>Temperature: {data.main.temp}°F</p>
-                    <p>Feels Like: {data.main.feels_like}°F</p>
-                    <p>Humidity: {data.main.humidity}%</p>
+                    <WeatherCard key={data.dt} weather={data} feels_like={true}/>
                 </div>
             )}
         </MyCard>
