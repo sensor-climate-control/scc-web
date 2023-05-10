@@ -10,7 +10,7 @@ function Login () {
     const [ email, setEmail ] = useState("")
     const [ password, setPassword ] = useState("")
 
-    const [triggerLogin, { data, error, isLoading, isSuccess, isUninitialized }] = useLoginMutation()
+    const [triggerLogin, { data, error, isError, isLoading, isUninitialized }] = useLoginMutation()
 
     const store = useStore()
     const navigate = useNavigate()
@@ -25,6 +25,8 @@ function Login () {
         e.preventDefault();
 
         triggerLogin({email, password})
+        setEmail("")
+        setPassword("")
     }
 
     const loginForm = (
@@ -53,10 +55,16 @@ function Login () {
     return (
         <MyCard title="Login">
 
-            {(isUninitialized) ? loginForm :
+            {
+                (isUninitialized) ? loginForm :
+                (isError) ?
+                (<>
+                    {loginForm}
+                    <p>{error.data.error} - Please try logging in again</p>
+                </>) :
                 (isLoading) ? <CircularProgress /> :
-                (isSuccess) ? (<p>{JSON.stringify(data)}</p>) :
-                (<p>{JSON.stringify(error)}</p>)}
+                (<p>{JSON.stringify(data)}</p>)
+            }
             
         </MyCard>
     )
