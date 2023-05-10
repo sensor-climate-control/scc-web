@@ -15,7 +15,7 @@ function CreateAccount () {
     const [ phoneNotifications, setPhoneNotifications ] = useState(false)
     const [ emailNotifications, setEmailNotifications ] = useState(false)
 
-    const [triggerCreateAccount, { error, isLoading, isSuccess, isUninitialized }] = useCreateAccountMutation()
+    const [triggerCreateAccount, { error, isLoading, isError, isUninitialized }] = useCreateAccountMutation()
 
     const store = useStore()
     const navigate = useNavigate()
@@ -30,6 +30,8 @@ function CreateAccount () {
         e.preventDefault();
 
         triggerCreateAccount({name, email, password})
+
+        setPassword("")
     }
 
     const createAccountForm = (
@@ -40,6 +42,7 @@ function CreateAccount () {
                     type="text"
                     id="name"
                     placeholder="Jane Doe"
+                    required={true}
                     value={name}
                     onChange={e => setName(e.target.value)}
                 />
@@ -50,6 +53,7 @@ function CreateAccount () {
                     type="email"
                     id="email"
                     placeholder="email@example.com"
+                    required={true}
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                 />
@@ -60,6 +64,7 @@ function CreateAccount () {
                     type="password"
                     id="password"
                     placeholder="Password"
+                    required={true}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                 />
@@ -71,6 +76,7 @@ function CreateAccount () {
                     id="phone"
                     placeholder="123-456-7890"
                     pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                    required={false}
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
                 />
@@ -88,12 +94,13 @@ function CreateAccount () {
 
     return (
         <MyCard title="Create Account">
-
             {(isUninitialized) ? createAccountForm :
                 (isLoading) ? <CircularProgress /> :
-                (isSuccess) ? (<p>Success! Please log in with your email and password</p>) :
-                (<p>{JSON.stringify(error)}</p>)}
-
+                (isError) ? (<>
+                    {createAccountForm}
+                    <p>Error: {JSON.stringify(error)} - Please try again</p>
+                </>) : (<p>Success! Please log in with your email and password</p>)
+            }
         </MyCard>
     )
 }
