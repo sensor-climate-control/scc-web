@@ -218,18 +218,25 @@ exports.whatShouldYouDoWithTheWindows = whatShouldYouDoWithTheWindows
 async function shouldWeUpdateRecommendationsNow(recommendation, previous_recommendation) {
     if(!previous_recommendation) {
         return true
-    } else if(recommendation.now.rec !== previous_recommendation.now.rec || recommendation.now.reason !== previous_recommendation.now.reason) {
+    }
+    if(recommendation.now.rec !== previous_recommendation.now.rec || recommendation.now.reason !== previous_recommendation.now.reason) {
         // if the recommendation or reason has changed for the current window state recommendation
         if(recommendation.now.rec !== "none") {
             return true
         }
-    } else if(recommendation.future.rec !== previous_recommendation.future.rec || recommendation.future.reason !== previous_recommendation.future.reason) {
+    }
+    if(recommendation.future.rec !== previous_recommendation.future.rec || recommendation.future.reason !== previous_recommendation.future.reason) {
         // if the recommendation or reason has changed for the future window state recommendation
         if(recommendation.future.rec !== "none") {
             return true
         }
-    } else if(recommendation.dt - previous_recommendation.dt > 10800000) {
+    }
+    if(recommendation.dt - previous_recommendation.dt > 10800000) {
         // if more than 3 hours have elapsed since last recommendation update
+        return true
+    }
+    if (recommendation.future.dt < Date.now() - 3600000) {
+        // if future rec time is less than an hour from now
         return true
     }
     return false
