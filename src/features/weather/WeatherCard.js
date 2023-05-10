@@ -19,7 +19,7 @@ function WeatherCard (props) {
       font-weight: bold;
     `;
   
-    const dt = (props.weather.dt_txt) ? new Date(`${props.weather.dt_txt}`) : new Date(props.weather.dt * 1000)
+    const dt = new Date(props.weather.dt * 1000)
     const temp = (props.feels_like) ? 
     (<div css={horizontal}>
         <Text>Temp: {props.weather.main.feels_like}°F</Text>
