@@ -235,7 +235,7 @@ async function shouldWeUpdateRecommendationsNow(recommendation, previous_recomme
         // if more than 3 hours have elapsed since last recommendation update
         return true
     }
-    if (recommendation.future.dt < Date.now() - 3600000) {
+    if (recommendation.future.dt < Date.now() + 3600000) {
         // if future rec time is less than an hour from now
         return true
     }
