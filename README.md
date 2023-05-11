@@ -1,6 +1,8 @@
 # scc-web
 Web frontend and backend repository for the Oregon State University Sensor-Based In-Home Climate Control Capstone Project
 
+You can view the API Specification for our backend API [here](https://osuscc-api.zimmerman.dev/docs/)
+
 ## Development
 
 Install [NodeJS](https://nodejs.org/en/download/) and ensure you have [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
