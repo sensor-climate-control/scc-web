@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import CurrentWeather from '../features/weather/CurrentWeather';
 import React, { useEffect } from 'react';
 import { useGetUserDetailsQuery, useGetHomeDetailsQuery, useGetCurrentWeatherQuery, useGetHomeSensorsQuery } from '../reduxApi';
+import CurrentAqi from '../features/weather/CurrentAqi';
 import CreateHome from "../features/home/CreateHome";
 import Recommendation from "../features/home/Recommendation";
 
@@ -36,8 +37,6 @@ export default function Home() {
 
     const { data: homePrefs } = useGetHomeDetailsQuery(selectedHome, {skip: !selectedHome});
     const { data: weather } = useGetCurrentWeatherQuery((homePrefs) ? homePrefs.zip_code : null, {skip: !homePrefs});
-
-    console.log("==== selectedHome: ", selectedHome)
 
     const { data: sensorData } = useGetHomeSensorsQuery(selectedHome, {
         pollingInterval: 300000,
@@ -98,20 +97,20 @@ export default function Home() {
     }
 
     const homeDetails = (
-        !userdata ||
-        !userdata.homes ||
-        userdata.homes.length === 0
-    ) ? <CreateHome userdata={userdata} /> : (
-        <>
-            <div className="outer-home-sections-wrapper">
-                <WindowOverview windows={window_data} />
-                <GraphSection windows={window_data} />
-            </div>
-            <CurrentWeather zip_code={(data) ? data.zip_code : null} />
-            <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
-        </>
-    )
-
+            !userdata || 
+            !userdata.homes || 
+            userdata.homes.length === 0
+        ) ? <CreateHome userdata={userdata} /> : (
+            <>
+                <div className="outer-home-sections-wrapper">
+                    <WindowOverview windows={window_data} />
+                    <GraphSection windows={window_data}/>
+                </div>
+                <CurrentWeather zip_code={(data) ? data.zip_code : false} />
+                <CurrentAqi zip_code={(data) ? data.zip_code : false} />
+                <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
+            </>
+        )
     return (
         <>
             <Header page_name='View Your Home' user_first_name={(userdata) ? userdata.name : ''} />
