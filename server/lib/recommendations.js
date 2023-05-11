@@ -299,7 +299,8 @@ async function checkForRecommendationUpdates() {
                 let newHome = homes[i]
                 newHome.recommendations = new_rec
                 const result = await updateHomeById(homes[i]._id, newHome)
-                const notificationResult = await sendNotification(homes[i], new_rec)
+                console.log("==== updateHomeById result: ", result)
+                await sendNotification(homes[i], new_rec)
             }
         } else {
             console.log(`==== unable to create a proper recommendation for ${homes[i]._id}`)
