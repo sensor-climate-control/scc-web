@@ -9,7 +9,7 @@ services:
     image: zimmerry/textbelt:latest
     container_name: textbelt
     ports:
-      - 9090:9090
+      - 9099:9099
     environment:
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
@@ -19,7 +19,7 @@ services:
     depends_on:
       - redis
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9090"]
+      test: ["CMD", "curl", "-f", "http://localhost:9099"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -79,6 +79,8 @@ services:
       SMTP_USER: ${SMTP_USER}
       SMTP_PASS: ${SMTP_PASS}
       SMTP_FROM: ${SMTP_FROM}
+      TEXTBELT_URL: textbelt
+      TEXTBELT_PORT: 9099
     depends_on:
       textbelt:
         condition: service_healthy

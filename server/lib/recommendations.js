@@ -2,6 +2,7 @@ const { getHomeById, getAllHomes, updateHomeById } = require("../models/homes");
 const { getSensorById } = require("../models/sensors");
 const { getUserById } = require("../models/users");
 const { sendMail } = require("./mail");
+const { sendSms } = require("./sms");
 // const { getLatestAqiReadingByZip, getLatestWeatherReadingByZip, getFiveThreeForecastByZip, getAqiForecastByZip } = require("../models/weather");
 const { getCurrentWeather, getWeatherForecast, getCurrentAqi, getAqiForecast } = require("./weather");
 
@@ -244,10 +245,11 @@ async function shouldWeUpdateRecommendationsNow(recommendation, previous_recomme
 exports.shouldWeUpdateRecommendationsNow = shouldWeUpdateRecommendationsNow
 
 async function sendNotification(home, recommendation) {
+    // const degreeSymbol = String.fromCharCode(176)
     console.log("=============== sending notification =============")
     const recommendationContent = {
-        heatIndexWarm: `To help warm your home to your desired temperature of ${home.preferences.temperature}, you should `,
-        heatIndexCool: `To help cool your home to your desired temperature of ${home.preferences.temperature}, you should `,
+        heatIndexWarm: `To help warm your home to ${home.preferences.temperature}F, you should `,
+        heatIndexCool: `To help cool your home to ${home.preferences.temperature}F, you should `,
         airQuality: "Due to poor air quality, you should ",
         smallTempDiff: "The indoor/outdoor temperature difference is small, so you can ",
         closed: "close your windows.",
@@ -256,6 +258,7 @@ async function sendNotification(home, recommendation) {
     }
     const futureTime = Math.ceil((recommendation.future.dt - Date.now()) / 3600000)
     let recommendationText = recommendationContent[recommendation.now.reason] + recommendationContent[recommendation.now.rec] + `\n\nBased on the weather forecast, in ${futureTime} hours: ` + recommendationContent[recommendation.future.reason] + recommendationContent[recommendation.future.rec]
+    let smsRecommendationText = recommendationContent[recommendation.now.reason] + recommendationContent[recommendation.now.rec] + `\n\nIn ${futureTime} hours: ` + recommendationContent[recommendation.future.reason] + recommendationContent[recommendation.future.rec]
 
     let notificationInfo = []
     for(const userid of home.users) {
@@ -265,11 +268,13 @@ async function sendNotification(home, recommendation) {
             if(user.preferences.notifications.phone) {
                 //send sms
                 console.log(`==== sending sms notification to ${user.phone}`)
+                const info = await sendSms(user.phone, smsRecommendationText)
+                userNotificationInfo.push({ sms: info })
             } 
             if(user.preferences.notifications.email) {
                 console.log(`==== sending email notification to ${user.email}`)
                 const info = await sendMail(user.email, "SCC-Web window recommendation", recommendationText)
-                userNotificationInfo.push(info)
+                userNotificationInfo.push({ email: info })
             }
         }
         notificationInfo.push({user: userid, info: userNotificationInfo})
