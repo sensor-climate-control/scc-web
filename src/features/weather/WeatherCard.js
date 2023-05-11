@@ -1,13 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import Text from '../application/Text';
 import { css } from '@emotion/react';
+import HorizontalDiv from '../application/HorizontalDiv';
 
 function WeatherCard (props) {
-    const horizontal = css`
-        display: inline-flex;
-        flex-direction: row;
-        margin-left: 20px;
-    `;
     const styles = css `
       border: 1px solid #dedddc;
       display: inline-flex;
@@ -20,15 +16,13 @@ function WeatherCard (props) {
     `;
   
     const dt = new Date(props.weather.dt * 1000)
-    const temp = (props.feels_like) ? 
-    (<div css={horizontal}>
+
+    const temp = (
+      <HorizontalDiv>
         <Text>Temp: {props.weather.main.feels_like}°F</Text>
         <Text>Humid: {props.weather.main.humidity}%</Text>
-    </div>) :
-    (<div css={horizontal}>
-        <Text color="red">High: {props.weather.main.temp_max}°F</Text>
-        <Text color="blue">Low: {props.weather.main.temp_min}°F</Text>
-    </div>)
+      </HorizontalDiv>
+    )
 
     return (
       <div key={props.weather.dt} css={styles}>

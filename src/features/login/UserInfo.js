@@ -47,12 +47,14 @@ function UserInfo (props) {
                     type="text"
                     id="name"
                     value={name}
+                    required={true}
                     onChange={e => setName(e.target.value)}
                 />
             <label for="email">Email Address:</label>
             <input
                     type="email"
                     value={email}
+                    required={true}
                     onChange={e => setEmail(e.target.value)}
                 />
             <label for="password">Password:</label>
