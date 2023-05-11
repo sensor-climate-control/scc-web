@@ -275,7 +275,7 @@ export default function GraphSection(props) {
                             setTimeScale(e.target.value);
                         }}>
                             <option value='hour'>Hour</option>
-                            <option value='day'>Day</option>
+                            <option value='day' selected>Day</option>
                             <option value='week'>Week</option>
                             <option value='month'>Month</option>
                         </select>
