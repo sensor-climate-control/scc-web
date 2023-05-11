@@ -30,7 +30,7 @@ function WeatherCard (props) {
         <Text>{dt.toLocaleTimeString('en-us')}</Text>
         <img src={ `https://openweathermap.org/img/wn/${props.weather.weather[0].icon}@2x.png` } alt={props.weather.weather[0].description}/>
         {temp}
-        {(props.weather.pop || props.weather.pop === 0) ? <Text>Precip: {props.weather.pop * 100}%</Text> : null}
+        {(props.weather.pop || props.weather.pop === 0) ? <Text>Precipitation: {props.weather.pop * 100}%</Text> : null}
         <Text>{props.weather.weather[0].description}</Text>
       </div>
     )

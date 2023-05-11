@@ -4,6 +4,7 @@ import { CircularProgress } from '@mui/material';
 import MyCard from '../application/MyCard';
 import MyTable from '../application/MyTable';
 import { Button } from '@mui/material';
+import HorizontalDiv from '../application/HorizontalDiv';
 
 function HomeInfo (props) {
     const homeid = props.homeid
@@ -82,9 +83,10 @@ function HomeInfo (props) {
                 onChange={e => setTemperature(e.target.value)}
             />
             <p>{temperature}</p>
-            <Button variant="contained" type="submit">Update Info</Button>
-            <br />
-            <Button variant="contained" onClick={() => {setEditInfo(false)}} >Cancel</Button>
+            <HorizontalDiv>
+                <Button variant="contained" onClick={() => {setEditInfo(false)}} >Cancel</Button>
+                <Button variant="contained" type="submit">Update Info</Button>
+            </HorizontalDiv>
         </form>) :
         (<div>
             <p>HomeID: {homeData._id}</p>
