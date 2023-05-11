@@ -8,7 +8,6 @@ import CurrentWeather from '../features/weather/CurrentWeather';
 import React, { useEffect } from 'react';
 import { useGetUserDetailsQuery, useGetHomeDetailsQuery, useGetCurrentWeatherQuery, useGetHomeSensorsQuery } from '../reduxApi';
 import CreateHome from "../features/home/CreateHome";
-import CurrentAqi from "../features/weather/CurrentAqi";
 import Recommendation from "../features/home/Recommendation";
 
 export default function Home() {
