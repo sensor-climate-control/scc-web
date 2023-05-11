@@ -212,7 +212,7 @@ export default function GraphSection(props) {
 
     if (windowState.length !== props.windows.length) {
         let newState = []
-        for (let _ of props.windows) {
+        for (let i = 0; i < props.windows.length; i++) {
             newState.push(true);
         }
         setWindowState(newState);
