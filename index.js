@@ -7,12 +7,15 @@ const cron = require('node-cron');
 const { updateWeatherInfo } = require('./server/lib/weather');
 const { checkForRecommendationUpdates } = require('./server/lib/recommendations');
 const { connectToSMTP } = require('./server/lib/mail');
+const dns = require('node:dns');
 require('dotenv').config();
 
 const limiter = RateLimit({
 	windowMs: 1*60*1000,
 	max: 50000
 })
+
+dns.setDefaultResultOrder('ipv4first')
 
 const hostname = '127.0.0.1';
 const port = process.env.PORT || 80;

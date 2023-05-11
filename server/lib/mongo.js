@@ -25,7 +25,7 @@ exports.connectToDb = async function (callback) {
 		}
 		callback()
 	} catch (e) {
-		throw(e)
+		throw(new Error(e))
 	}
 }
 

@@ -40,7 +40,7 @@ async function getCurrentWeather(zip_code) {
 
             return {code: 200, content: currentWeather}
         } catch(e) {
-            throw(e)
+            throw(new Error(e))
         }
         // console.log(`==== insertWeatherReading result: `, result)
 
@@ -74,7 +74,7 @@ async function getWeatherForecast(zip_code) {
 
             return {code: 200, content: fiveDayWeather}
         } catch (e) {
-            throw(e)
+            throw(new Error(e))
         }
         // console.log(`==== updateFiveThreeForecastByZip: `, result)
 
@@ -105,7 +105,7 @@ async function getCurrentAqi(zip_code) {
 
             return {code: 200, content: response}
         } catch (e) {
-            throw(e)
+            throw(new Error(e))
         }
         // console.log(`==== insertWeatherReading result: `, result)
     
@@ -136,7 +136,7 @@ async function getAqiForecast(zip_code) {
 
             return {code: 200, content: response}
         } catch (e) {
-            throw(e)
+            throw(new Error(e))
         }
         // console.log(`==== updateFiveThreeForecastByZip: `, result)
     }
