@@ -34,7 +34,7 @@ function CreateHome ({ userdata }) {
     const createHomeForm = (
         <form onSubmit={handleCreateHome}>
             <div>
-                <label for="name">Home Name:</label>
+                <label htmlFor="name">Home Name:</label>
                 <input
                     type="text"
                     id="name"
@@ -44,7 +44,7 @@ function CreateHome ({ userdata }) {
                 />
             </div>
             <div>
-                <label for="zipcode">Zip Code:</label>
+                <label htmlFor="zipcode">Zip Code:</label>
                 <input
                     type="text"
                     id="zipcode"
@@ -54,7 +54,7 @@ function CreateHome ({ userdata }) {
                 />
             </div>
             <div>
-                <label for="temperature">Select your desired temperature:</label>
+                <label htmlFor="temperature">Select your desired temperature:</label>
                 <input
                     type="range"
                     id="temperature"
