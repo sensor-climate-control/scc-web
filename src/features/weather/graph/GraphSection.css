@@ -15,3 +15,85 @@
     padding-top: 0px;
 
 }
+
+.graph-options-div {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 1rem;
+}
+
+.graph-options-div label {
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+.graph-options-div select {
+    margin-left: 0.5rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.reset-button {
+    padding: 0.4rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.reset-button:hover {
+    background-color: #0056b3;
+}
+
+.window-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.window-dropdown-button {
+    padding: 0.4rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #ccc;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.window-dropdown-button:hover {
+    background-color: #999;
+}
+
+.window-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    width: 220px;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+.window-dropdown-content label {
+    display: flex;
+    justify-content: left;
+    padding: 0.2rem 0;
+    cursor: pointer;
+}
+
+.window-checkbox input {
+    margin-right: 0.5rem;
+}
+
+.window-dropdown:hover .window-dropdown-content {
+    display: block;
+}

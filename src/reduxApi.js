@@ -7,9 +7,7 @@ export const api = createApi({
         baseUrl: baseurl + '/api/',
         prepareHeaders: (headers, { getState }) => {
             const state = getState()
-            console.log("==== state: ", state)
             const token = state.token.token
-            console.log("==== token: ", token)
 
             if(token) {
                 headers.set('authorization', `Bearer ${token}`)

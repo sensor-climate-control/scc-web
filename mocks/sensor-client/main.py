@@ -25,7 +25,7 @@ class TempFaker:
         self.sensor_hr_offset = [random.uniform(-max_sensor_hr_offset, max_sensor_hr_offset) for _ in range(num_sensors)]
         self.max_sensor_dev = 5
 
-    def fake(self, sensor_ind = 0):
+    def fake(self, sensor_ind = 0, adv_time = True):
         # Calculate the time of day as a fraction of 24 hours (0-1)
         adj_hour = self.time.hour - 5 + self.sensor_hr_offset[sensor_ind]
         if adj_hour < 0:
@@ -56,9 +56,13 @@ class TempFaker:
                         "humidity": humidity}
 
         # Advance the time by self.interval minutes
-        self.time += timedelta(minutes=self.interval)
+        if adv_time:
+            self.time += timedelta(minutes=self.interval)
 
         return fake_reading
+
+    def advance_time(self):
+        self.time += timedelta(minutes=self.interval)
 
 
 def send_reading(sensor_id, home_id, token, reading):
@@ -94,7 +98,7 @@ def send_readings(sensor_id, home_id, token, readings):
     if response.status_code == 200:
         return response.json()
     else:
-        raise Exception(f"Failed to send reading: {response.json()['error']}")
+        raise Exception(f"Failed to send reading: {response.text}")
 
 
 def get_sensor_details(sensor_id, home_id, token):
@@ -240,11 +244,18 @@ def send_batch_data(token, userid, sensors, home_info):
         bar.next()
         if id == -1:
             for i in range(len(sensors)):
-                reading = faker.fake(i)
+                reading = faker.fake(i, adv_time=False)
                 readings_arrs[i].append(reading)
+            faker.advance_time()
         else:
             reading = faker.fake(id)
             readings_arrs[id].append(reading)
+        
+        # be sure to send batches of data to avoid packet limits
+        for i in range(len(sensors)):
+            if len(readings_arrs[i]) >= 500:
+                send_readings(sensors[i]["_id"], sensors[i]["home"], token, readings_arrs[i])
+                readings_arrs[i] = []
 
     for i in range(len(sensors)):
         if len(readings_arrs[i]) > 0:
@@ -253,6 +264,13 @@ def send_batch_data(token, userid, sensors, home_info):
 
 def stream_live_data(token, userid, sensors, home_info):
     raise NotImplementedError("Streaming live data is not yet implemented.")
+
+# reading fmt: {'date_time': 1683675077, 'temp_f': 90.14744241974327, 'temp_c': 32.30413467763515, 'humidity': 80.2708255087578}
+def fmt_reading(reading_dict):
+    date_str = datetime.fromtimestamp(reading_dict['date_time']).strftime("%m/%d/%Y %H:%M:%S")
+    print("  ------------------- ")
+    print(f"\t{date_str},")
+    print(f"\t{reading_dict['temp_f']:.1f},")
 
 def main():
     token, userid = login()
@@ -296,7 +314,7 @@ def main():
         else:
             print("This home has no sensors yet.")
 
-        choice = input("You can start sending mock readings (1), create a new sensor (2), or delete all sensors (3): ")
+        choice = input("You can start sending mock readings (1), create a new sensor (2), delete all sensors (3), or view readings (4): ")
 
         if choice == "1":
             if not HAS_SENSORS:
@@ -328,6 +346,29 @@ def main():
             for sensor in sensors:
                 print("Deleting sensor: ", sensor["name"])
                 delete_sensor(sensor["_id"], sensor["home"], token)
+
+        elif choice == "4":
+            if not HAS_SENSORS:
+                print("Sorry, you can't view readings if there are no sensors. Please create a sensor first.")
+                continue
+
+            sensor_readings = []
+            for sensor in sensors:
+                details = get_sensor_details(sensor["_id"], sensor["home"], token)
+                try:
+                    sensor_readings.append((details["name"], details["readings"]))
+                except KeyError:
+                    print("Failed to get readings for sensor: ", details["name"])
+
+            for name, readings in sensor_readings:
+                print()
+                print(" === ", name, " === ")
+                for reading in readings[0:5]:
+                    fmt_reading(reading)
+                print("\n...\n")
+                for reading in readings[-5:]:
+                    fmt_reading(reading)
+
         else:
             print("Sorry, please enter either 1 or 2.")
 

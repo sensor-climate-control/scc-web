@@ -1,5 +1,6 @@
 import { Line } from 'react-chartjs-2';
-import React from 'react';
+import React, { useState } from 'react';
+import { useRef } from 'react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -11,7 +12,7 @@ import {
     Legend,
 } from 'chart.js';
 import './GraphSection.css'
-
+import zoomPlugin from 'chartjs-plugin-zoom';
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -19,9 +20,22 @@ ChartJS.register(
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    zoomPlugin
 );
 
+const zoomOptions = {
+    pan: {
+        enabled: true,
+        modifierKey: 'shift',
+    },
+    zoom: {
+        drag: {
+            enabled: true
+        },
+        mode: 'xy',
+    },
+};
 export const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -33,6 +47,7 @@ export const options = {
             display: false,
             text: '',
         },
+        zoom: zoomOptions,
     },
     scales: {
         x: {
@@ -53,24 +68,156 @@ export const options = {
 // labels should be times for the last 24 hours
 // i.e. 4:15am, 4:30am, 4:45am
 // should be programmatically generated
-let labels = [];
-for (let i = 0; i < 24; i++) {
-    for (let j = 0; j < 4; j++) {
-        let strI = i.toString();
-        if (i < 10) {
-            strI = `0${i}`;
-        }
 
-        let strJ = (j*15).toString();
-        if (j*15 < 10) {
-            strJ = `0${j}`;
-        }
+const colors = [{
+    borderColor: 'red',
+    backgroundColor: 'red',
+},
+{
+    borderColor: 'blue',
+    backgroundColor: 'blue',
+},
+{
+    borderColor: 'green',
+    backgroundColor: 'green',
+},
+{
+    borderColor: 'yellow',
+    backgroundColor: 'yellow',
+},
+{
+    borderColor: 'purple',
+    backgroundColor: 'purple',
+}]
 
-        labels.push(strI + ':' + strJ);
-    }
+function epochToDateString(epochSeconds) {
+    // Convert seconds to milliseconds
+    const epochMilliseconds = epochSeconds * 1000;
+
+    // Create a new Date object from milliseconds
+    const date = new Date(epochMilliseconds);
+
+    // Define an array with month names
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    // Get the required date values
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    // Format the hours and minutes
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    const amOrPm = hours >= 12 ? 'pm' : 'am';
+
+    // Create the final date string
+    const dateString = `${month} ${day} - ${formattedHours}:${formattedMinutes}${amOrPm}`;
+
+    return dateString;
 }
 
+function generate_labels(datasets) {
+    const labels = [];
+
+    if (datasets.length === 0) {
+        return labels;
+    }
+
+    // get longest dataset
+    let longest = 0;
+    let longest_ind = 0;
+    for (let i = 0; i < datasets.length; i++) {
+        if (datasets[i].data.length > longest) {
+            longest = datasets[i].data.length;
+            longest_ind = i;
+        }
+    }
+
+
+    for (let i = 0; i < datasets[longest_ind].data.length; i++) {
+        let label_str = epochToDateString(datasets[longest_ind].epochs[i]);
+        labels.push(label_str);
+    }
+
+    return labels;
+}
+
+function getDataByDate(windows, timeScale, windowState) {
+    const datasets = [];
+    // get curr epoch time
+
+    if (windowState.length === windows.length) {
+        let cuttoffTime = Date.now() / 1000;
+
+        if (timeScale === 'hour') {
+            cuttoffTime -= 3600;
+        } else if (timeScale === 'day') {
+            cuttoffTime -= 86400;
+        } else if (timeScale === 'week') {
+            cuttoffTime -= 604800;
+        } else if (timeScale === 'month') {
+            cuttoffTime -= 2592000;
+        }
+
+        console.log(timeScale, cuttoffTime);
+
+        for (let i = 0; i < windows.length; i++) {
+            if (windows[i].lastReadings === [] || !windowState[i]) {
+                continue;
+            }
+
+            datasets.push({
+                label: windows[i].name,
+                data: windows[i].lastReadings ? windows[i].lastReadings.filter(reading => reading.date_time > cuttoffTime).map((reading) => reading.temp_f) : [],
+                epochs: windows[i].lastReadings ? windows[i].lastReadings.filter(reading => reading.date_time > cuttoffTime).map((reading) => reading.date_time) : [], 
+                borderColor: colors[i].borderColor,
+                backgroundColor: colors[i].backgroundColor,
+            })
+        }
+
+        // console.log("Narrowed to " + datasets[0].data.length + " datapoints");
+    }
+
+    const labels = generate_labels(datasets);
+
+    const data = {
+        labels,
+        datasets: datasets,
+        xAxes: [
+            {
+                type: 'time',
+                time: {
+                    unit: 'hour',
+                },
+            },
+        ],
+        yAxes: [
+            {
+                type: 'linear',
+            },
+        ],
+    };
+
+    return data;
+}
+
+
 export default function GraphSection(props) {
+    const chartRef = useRef(null);
+    const [timeScale, setTimeScale] = useState('day');
+    const [windowState, setWindowState] = useState([]);
+
+    const data = getDataByDate(props.windows, timeScale, windowState);
+
+    if (windowState.length !== props.windows.length) {
+        let newState = []
+        for (let i = 0; i < props.windows.length; i++) {
+            newState.push(true);
+        }
+        setWindowState(newState);
+    }
+
     // In the future, we will want a useEffect to update the data
     // This can pull from RTK query to get the latest data every
     // fifteen minutes or so
@@ -86,102 +233,62 @@ export default function GraphSection(props) {
                     <hr className="window-overview-header-line" />
                     <div className='graph-section-wrapper-div'>
                         <Line options={{}} data={{}} />
-                    </div>
-                </div>
+                    </div> </div>
             </div>
         );
-    } 
-
-    const datasets = [];
-    let colors = [{
-        borderColor: 'red',
-        backgroundColor: 'red',
-    },
-    {
-        borderColor: 'blue',
-        backgroundColor: 'blue',
-    },
-    {
-        borderColor: 'green',
-        backgroundColor: 'green',
-    },
-    {
-        borderColor: 'yellow',
-        backgroundColor: 'yellow',
-    },
-    {
-        borderColor: 'purple',
-        backgroundColor: 'purple',
-    }]
-
-    // average all the data points for each window that has a full 100 data points
-    let avg_data = []
-    for (let i=0; i<100; i++) {
-        avg_data.push(0)
-        let num_skipped = 0;
-        for (let j=0; j<props.windows.length; j++) {
-            if (props.windows[j].lastReadings) {
-                if (props.windows[j].lastReadings.length < 100) {
-                    num_skipped++;
-                    continue;
-                }
-
-                avg_data[i] += parseFloat(props.windows[j].lastReadings[i].temp_f);
-            }
-        }
-
-        avg_data[i] /= props.windows.length-num_skipped;
     }
 
-    for (let i = 0; i < props.windows.length; i++) {
-        if (props.windows[i].lastReadings === []) {
-            continue;
-        }
-
-        datasets.push({
-            label: props.windows[i].name,
-            data: props.windows[i].lastReadings ? props.windows[i].lastReadings.map((reading) => reading.temp_f) : [],
-            borderColor: colors[i].borderColor,
-            backgroundColor: colors[i].backgroundColor,
-        })
-    }
-
-    datasets.push({
-        label: 'Average',
-        data: avg_data,
-        borderColor: 'black',
-        backgroundColor: 'black',
-    })
-
-    const data = {
-        labels,
-        datasets: datasets, 
-        xAxes: [
-            {
-                type: 'time',
-                time: {
-                    unit: 'hour',
-                },
-            },
-        ],
-        yAxes: [
-            {
-                type: 'linear',
-                ticks: {
-                    min: 60,
-                    max: 70,
-                },
-            },
-        ],
-    };
 
     return (
         <div className='outer-graph-section-wrapper'>
             <div className='inner-graph-section-wrapper'>
                 <h1 className='graph-overview-header-text'>Datapoints</h1>
                 <hr className="window-overview-header-line" />
+
+                <div className='graph-options-div'>
+                    <div className="window-dropdown">
+                        <button className="window-dropdown-button">Window</button>
+                        <div className="window-dropdown-content">
+                            {props.windows.map((window, index) => {
+                                return (
+                                    <label key={index} className="window-checkbox">
+                                        <input
+                                            type="checkbox"
+                                            value={"window" + index}
+                                            defaultChecked={true}
+                                            onChange={() => {
+                                                let newState = [...windowState];
+                                                newState[index] = !newState[index];
+                                                setWindowState(newState);
+                                            }}
+                                        />
+                                        {window.name}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    <label>
+                        Time Scale:
+                        <select className='time-scale-selector' onChange={(e) => {
+                            e.preventDefault();
+                            setTimeScale(e.target.value);
+                        }}>
+                            <option value='hour'>Hour</option>
+                            <option value='day' selected>Day</option>
+                            <option value='week'>Week</option>
+                            <option value='month'>Month</option>
+                        </select>
+                    </label>
+                    <button className='reset-button' onClick={() => {
+                        if (chartRef.current) {
+                            chartRef.current.resetZoom();
+                        }
+                    }}>Reset</button>
+                </div>
+
                 <div className='graph-section-wrapper-div'>
-                    <Line options={options} data={data} />
+                    <Line ref={chartRef} options={options} data={data} />
                 </div>
             </div>
         </div>
