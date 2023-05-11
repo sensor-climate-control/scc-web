@@ -20,7 +20,7 @@ function WeatherCard (props) {
     const temp = (
       <HorizontalDiv>
         <Text>Temp: {props.weather.main.feels_like}°F</Text>
-        <Text>Humid: {props.weather.main.humidity}%</Text>
+        <Text>Humidity: {props.weather.main.humidity}%</Text>
       </HorizontalDiv>
     )
 
@@ -28,7 +28,7 @@ function WeatherCard (props) {
       <div key={props.weather.dt} css={styles}>
         <Text>{dt.toDateString()}</Text>
         <Text>{dt.toLocaleTimeString('en-us')}</Text>
-        <img src={ `https://openweathermap.org/img/wn/${props.weather.weather[0].icon}@4x.png` } alt={props.weather.weather[0].description}/>
+        <img src={ `https://openweathermap.org/img/wn/${props.weather.weather[0].icon}@2x.png` } alt={props.weather.weather[0].description}/>
         {temp}
         {(props.weather.pop || props.weather.pop === 0) ? <Text>Precip: {props.weather.pop * 100}%</Text> : null}
         <Text>{props.weather.weather[0].description}</Text>
