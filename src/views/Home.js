@@ -56,7 +56,7 @@ export default function Home() {
             if (sensorData[i].readings) {
                 let status = "closed"
 
-                if (homePrefs && weather) {
+                if (homePrefs && weather && sensorData[i].readings.length > 0) {
                     let lastReadingF = sensorData[i].readings[sensorData[i].readings.length - 1].temp_f
 
                     // we open if the outside temp is cooler and the house is too hot
