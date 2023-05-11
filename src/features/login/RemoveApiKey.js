@@ -18,27 +18,25 @@ function RemoveApiKey (props) {
         console.log("==== formJson: ", formJson)
         console.log([...formData.entries()]);
         triggerRemoveApiKey({body: props.api_keys[formJson.selectedKey], user_id: props.userid})
-        // setDuration(60)
-        // setName("")
     }
 
-    const removeApiKeyForm = (
+    const removeApiKeyForm = (props.api_keys) ? (
         <form onSubmit={handleRemoveApiKey}>
-            <label for="keys">Select an API Key: </label>
+            <label htmlFor="keys">Select an API Key: </label>
             <select
                 id="keys"
                 name="selectedKey"
                 defaultValue={0}
             >
                 {props.api_keys.map((key, index) => (
-                    <option value={index}>{key.name}</option>
+                    <option value={index} key={index}>{key.name}</option>
                 ))}
             </select>
             <br />
             <br />
             <Button variant="contained" type="submit">Remove Api Key</Button>
         </form>
-    )
+    ) : (<p>No API Keys</p>)
 
     return (
         <MyCard title="Remove API Key">

@@ -10,7 +10,8 @@ const HomeSchema = {
     home_admins: { required: true },
     sensors: { default: [] },
     preferences: { required: true },
-    windows: { default: [] }
+    windows: { default: [] },
+    recommendations: { default: {} }
 }
 exports.HomeSchema = HomeSchema
 
@@ -53,7 +54,7 @@ async function updateHomeById(id, home) {
         { _id: new ObjectId(id) },
         home
     )
-    console.log("==== result: ", result)
+    // console.log("==== result: ", result)
     return result.matchedCount > 0;
 }
 exports.updateHomeById = updateHomeById

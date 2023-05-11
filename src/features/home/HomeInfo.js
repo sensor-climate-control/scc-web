@@ -28,7 +28,7 @@ function HomeInfo (props) {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        triggerModify({body: {name: name, zip_code: zipCode, users: homeData.users, home_admins: homeData.home_admins, sensors: homeData.sensors, preferences: {temperature: temperature}, windows: homeData.windows}, home_id: homeid})
+        triggerModify({body: {name: name, zip_code: zipCode, users: homeData.users, home_admins: homeData.home_admins, sensors: homeData.sensors, preferences: {temperature: temperature}, windows: homeData.windows, recommendations: homeData.recommendations}, home_id: homeid})
 
         setEditInfo(!editInfo)
     }
@@ -64,9 +64,7 @@ function HomeInfo (props) {
                 onChange={e => setTemperature(e.target.value)}
             />
             <p>{temperature}</p>
-            <br />
             <Button variant="contained" type="submit">Update Info</Button>
-            <br />
             <br />
             <Button variant="contained" onClick={() => {setEditInfo(false)}} >Cancel</Button>
         </form>) :
@@ -75,15 +73,13 @@ function HomeInfo (props) {
             <p>Name: {homeData.name}</p>
             <p>Zip Code: {homeData.zip_code}</p>
             <p>Desired Temperature: {homeData.preferences.temperature}</p>
-            {(homeData.users) ? <MyTable headers={["Users"]} rows={[homeData.users]} /> : <></>}
-            <br />
-            {(homeData.sensors) ? <MyTable headers={["Sensors"]} rows={[homeData.sensors]} /> : <></> }
-            <br />
+            {(homeData.users) ? (<><MyTable headers={["Users"]} rows={[homeData.users]} /><br /></>) : <></>}
+            {(homeData.sensors) ? (<><MyTable headers={["Sensors"]} rows={[homeData.sensors]} /><br /></>) : <></> }
             <Button variant="contained" onClick={handleEditButton}>Edit Info</Button>
         </div>)
 
     return (
-        <MyCard title="Home Info" >
+        <MyCard title="Home Info" style={{ width: '25rem', backgroundColor: '#646c7a' }}>
             {homeInfo}
         </MyCard>
     )
