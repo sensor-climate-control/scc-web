@@ -270,12 +270,12 @@ export default function GraphSection(props) {
                     </div>
                     <label>
                         Time Scale:
-                        <select className='time-scale-selector' onChange={(e) => {
+                        <select className='time-scale-selector' defaultValue='day' onChange={(e) => {
                             e.preventDefault();
                             setTimeScale(e.target.value);
                         }}>
                             <option value='hour'>Hour</option>
-                            <option value='day' selected>Day</option>
+                            <option value='day'>Day</option>
                             <option value='week'>Week</option>
                             <option value='month'>Month</option>
                         </select>

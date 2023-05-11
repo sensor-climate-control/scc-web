@@ -28,22 +28,18 @@ function UserPage () {
             <Header page_name='Account Information' user_first_name={(userdata) ? userdata.name : ''} />
             {(!userdata) ? <CircularProgress /> : (
                 <Grid container spacing={1} >
-                    <Grid item xs={0.25} />
-                    <Grid container item spacing={1}>
-                        <Grid item xs={0.05} />
-                        <Grid item xs={2}>
+                    <Grid item />
+                    <Grid container item justifyContent="flex-start" direction="row" alignItems="flex-start" spacing={1}>
+                        <Grid item xs="auto">
                             <UserInfo userdata={userdata} />
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs="auto">
                             <ApiKeys api_keys={userdata.api_keys} />
                         </Grid>
-                    </Grid>
-                    <Grid container item spacing={1}>
-                        <Grid item xs={0.05} />
-                        <Grid item xs={2}>
+                        <Grid item xs="auto">
                             <CreateApiKey userid={userid} />
                         </Grid>
-                        <Grid item xs={2}>
+                        <Grid item xs="auto">
                             <RemoveApiKey api_keys={userdata.api_keys} userid={userid} />
                         </Grid>
                     </Grid>
