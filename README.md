@@ -5,13 +5,26 @@ Web frontend and backend repository for the Oregon State University Sensor-Based
 
 Install [NodeJS](https://nodejs.org/en/download/) and ensure you have [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
 
-Run `npm install`
+Clone this repository
+```bash
+git clone git@github.com:sensor-climate-control/scc-web.git
+cd scc-web
+```
+Install the dependencies
+```bash
+npm install
+```
+Open one terminal window to run the NodeJS backend (with nodemon to reload on code change)
+```bash
+npm run dev
+```
+Open another terminal window to run the ReactJS frontend (in development mode to reload on code change)
+```bash
+npm run react
+```
+ReactJS should automatically open a browser window.
 
-Run `npm run react` and `npm run dev` in separate terminal windows to run both the ReactJS frontend and NodeJS backend in development mode (reload on code change).
-
-### `npm run serve`
-
-Builds the React app and serves it with NodeJS. Use for testing, not development.
+If it does not, open your web browser and navigate to the URL listed in the ReactJS terminal window
 
 ## Self-hosting
 
@@ -21,7 +34,7 @@ The supported method of self-hosting is using Docker Compose:
 1. Install [Docker Engine](https://docs.docker.com/engine/install/)
 2. (optional) including the [post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/)
 3. Clone this repository:
-```
+```bash
 git clone git@github.com:sensor-climate-control/scc-web.git
 cd scc-web
 ```
@@ -36,7 +49,7 @@ cd scc-web
         2. Under "Select the app and device you want to generate the app password for.", select "Mail" as the app and "Other (custom name)" as the device. Enter an identifiable name. Then click Generate.
         3. Copy this app password and enter it into the SMTP_PASS field of .env
     - Using Gmail, .env would look something like this:
-```
+```bash
 OWM_API_KEY="OpenWeatherMapApiKey"
 JWT_SECRET="FakeSecret"
 MONGO_ROOT_USER="root"

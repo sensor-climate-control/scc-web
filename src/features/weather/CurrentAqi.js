@@ -3,14 +3,9 @@ import MyCard from "../application/MyCard";
 import { useGetCurrentAqiQuery } from '../../reduxApi';
 import { CircularProgress } from "@mui/material";
 import Text from '../application/Text';
-import { css } from '@emotion/react';
+import HorizontalDiv from '../application/HorizontalDiv';
 
 const CurrentAqi = (props) => {
-    const horizontal = css`
-        display: inline-flex;
-        flex-direction: row;
-        margin-left: 20px;
-    `;
 
     const { data, error, isError, isLoading, isUninitialized } = useGetCurrentAqiQuery(
         props.zip_code, 
@@ -35,14 +30,14 @@ const CurrentAqi = (props) => {
                     <Text>{dt.toDateString()}</Text>
                     <Text>{dt.toLocaleTimeString('en-us')}</Text>
                     <br />
-                    <div css={horizontal}>
+                    <HorizontalDiv>
                         <Text>AQI (PM2.5): </Text>
                         <Text color={aqi_color[data.list[0].main.aqi - 1]}>{Math.floor(data.list[0].components.pm2_5 * 10)}</Text>
-                    </div>
-                    <div css={horizontal}>
+                    </HorizontalDiv>
+                    <HorizontalDiv>
                         <Text>Category: </Text>
                         <Text color={aqi_color[data.list[0].main.aqi - 1]}>{data.list[0].main.aqi} ({aqi_description[data.list[0].main.aqi - 1]})</Text>
-                    </div>
+                    </HorizontalDiv>
                 </div>) : (<p>No results found</p>)
             }
         </MyCard>

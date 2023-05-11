@@ -4,6 +4,7 @@ import { CircularProgress } from '@mui/material';
 import MyCard from '../application/MyCard';
 import MyTable from '../application/MyTable';
 import { Button } from '@mui/material';
+import HorizontalDiv from '../application/HorizontalDiv';
 
 function HomeInfo (props) {
     const homeid = props.homeid
@@ -33,27 +34,45 @@ function HomeInfo (props) {
         setEditInfo(!editInfo)
     }
 
+    const sensorRows = (homeData) ? (
+        homeData.sensors.map(sensor => {
+            return [sensor]
+        })
+    ) : null
+
+    const userRows = (homeData) ? (
+        homeData.users.map(user => {
+            return [user]
+        })
+    ) : null
+
     const homeInfo =
         (isLoading || modifyLoading ) ? <CircularProgress /> : 
         (isError) ? <p>{JSON.stringify(error)}</p> :
         (isModifyError) ? (<p>{JSON.stringify(modifyError)}</p>) :
         (editInfo) ? (<form onSubmit={handleSubmit}>
             <p>HomeID: {homeData._id}</p>
-            <label for="name">Name:</label>
+            <label htmlFor="name">Name: </label>
             <input
                 type="text"
                 id="name"
                 value={name}
+                required={true}
                 onChange={e => setName(e.target.value)}
             />
-            <label for="zipCode">Zip Code:</label>
+            <br />
+            <br />
+            <label htmlFor="zipCode">Zip Code: </label>
             <input
                 type="text"
                 id="zipCode"
                 value={zipCode}
+                required={true}
                 onChange={e => setZipCode(e.target.value)}
             />
-            <label for="temperature">Desired temperature:</label>
+            <br />
+            <br />
+            <label htmlFor="temperature">Desired temperature:</label>
             <input
                 type="range"
                 id="temperature"
@@ -64,17 +83,20 @@ function HomeInfo (props) {
                 onChange={e => setTemperature(e.target.value)}
             />
             <p>{temperature}</p>
-            <Button variant="contained" type="submit">Update Info</Button>
-            <br />
-            <Button variant="contained" onClick={() => {setEditInfo(false)}} >Cancel</Button>
+            <HorizontalDiv>
+                <Button variant="contained" onClick={() => {setEditInfo(false)}} >Cancel</Button>
+                <Button variant="contained" type="submit">Update Info</Button>
+            </HorizontalDiv>
         </form>) :
         (<div>
             <p>HomeID: {homeData._id}</p>
             <p>Name: {homeData.name}</p>
             <p>Zip Code: {homeData.zip_code}</p>
             <p>Desired Temperature: {homeData.preferences.temperature}</p>
-            {(homeData.users) ? (<><MyTable headers={["Users"]} rows={[homeData.users]} /><br /></>) : <></>}
-            {(homeData.sensors) ? (<><MyTable headers={["Sensors"]} rows={[homeData.sensors]} /><br /></>) : <></> }
+            {(homeData.users) ? (<MyTable headers={["Users"]} rows={userRows} />) : null }
+            <br />
+            {(homeData.sensors) ? (<MyTable headers={["Sensors"]} rows={sensorRows} />) : null }
+            <br />
             <Button variant="contained" onClick={handleEditButton}>Edit Info</Button>
         </div>)
 

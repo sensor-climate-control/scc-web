@@ -4,6 +4,7 @@ import { Button, CircularProgress, Switch } from '@mui/material';
 import MyCard from "../application/MyCard";
 import { useModifyUserMutation } from '../../reduxApi';
 import MyTable from '../application/MyTable';
+import HorizontalDiv from '../application/HorizontalDiv';
 
 function UserInfo (props) {
     const [ editInfo, setEditInfo ] = useState(false)
@@ -47,12 +48,14 @@ function UserInfo (props) {
                     type="text"
                     id="name"
                     value={name}
+                    required={true}
                     onChange={e => setName(e.target.value)}
                 />
             <label for="email">Email Address:</label>
             <input
                     type="email"
                     value={email}
+                    required={true}
                     onChange={e => setEmail(e.target.value)}
                 />
             <label for="password">Password:</label>
@@ -79,9 +82,11 @@ function UserInfo (props) {
             <Switch id="phoneNotif" checked={phoneNotifications} onChange={() => {setPhoneNotifications(!phoneNotifications)}} />
             <MyTable headers={["Homes"]} rows={[userdata.homes]} />
             <br />
-            <Button variant="contained" type="submit">Update Info</Button>
-            <br />
-            <Button variant="contained" onClick={() => {setEditInfo(false)}} >Cancel</Button>
+            <HorizontalDiv>
+                <Button variant="contained" onClick={() => {setEditInfo(false)}} >Cancel</Button>
+                <br />
+                <Button variant="contained" type="submit">Update Info</Button>
+            </HorizontalDiv>
         </form>) :
         (<div>
             <p>UserID: {userdata._id}</p>
