@@ -1,27 +1,49 @@
+/** @jsxImportSource @emotion/react */
 import MyCard from "../application/MyCard";
 import { useGetCurrentAqiQuery } from '../../reduxApi';
 import { CircularProgress } from "@mui/material";
-import TimestampToDateTime from "../application/TimestampToDateTime";
+import Text from '../application/Text';
+import { css } from '@emotion/react';
 
 const CurrentAqi = (props) => {
-    const { data, error, isError, isLoading } = useGetCurrentAqiQuery(
+    const horizontal = css`
+        display: inline-flex;
+        flex-direction: row;
+        margin-left: 20px;
+    `;
+
+    const { data, error, isError, isLoading, isUninitialized } = useGetCurrentAqiQuery(
         props.zip_code, 
-        { pollingInterval: 30000, }
+        { 
+            pollingInterval: 30000,
+            skip: !props.zip_code, 
+        }
     );
 
     const aqi_description = ["Good", "Fair", "Moderate", "Poor", "Very Poor"]
+    const aqi_color = ["green", "yellow", "red", "purple", "maroon"]
+    const dt = (data) ? new Date(data.list[0].dt * 1000) : null
+
 
     return (
         <MyCard title="Current Air Quality">
             {
                 (isError) ? (<p>Error: {JSON.stringify(error)}</p>) :
-                (isLoading) ? <CircularProgress /> : 
-                (data.list && data.list.length < 1) ? (<p>No results found</p>) :
+                (isLoading || isUninitialized) ? <CircularProgress /> : 
+                (data.list && data.list.length > 0) ? 
                 (<div className="weather-stats-wrapper">
-                        <p>AQI (PM2.5): {data.list[0].components.pm2_5 * 10}</p>
-                        <p>Category: {data.list[0].main.aqi} ({aqi_description[data.list[0].main.aqi - 1]})</p>
-                        <p>Last Reading: {TimestampToDateTime(data.list[0].dt * 1000)}</p>
-                </div>)
+                    <Text>{dt.toDateString()}</Text>
+                    <Text>{dt.toLocaleTimeString('en-us')}</Text>
+                    <br />
+                    <div css={horizontal}>
+                        <Text>AQI (PM2.5): </Text>
+                        <Text color={aqi_color[data.list[0].main.aqi - 1]}>{Math.floor(data.list[0].components.pm2_5 * 10)}</Text>
+                    </div>
+                    <div css={horizontal}>
+                        <Text>Category: </Text>
+                        <Text color={aqi_color[data.list[0].main.aqi - 1]}>{data.list[0].main.aqi} ({aqi_description[data.list[0].main.aqi - 1]})</Text>
+                    </div>
+                </div>) : (<p>No results found</p>)
             }
         </MyCard>
     )

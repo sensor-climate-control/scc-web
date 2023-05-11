@@ -25,7 +25,7 @@ function UserPage () {
 
     return (
         <>
-            <Header page_name='User Information' user_first_name={(userdata) ? userdata.name : ''} />
+            <Header page_name='Account Information' user_first_name={(userdata) ? userdata.name : ''} />
             {(!userdata) ? <CircularProgress /> : (
                 <Grid container spacing={1} >
                     <Grid item xs={3}>

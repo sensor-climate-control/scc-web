@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { whatShouldYouDoWithTheWindows, sendNotification } = require('../lib/recommendations');
 const { validateAgainstSchema, extractValidFields } = require('../lib/validation');
 const { requireAuthentication, authorizedToAccessHomeEndpoint } = require('../lib/auth')
 const { HomeSchema, insertNewHome, getAllHomes, getHomeById, deleteHomeById, updateHomeById } = require('../models/homes');
@@ -10,7 +11,7 @@ router.post('/', requireAuthentication, async function (req, res, next) {
     if (validateAgainstSchema(req.body, HomeSchema)) {
         try {
             const id = await insertNewHome(req.body)
-            console.log("==== new home id: ", id)
+            // console.log("==== new home id: ", id)
             res.status(201).send({
                 id: id
             })
@@ -51,6 +52,20 @@ router.get('/:homeid', requireAuthentication, async function (req, res, next) {
         } else {
             next();
         }
+    } else {
+        res.status(403).send({
+            error: "You are not authorized to access this resource"
+        })
+    }
+})
+
+router.get('/:homeid/rec', requireAuthentication, async function (req, res, next) {
+    const homeid = req.params.homeid
+    if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
+        const result = await whatShouldYouDoWithTheWindows(homeid)
+        const home = await getHomeById(homeid)
+        const info = await sendNotification(home, result)
+        res.status(200).send({recommendation: result, notifications: info})
     } else {
         res.status(403).send({
             error: "You are not authorized to access this resource"
@@ -263,12 +278,12 @@ router.put('/:homeid/sensors/:sensorid/readings', requireAuthentication, async f
                     sensor.readings = []
                 }
 
-                validReadings.forEach(reading => {
+                for(const reading of validReadings) {
                     if (!reading.date_time) {
                         reading.date_time = Date.now()
                     }
                     sensor.readings.push(reading)
-                })
+                }
 
                 const successfulUpdate = await updateSensorById(sensorid, sensor)
                 if (successfulUpdate) {

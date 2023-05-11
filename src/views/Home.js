@@ -1,15 +1,15 @@
 import WindowOverview from "../features/weather/WindowOverview";
 import GraphSection from "../features/weather/graph/GraphSection";
 import './Home.css'
-import { api, useGetHomeDetailsQuery } from '../reduxApi';
 import { useStore } from 'react-redux'
 import Header from '../features/application/Header';
 import { useNavigate } from 'react-router-dom';
 import CurrentWeather from '../features/weather/CurrentWeather';
 import React, { useEffect } from 'react';
-import { useGetUserDetailsQuery } from '../reduxApi';
+import { useGetUserDetailsQuery, useGetHomeDetailsQuery, useGetCurrentWeatherQuery, useGetHomeSensorsQuery } from '../reduxApi';
 import CreateHome from "../features/home/CreateHome";
 import CurrentAqi from "../features/weather/CurrentAqi";
+import Recommendation from "../features/home/Recommendation";
 
 export default function Home() {
     // useeffect
@@ -22,7 +22,7 @@ export default function Home() {
     })
 
     const userid = store.getState().token.userid
-    const { data: userdata, isSuccess: skip } = useGetUserDetailsQuery(userid);
+    const { data: userdata, isSuccess: skip } = useGetUserDetailsQuery(userid, {skip: !userid});
 
     let selectedHome = null;
     if (userdata) {
@@ -35,15 +35,17 @@ export default function Home() {
         }
     }
 
-    const { data: homePrefs } = useGetHomeDetailsQuery(selectedHome);
-    const { data: weather } = api.useGetWeatherQuery((homePrefs) ? homePrefs.zip_code : null);
+    const { data: homePrefs } = useGetHomeDetailsQuery(selectedHome, {skip: !selectedHome});
+    const { data: weather } = useGetCurrentWeatherQuery((homePrefs) ? homePrefs.zip_code : null, {skip: !homePrefs});
 
-    const { data: sensorData } = api.useGetHomeSensorsQuery(selectedHome, {
+    console.log("==== selectedHome: ", selectedHome)
+
+    const { data: sensorData } = useGetHomeSensorsQuery(selectedHome, {
         pollingInterval: 300000,
         skip: !skip
     });
 
-    const { data } = api.useGetHomeDetailsQuery(selectedHome, {
+    const { data } = useGetHomeDetailsQuery(selectedHome, {
         skip: !skip
     })
 
@@ -107,7 +109,7 @@ export default function Home() {
                 <GraphSection windows={window_data} />
             </div>
             <CurrentWeather zip_code={(data) ? data.zip_code : null} />
-            <CurrentAqi zip_code={(data) ? data.zip_code : null} />
+            <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
         </>
     )
 

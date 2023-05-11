@@ -19,7 +19,7 @@ function CreateApiKey (props) {
 
     const createApiKeyForm = (
         <form onSubmit={handleCreateApiKey}>
-            <label for="duration">Duration (days):</label>
+            <label htmlFor="duration">Duration (days):</label>
             <input
                 type="range"
                 placeholder="60"
@@ -29,7 +29,7 @@ function CreateApiKey (props) {
                 onChange={e => setDuration(e.target.value)}
             />
             <p>{duration}</p>
-            <label for="name">Name:</label>
+            <label htmlFor="name">Name:</label>
             <input
                 type="text"
                 placeholder="Kitchen"
