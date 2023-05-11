@@ -68,7 +68,9 @@ async function getLatestReadings(homeid) {
         if (sensors) {
             for (let i = 0; i < sensors.length; i++) {
                 const details = await getSensorById(sensors[i])
-                latest_readings.push({"sensor": details._id, "reading": details.readings.pop()})
+                if(details.readings && details.readings.length > 0) {
+                    latest_readings.push({"sensor": details._id, "reading": details.readings.pop()})
+                }
             }
         }
         return latest_readings
@@ -92,15 +94,17 @@ async function whatShouldYouDoWithTheWindows(homeid, previous_dt=Date.now()) {
 
     let average_humidity = 0
     let average_temp = 0
+    let num_readings = 0
     for(let i = 0; i < latest_readings.length; i++) {
-        if(!latest_readings[i].reading) {
-            continue
+        if(latest_readings[i].reading && latest_readings[i].reading.humidity && latest_readings[i].reading.temp_f) {
+            average_humidity += latest_readings[i].reading.humidity
+            average_temp += latest_readings[i].reading.temp_f
+            num_readings++
         }
-        average_humidity += latest_readings[i].reading.humidity
-        average_temp += latest_readings[i].reading.temp_f
     }
-    average_humidity /= latest_readings.length
-    average_temp /= latest_readings.length
+
+    average_humidity /= num_readings
+    average_temp /= num_readings
     const desired_heat_index = await HeatIndex(desired_temp, average_humidity)
     const current_heat_index = await HeatIndex(average_temp, average_humidity)
 
@@ -261,12 +265,11 @@ async function sendNotification(home, recommendation) {
     let smsRecommendationText = recommendationContent[recommendation.now.reason] + recommendationContent[recommendation.now.rec] + `\n\nIn ${futureTime} hours: ` + recommendationContent[recommendation.future.reason] + recommendationContent[recommendation.future.rec]
 
     let notificationInfo = []
-    for(const userid of home.users) {
-        const user = await getUserById(userid)
+    for(let i = 0; i < home.users.length; i++) {
+        const user = await getUserById(home.users[i])
         let userNotificationInfo = []
-        if(user.preferences && user.preferences.notifications) {
+        if(user && user.preferences && user.preferences.notifications) {
             if(user.preferences.notifications.phone) {
-                //send sms
                 console.log(`==== sending sms notification to ${user.phone}`)
                 const info = await sendSms(user.phone, smsRecommendationText)
                 userNotificationInfo.push({ sms: info })
@@ -277,33 +280,33 @@ async function sendNotification(home, recommendation) {
                 userNotificationInfo.push({ email: info })
             }
         }
-        notificationInfo.push({user: userid, info: userNotificationInfo})
+        notificationInfo.push({user: home.users[i], info: userNotificationInfo})
     }
     return notificationInfo
 }
 exports.sendNotification = sendNotification
 
 async function checkForRecommendationUpdates() {
-    let homes = await getAllHomes()
+    const homes = await getAllHomes()
 
-    for(const home of homes) {
-        let new_rec = await whatShouldYouDoWithTheWindows(home._id)
+    for(let i = 0; i < homes.length; i++) {
+        const new_rec = await whatShouldYouDoWithTheWindows(homes[i]._id)
 
         if(new_rec && new_rec.dt) {
-            const updateRec = await shouldWeUpdateRecommendationsNow(new_rec, home.recommendations)
-            console.log(`==== updateRec for ${home._id}: `, updateRec)
+            const updateRec = await shouldWeUpdateRecommendationsNow(new_rec, homes[i].recommendations)
+            console.log(`==== ${i}: updateRec for ${homes[i]._id}: `, updateRec)
             if(updateRec) {
-                let newHome = home
+                let newHome = homes[i]
                 newHome.recommendations = new_rec
-                const result = await updateHomeById(home._id, newHome)
-                console.log("==== recUpdateResult: ", result)
-                await sendNotification(home, new_rec)
+                const result = await updateHomeById(homes[i]._id, newHome)
+                console.log("==== updateHomeById result: ", result)
+                await sendNotification(homes[i], new_rec)
             }
         } else {
-            console.log(`==== unable to create a proper recommendation for ${home._id}`)
+            console.log(`==== unable to create a proper recommendation for ${homes[i]._id}`)
         }
     }
-
+    console.log(`==== done, completed recommendation check for ${homes.length} homes`)
     return
 }
 exports.checkForRecommendationUpdates = checkForRecommendationUpdates

@@ -31,6 +31,7 @@ function CreateApiKey (props) {
             <p>{duration}</p>
             <label htmlFor="name">Name:</label>
             <input
+                required={true}
                 type="text"
                 placeholder="Kitchen"
                 value={name}

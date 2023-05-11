@@ -19,6 +19,7 @@ async function sendSms(to, message) {
 
         return textMessage
     } catch (e) {
+        console.log("==== fetch was unsuccessful: ", e)
         return({ message: "Fetch was unsuccessful", error: e})
     }
 }

@@ -56,12 +56,19 @@ connectToDb(function ()  {
 
 		cron.schedule("*/15 * * * *", async () => {
 			console.log("======== Updating weather information ========")
+			try {
 			await updateWeatherInfo();
+			} catch (e) {
+				console.log("==== scheduled task encountered an error: ", e)
+			}
 		});
 		cron.schedule("*/15 * * * *", async () => {
 			console.log("======== Updating recommendation information ========")
-			await checkForRecommendationUpdates();
+			try {
+				await checkForRecommendationUpdates();
+			} catch (e) {
+				console.log("==== scheduled task encountered an error: ", e)
+			}
 		});
-
-	})
-})
+	});
+});

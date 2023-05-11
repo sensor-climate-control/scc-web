@@ -10,6 +10,7 @@ import { useGetUserDetailsQuery, useGetHomeDetailsQuery, useGetCurrentWeatherQue
 import CreateHome from "../features/home/CreateHome";
 import CurrentAqi from "../features/weather/CurrentAqi";
 import Recommendation from "../features/home/Recommendation";
+import { Grid } from '@mui/material';
 
 export default function Home() {
     // useeffect
@@ -107,9 +108,17 @@ export default function Home() {
                     <WindowOverview windows={window_data} />
                     <GraphSection windows={window_data}/>
                 </div>
-                <CurrentWeather zip_code={(data) ? data.zip_code : false} />
-                <CurrentAqi zip_code={(data) ? data.zip_code : false} />
-                <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
+                <Grid container item justifyContent="flex-start" direction="row" alignItems="flex-start" spacing={1}>
+                    <Grid item xs="auto">
+                        <CurrentWeather zip_code={(data) ? data.zip_code : false} />
+                    </Grid>
+                    <Grid item xs="auto">
+                        <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
+                    </Grid>
+                    <Grid item xs="auto">
+                        <CurrentAqi zip_code={(data) ? data.zip_code : false} />
+                    </Grid>
+                </Grid>
             </>
         )
 
