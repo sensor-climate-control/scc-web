@@ -2,7 +2,7 @@ const { ObjectId } = require('mongodb')
 
 const { extractValidFields } = require('../lib/validation')
 const { getDbReference } = require('../lib/mongo')
-const { getUserById } = require('./users')
+const { getUserById, updateUserById } = require('./users')
 
 const HomeSchema = {
     name: { required: true },
@@ -15,6 +15,13 @@ const HomeSchema = {
     recommendations: { default: {} }
 }
 exports.HomeSchema = HomeSchema
+
+const WindowSchema = {
+    name: { required: true },
+    direction: { required: true },
+    sensorid: { required: false }
+}
+exports.WindowSchema = WindowSchema
 
 async function insertNewHome(home) {
     home = extractValidFields(home, HomeSchema)
@@ -75,3 +82,25 @@ async function deleteHomeById(id) {
     return result.deletedCount > 0;
 }
 exports.deleteHomeById = deleteHomeById
+
+async function addWindowToHome(id, window) {
+    const windowToAdd = extractValidFields(window, WindowSchema)
+    let home = await getHomeById(id)
+    if(!home.windows) {
+        home.windows = []
+    }
+    home.windows.push(windowToAdd)
+    const result = await updateHomeById(id, home)
+    return result
+}
+exports.addWindowToHome = addWindowToHome
+
+async function removeWindowFromHome(id, windowToRemove) {
+    let home = await getHomeById(id)
+    if(home && home.windows && home.windows > 0) {
+        home.windows = home.windows.filter(window => !window.equals(windowToRemove))
+    }
+    const result = await updateHomeById(id, home)
+    return result
+}
+exports.removeWindowFromHome = removeWindowFromHome

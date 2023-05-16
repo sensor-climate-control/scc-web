@@ -38,6 +38,14 @@ async function insertNewSensor(sensor) {
 }
 exports.insertNewSensor = insertNewSensor
 
+async function getAllSensors() {
+    const db = getDbReference()
+    const collection = db.collection('sensors')
+    const result = await collection.find({}).toArray()
+    return result
+}
+exports.getAllSensors = getAllSensors
+
 async function getSensorById(id) {
     const db = getDbReference()
     const collection = db.collection('sensors')

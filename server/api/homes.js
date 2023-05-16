@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { whatShouldYouDoWithTheWindows, sendNotification } = require('../lib/recommendations');
 const { validateAgainstSchema, extractValidFields } = require('../lib/validation');
 const { requireAuthentication, authorizedToAccessHomeEndpoint } = require('../lib/auth')
-const { HomeSchema, insertNewHome, getAllHomes, getHomeById, deleteHomeById, updateHomeById } = require('../models/homes');
+const { HomeSchema, insertNewHome, getAllHomes, getHomeById, deleteHomeById, updateHomeById, WindowSchema, addWindowToHome, removeWindowFromHome } = require('../models/homes');
 const { SensorSchema, getSensorById, insertNewSensor, updateSensorById, deleteSensorById, SensorReadingSchema } = require('../models/sensors');
 
 // Creates new home
@@ -308,6 +308,55 @@ router.put('/:homeid/sensors/:sensorid/readings', requireAuthentication, async f
     } else {
         res.status(403).send({
             error: "You are not authorized to modify this resource"
+        })
+    }
+})
+
+// Adds new window to home
+// Requires admin or home admin auth
+router.post('/:homeid/windows', requireAuthentication, async function (req, res, next) {
+    if(await authorizedToAccessHomeEndpoint(req.user, req.params.homeid)) {
+        if (validateAgainstSchema(req.body, WindowSchema)) {
+            try {
+                await addWindowToHome(req.params.homeid, req.body)
+                res.status(201).send({
+                    result: "Successfully added window"
+                })
+            } catch (err) {
+                console.error(err)
+                res.status(500).send({
+                    error: "Error adding window to home. Please try again later."
+                })
+            }
+        } else {
+            res.status(400).send({
+                error: "Request body does not contain a valid window object"
+            })
+        }
+    } else {
+        res.status(403).send({
+            error: "You are not authorized to access this resource"
+        })
+    }
+})
+
+// Deletes window
+// Requires admin or home admin auth
+router.delete('/:homeid/windows', requireAuthentication, async function (req, res, next) {
+    const homeid = req.params.homeid
+    if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
+        try {
+            await removeWindowFromHome(homeid, req.body)
+            res.status(204).send();
+        } catch (err) {
+            console.error(err)
+            res.status(500).send({
+                error: "Error removing window from home. Please try again later."
+            })
+        }
+    } else {
+        res.status(403).send({
+            error: "You are not authorized to access this resource"
         })
     }
 })
