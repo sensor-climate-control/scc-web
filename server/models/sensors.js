@@ -42,7 +42,7 @@ async function getAllSensors() {
     const db = getDbReference()
     const collection = db.collection('sensors')
     const result = await collection.find({}).toArray()
-    return sensors
+    return result
 }
 exports.getAllSensors = getAllSensors
 
