@@ -103,7 +103,7 @@ async function insertWeatherReadingByZip(zip_code, reading) {
     result.weather_readings.push(reading)
     
     const replaceResult = await collection.replaceOne(
-        { zip_code: zip_code },
+        { zip_code: {$eq: zip_code}},
         result
     )
     return replaceResult.matchedCount > 0;
@@ -126,7 +126,7 @@ async function insertAqiReadingByZip(zip_code, reading) {
     result.aqi_readings.push(reading)
     
     const replaceResult = await collection.replaceOne(
-        { zip_code: zip_code },
+        { zip_code: {$eq: zip_code}},
         result
     )
     return replaceResult.matchedCount > 0;
@@ -179,7 +179,7 @@ async function updateFiveThreeForecastByZip(zip_code, forecast) {
     result.weather_forecast = {forecast: forecast, dt: Date.now()}
     
     const replaceResult = await collection.replaceOne(
-        { zip_code: zip_code },
+        { zip_code: {$eq: zip_code}},
         result
     )
     return replaceResult.matchedCount > 0;
@@ -200,7 +200,7 @@ async function updateAqiForecastByZip(zip_code, forecast) {
     result.aqi_forecast = {forecast: forecast, dt: Date.now()}
     
     const replaceResult = await collection.replaceOne(
-        { zip_code: zip_code },
+        { zip_code: {$eq: zip_code}},
         result
     )
     return replaceResult.matchedCount > 0;
