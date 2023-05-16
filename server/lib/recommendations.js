@@ -109,7 +109,7 @@ async function whatShouldYouDoWithTheWindows(homeid, previous_dt=Date.now()) {
     const current_heat_index = await HeatIndex(average_temp, average_humidity)
 
     const current_weather = await (await getCurrentWeather(zip_code)).content
-    if(!current_weather) {
+    if(!current_weather || !current_weather.main) {
         return {}
     }
     const current_humidity = current_weather.main.humidity

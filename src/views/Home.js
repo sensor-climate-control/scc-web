@@ -45,7 +45,8 @@ export default function Home() {
     });
 
     const { data } = useGetHomeDetailsQuery(selectedHome, {
-        skip: !skip
+        skip: !skip,
+        pollingInterval: 900000
     })
 
     let window_data = []
