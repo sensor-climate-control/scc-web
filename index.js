@@ -4,6 +4,7 @@ const cors = require('cors');
 const { connectToDb } = require('./server/lib/mongo');
 const RateLimit = require('express-rate-limit');
 const cron = require('node-cron');
+const { checkSensorStatus } = require('./server/lib/sensorStatus');
 const { updateWeatherInfo } = require('./server/lib/weather');
 const { checkForRecommendationUpdates } = require('./server/lib/recommendations');
 const { connectToSMTP } = require('./server/lib/mail');
@@ -70,5 +71,13 @@ connectToDb(function ()  {
 				console.log("==== scheduled task encountered an error: ", e)
 			}
 		});
+		cron.schedule("0 * * * *", async () => {
+			console.log("======== Checking if sensors are online ========")
+			try {
+				await checkSensorStatus();
+			} catch (e) {
+				console.log("==== scheduled task encountered an error: ", e)
+			}
+		})
 	});
 });

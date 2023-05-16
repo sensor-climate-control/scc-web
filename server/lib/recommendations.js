@@ -248,9 +248,32 @@ async function shouldWeUpdateRecommendationsNow(recommendation, previous_recomme
 }
 exports.shouldWeUpdateRecommendationsNow = shouldWeUpdateRecommendationsNow
 
-async function sendNotification(home, recommendation) {
-    // const degreeSymbol = String.fromCharCode(176)
-    console.log("=============== sending notification =============")
+async function sendNotification(home, smsNotificationText, emailNotificationText) {
+    console.log("=============== sending notifications =============")
+
+    let notificationInfo = []
+    for(let i = 0; i < home.users.length; i++) {
+        const user = await getUserById(home.users[i])
+        let userNotificationInfo = []
+        if(user && user.preferences && user.preferences.notifications) {
+            if(user.preferences.notifications.phone) {
+                console.log(`==== sending sms notification to ${user.phone}`)
+                const info = await sendSms(user.phone, smsNotificationText)
+                userNotificationInfo.push({ sms: info })
+            } 
+            if(user.preferences.notifications.email) {
+                console.log(`==== sending email notification to ${user.email}`)
+                const info = await sendMail(user.email, "SCC-Web window recommendation", emailNotificationText)
+                userNotificationInfo.push({ email: info })
+            }
+        }
+        notificationInfo.push({user: home.users[i], info: userNotificationInfo})
+    }
+    return notificationInfo
+}
+exports.sendNotification = sendNotification
+
+async function sendRecommendationNotifications(home, recommendation) {
     const recommendationContent = {
         heatIndexWarm: `To help warm your home to ${home.preferences.temperature}F, you should `,
         heatIndexCool: `To help cool your home to ${home.preferences.temperature}F, you should `,
@@ -261,30 +284,13 @@ async function sendNotification(home, recommendation) {
         none: "leave your windows as they are."
     }
     const futureTime = Math.ceil((recommendation.future.dt - Date.now()) / 3600000)
-    let recommendationText = recommendationContent[recommendation.now.reason] + recommendationContent[recommendation.now.rec] + `\n\nBased on the weather forecast, in ${futureTime} hours: ` + recommendationContent[recommendation.future.reason] + recommendationContent[recommendation.future.rec]
-    let smsRecommendationText = recommendationContent[recommendation.now.reason] + recommendationContent[recommendation.now.rec] + `\n\nIn ${futureTime} hours: ` + recommendationContent[recommendation.future.reason] + recommendationContent[recommendation.future.rec]
+    const emailRecommendationText = recommendationContent[recommendation.now.reason] + recommendationContent[recommendation.now.rec] + `\n\nBased on the weather forecast, in ${futureTime} hours: ` + recommendationContent[recommendation.future.reason] + recommendationContent[recommendation.future.rec]
+    const smsRecommendationText = recommendationContent[recommendation.now.reason] + recommendationContent[recommendation.now.rec] + `\n\nIn ${futureTime} hours: ` + recommendationContent[recommendation.future.reason] + recommendationContent[recommendation.future.rec]
 
-    let notificationInfo = []
-    for(let i = 0; i < home.users.length; i++) {
-        const user = await getUserById(home.users[i])
-        let userNotificationInfo = []
-        if(user && user.preferences && user.preferences.notifications) {
-            if(user.preferences.notifications.phone) {
-                console.log(`==== sending sms notification to ${user.phone}`)
-                const info = await sendSms(user.phone, smsRecommendationText)
-                userNotificationInfo.push({ sms: info })
-            } 
-            if(user.preferences.notifications.email) {
-                console.log(`==== sending email notification to ${user.email}`)
-                const info = await sendMail(user.email, "SCC-Web window recommendation", recommendationText)
-                userNotificationInfo.push({ email: info })
-            }
-        }
-        notificationInfo.push({user: home.users[i], info: userNotificationInfo})
-    }
-    return notificationInfo
+    const notifications = await sendNotification(home, emailRecommendationText, smsRecommendationText)
+    return notifications
 }
-exports.sendNotification = sendNotification
+exports.sendRecommendationNotifications = sendRecommendationNotifications
 
 async function checkForRecommendationUpdates() {
     const homes = await getAllHomes()
@@ -300,7 +306,7 @@ async function checkForRecommendationUpdates() {
                 newHome.recommendations = new_rec
                 const result = await updateHomeById(homes[i]._id, newHome)
                 console.log("==== updateHomeById result: ", result)
-                await sendNotification(homes[i], new_rec)
+                await sendRecommendationNotifications(homes[i], new_rec)
             }
         } else {
             console.log(`==== unable to create a proper recommendation for ${homes[i]._id}`)
