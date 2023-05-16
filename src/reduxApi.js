@@ -116,8 +116,15 @@ export const api = createApi({
                 body
             }),
             invalidatesTags: ['Home']
-        })
+        }),
+        deleteSensor: builder.mutation({
+            query: ({home_id, sensor_id}) => ({
+                url: `homes/${home_id}/sensors/${sensor_id}`,
+                method: `DELETE`
+            }),
+            invalidatesTags: ['Home']
+        }),
     }),
 });
 
-export const { useGetCurrentWeatherQuery, useGetWeatherForecastQuery, useGetCurrentAqiQuery, useGetAqiForecastQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation, useRemoveApiKeyMutation, useModifyHomeMutation } = api;
+export const { useGetCurrentWeatherQuery, useGetWeatherForecastQuery, useGetCurrentAqiQuery, useGetAqiForecastQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation, useRemoveApiKeyMutation, useModifyHomeMutation, useDeleteSensorMutation } = api;
