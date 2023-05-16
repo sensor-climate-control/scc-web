@@ -19,7 +19,7 @@ function WeatherCard (props) {
 
     const temp = (
       <HorizontalDiv>
-        <Text>Temp: {props.weather.main.feels_like}°F</Text>
+        <Text>Temp: {Math.round(props.weather.main.feels_like)}°F</Text>
         <Text>Humidity: {props.weather.main.humidity}%</Text>
       </HorizontalDiv>
     )
