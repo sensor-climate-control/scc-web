@@ -2,6 +2,7 @@ const { ObjectId } = require('mongodb')
 
 const { extractValidFields } = require('../lib/validation')
 const { getDbReference } = require('../lib/mongo')
+const { getUserById } = require('./users')
 
 const HomeSchema = {
     name: { required: true },
@@ -60,6 +61,12 @@ async function updateHomeById(id, home) {
 exports.updateHomeById = updateHomeById
 
 async function deleteHomeById(id) {
+    const home = await getHomeById()
+    for(let i = 0; home.users && i < home.users.length; i++) {
+        let user = await getUserById(home.users[i], true)
+        user.homes = user.homes.filter(home => !home.equals(id))
+        await updateUserById(id, user, true)
+    }
     const db = getDbReference()
     const collection = db.collection('homes')
     const result = await collection.deleteOne({
