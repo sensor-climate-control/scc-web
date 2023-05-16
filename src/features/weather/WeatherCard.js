@@ -27,7 +27,7 @@ function WeatherCard (props) {
     return (
       <div key={props.weather.dt} css={styles}>
         <Text>{dt.toDateString()}</Text>
-        <Text>{dt.toLocaleTimeString('en-us')}</Text>
+        <Text>{dt.toLocaleTimeString('en-us', {timeStyle: "short"})}</Text>
         <img src={ `https://openweathermap.org/img/wn/${props.weather.weather[0].icon}@2x.png` } alt={props.weather.weather[0].description}/>
         {temp}
         {(props.weather.pop || props.weather.pop === 0) ? <Text>Precipitation: {props.weather.pop * 100}%</Text> : null}
