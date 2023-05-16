@@ -14,7 +14,7 @@
 }
 
 .outer-window-overview-wrapper {
-    max-width: 45%;
-    min-width: 45%;
+    max-width: 50rem;
+    min-width: 18rem;
     margin-right: 2%;
 }
