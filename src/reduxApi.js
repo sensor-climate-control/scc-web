@@ -145,4 +145,4 @@ export const api = createApi({
     }),
 });
 
-export const { useGetCurrentWeatherQuery, useGetWeatherForecastQuery, useGetCurrentAqiQuery, useGetAqiForecastQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation, useRemoveApiKeyMutation, useModifyHomeMutation, useDeleteSensorMutation } = api;
+export const { useGetCurrentWeatherQuery, useGetWeatherForecastQuery, useGetCurrentAqiQuery, useGetAqiForecastQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation, useRemoveApiKeyMutation, useModifyHomeMutation, useDeleteSensorMutation, useAddWindowMutation, useDeleteWindowMutation } = api;
