@@ -126,6 +126,22 @@ export const api = createApi({
             }),
             invalidatesTags: ['Sensors']
         }),
+        addWindow: builder.mutation({
+            query: ({body, home_id}) => ({
+                url: `homes/${home_id}/windows`,
+                method: `POST`,
+                body
+            }),
+            invalidatesTags: ['Home']
+        }),
+        deleteWindow: builder.mutation({
+            query: ({body, home_id}) => ({
+                url: `homes/${home_id}/windows`,
+                method: `DELETE`,
+                body,
+            }),
+            invalidatesTags: ['Home']
+        }),
     }),
 });
 

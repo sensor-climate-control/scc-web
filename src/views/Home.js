@@ -10,6 +10,7 @@ import { useGetUserDetailsQuery, useGetHomeDetailsQuery, useGetCurrentWeatherQue
 import CreateHome from "../features/home/CreateHome";
 import CurrentAqi from "../features/weather/CurrentAqi";
 import Recommendation from "../features/home/Recommendation";
+import WindowTable from "../features/weather/WindowTable";
 import { Grid } from '@mui/material';
 
 export default function Home() {
@@ -37,7 +38,6 @@ export default function Home() {
 
     const { data: homePrefs } = useGetHomeDetailsQuery(selectedHome, {skip: !selectedHome});
     const { data: weather } = useGetCurrentWeatherQuery((homePrefs) ? homePrefs.zip_code : null, {skip: !homePrefs});
-
 
     const { data: sensorData } = useGetHomeSensorsQuery(selectedHome, {
         pollingInterval: 300000,
@@ -111,6 +111,9 @@ export default function Home() {
                 </Grid>
                 <Grid item xs={4} sm={8} md={6}>
                     <GraphSection windows={(window_data.length > 0) ? window_data : []}/>
+                </Grid>
+                <Grid item xs={4} sm={8} md={6}>
+                    <WindowTable />
                 </Grid>
                 <Grid item xs="auto">
                     <CurrentWeather zip_code={(data) ? data.zip_code : false} />
