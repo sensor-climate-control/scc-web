@@ -36,6 +36,7 @@ export const api = createApi({
         }),
         getSensorDetails: builder.query({
             query: (home_id, sensor_id) => `homes/${home_id}/sensors/${sensor_id}`,
+            providesTags: ['Sensors']
         }),
         getUserDetails: builder.query({
             query: (user_id) => {
@@ -47,7 +48,8 @@ export const api = createApi({
             query: (home_id) => ({
                 url: `homes/${home_id}/sensors`,
                 method: 'GET'
-            })
+            }),
+            providesTags: ['Sensors']
         }),
         getApiKeys: builder.query({
             query: (user_id) => ({
@@ -122,7 +124,7 @@ export const api = createApi({
                 url: `homes/${home_id}/sensors/${sensor_id}`,
                 method: `DELETE`
             }),
-            invalidatesTags: ['Home']
+            invalidatesTags: ['Sensors']
         }),
     }),
 });

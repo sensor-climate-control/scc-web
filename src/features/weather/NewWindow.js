@@ -3,6 +3,7 @@ import './WindowSection.css'
 import { useState } from 'react';
 import { AiOutlinePlusCircle } from 'react-icons/ai'
 import { RxCross2 } from 'react-icons/rx'
+import { NavLink } from 'react-router-dom';
 
 export default function NewWindow() {
     const [toggle, setToggle] = useState(false);
@@ -13,7 +14,7 @@ export default function NewWindow() {
                 <div className='toggled-window-section-wrapper'>
                     <div className='toggled-window-header'>
                         <div className='toggled-window-header-bar'>
-                            <p className='toggled-window-header-text'>Create window</p>
+                            <p className='toggled-window-header-text'>Add Sensor</p>
                             <div className='header-close-icon-wrapper'>
                                 <RxCross2 className='header-close-icon' size={30} onClick={() => setToggle(false)}/>
                             </div>
@@ -21,7 +22,7 @@ export default function NewWindow() {
 
                         <hr className='toggled-window-header-line' />
 
-                        <form onSubmit={() => {
+                        {/* <form onSubmit={() => {
                             // TODO: Send data to backend
                             setToggle(false);
                         }}>
@@ -39,7 +40,8 @@ export default function NewWindow() {
                             </div>
 
                             <button className='toggled-window-header-button' type='submit'>Create</button>
-                        </form>
+                        </form> */}
+                        <h4>To add a sensor, follow the instructions on <NavLink to="https://github.com/sensor-climate-control/scc-sensor/wiki" target="_blank" rel="noopener noreferrer">our Wiki</NavLink></h4>
                     </div>
                 </div>
             ):(
@@ -49,7 +51,7 @@ export default function NewWindow() {
                     </div>
 
                     <div className="window-section-header">
-                        <h1 className="window-section-header-text">Add a new window...</h1>
+                        <h1 className="window-section-header-text">Add a new sensor</h1>
                     </div>
                 </div>
             )}
