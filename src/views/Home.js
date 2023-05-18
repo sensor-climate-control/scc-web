@@ -13,7 +13,6 @@ import Recommendation from "../features/home/Recommendation";
 import { Grid } from '@mui/material';
 
 export default function Home() {
-    // useeffect
     const store = useStore()
     const navigate = useNavigate()
     useEffect(() => {
@@ -51,7 +50,6 @@ export default function Home() {
     })
 
     let window_data = []
-
     // switch to real data
     if (sensorData) {
         window_data = []
@@ -71,6 +69,7 @@ export default function Home() {
                 }
                 if (sensorData[i].readings.length === 0) {
                     window_data.push({
+                        id: sensorData[i]._id,
                         name: sensorData[i].name,
                         status: status,
                         temp: 0,
@@ -79,6 +78,7 @@ export default function Home() {
                     })
                 } else {
                     window_data.push({
+                        id: sensorData[i]._id,
                         name: sensorData[i].name,
                         status: status,
                         temp: sensorData[i].readings[sensorData[i].readings.length - 1].temp_f,
@@ -88,6 +88,7 @@ export default function Home() {
                 }
             } else {
                 window_data.push({
+                    id: sensorData[i]._id,
                     name: sensorData[i].name,
                     status: "closed",
                     temp: 0,
@@ -104,27 +105,23 @@ export default function Home() {
             !userdata.homes || 
             userdata.homes.length === 0
         ) ? <CreateHome userdata={userdata} /> : (
-            <>
-                {/* <div className="outer-home-sections-wrapper">
-                </div> */}
-                <Grid container item justifyContent="flex-start" direction="row" alignItems="flex-start" spacing={1} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    <Grid item xs={4} sm={8} md={6}>
-                        <WindowOverview windows={window_data} />
-                    </Grid>
-                    <Grid item xs={4} sm={8} md={6}>
-                        <GraphSection windows={window_data}/>
-                    </Grid>
-                    <Grid item xs="auto">
-                        <CurrentWeather zip_code={(data) ? data.zip_code : false} />
-                    </Grid>
-                    <Grid item xs="auto">
-                        <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
-                    </Grid>
-                    <Grid item xs="auto">
-                        <CurrentAqi zip_code={(data) ? data.zip_code : false} />
-                    </Grid>
+            <Grid container item justifyContent="flex-start" direction="row" alignItems="flex-start" spacing={1} columns={{ xs: 4, sm: 8, md: 12 }}>
+                <Grid item xs={4} sm={8} md={6}>
+                    <WindowOverview windows={(window_data.length > 0) ? window_data : []} homeid={(selectedHome) ? selectedHome : false}/>
                 </Grid>
-            </>
+                <Grid item xs={4} sm={8} md={6}>
+                    <GraphSection windows={(window_data.length > 0) ? window_data : []}/>
+                </Grid>
+                <Grid item xs="auto">
+                    <CurrentWeather zip_code={(data) ? data.zip_code : false} />
+                </Grid>
+                <Grid item xs="auto">
+                    <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
+                </Grid>
+                <Grid item xs="auto">
+                    <CurrentAqi zip_code={(data) ? data.zip_code : false} />
+                </Grid>
+            </Grid>
         )
 
     return (
