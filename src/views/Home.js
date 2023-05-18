@@ -113,7 +113,7 @@ export default function Home() {
                     <GraphSection windows={(window_data.length > 0) ? window_data : []}/>
                 </Grid>
                 <Grid item xs={4} sm={8} md={6}>
-                    <WindowTable />
+                    <WindowTable homeDetails={data} sensorDetails={sensorData} />
                 </Grid>
                 <Grid item xs="auto">
                     <CurrentWeather zip_code={(data) ? data.zip_code : false} />

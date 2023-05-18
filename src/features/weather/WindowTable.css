@@ -1,0 +1,64 @@
+.outer-graph-section-wrapper {
+    margin: 1rem;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+
+.inner-graph-section-wrapper {
+    margin: 1rem;
+}
+
+.graph-overview-header-text {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.window-overview-header-line {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    margin-bottom: 1rem;
+}
+
+.sensor-table-wrapper {
+    margin-top: 1rem;
+}
+
+.sensor-table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sensor-table-wrapper th,
+.sensor-table-wrapper td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.sensor-table-wrapper tr:hover {
+    background-color: #f5f5f5;
+}
+
+.sensor-table-wrapper button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 0.875rem;
+    margin: 0.375rem 0.25rem;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.sensor-table-wrapper button:hover {
+    background-color: #0069D9;
+    color: white;
+}
