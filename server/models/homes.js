@@ -1,5 +1,7 @@
 const { ObjectId } = require('mongodb')
 
+const _ = require('lodash');
+
 const { extractValidFields } = require('../lib/validation')
 const { getDbReference } = require('../lib/mongo')
 const { getUserById, updateUserById } = require('./users')
@@ -97,10 +99,12 @@ exports.addWindowToHome = addWindowToHome
 
 async function removeWindowFromHome(id, windowToRemove) {
     let home = await getHomeById(id)
-    if(home && home.windows && home.windows > 0) {
-        home.windows = home.windows.filter(window => !window.equals(windowToRemove))
+    if(home && home.windows && home.windows.length > 0) {
+        home.windows = home.windows.filter(window => !_.isEqual(window, windowToRemove))
+
+        const result = await updateHomeById(id, home)
+        return result
     }
-    const result = await updateHomeById(id, home)
-    return result
+    return false
 }
 exports.removeWindowFromHome = removeWindowFromHome
