@@ -24,11 +24,16 @@ export default function WindowTable({ homeDetails = {}, sensorDetails = [] }) {
         }
     };
 
+    const getSensorName = (sensorId) => {
+        const sensorDetail = sensorDetails.find(detail => detail._id === sensorId);
+        return sensorDetail ? sensorDetail.name : sensorId; // return the name if found, otherwise return the id
+    };
+
     const columns = React.useMemo(
         () => [
             { Header: 'Name', accessor: 'name' },
             { Header: 'Direction', accessor: 'direction' },
-            { Header: 'Sensor ID', accessor: 'sensorid' },
+            { Header: 'Sensor', accessor: 'sensorid', Cell: ({value}) => getSensorName(value) },
             {
                 Header: 'Delete',
                 Cell: ({ row }) => (
