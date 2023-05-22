@@ -100,6 +100,8 @@ export default function Home() {
         }
     }
 
+    console.log("Data: ", data)
+
     const homeDetails = (
             !userdata || 
             !userdata.homes || 

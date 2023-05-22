@@ -17,9 +17,10 @@ export default function WindowTable({ homeDetails = {}, sensorDetails = [] }) {
     };
 
     const handleDeleteWindow = async (window) => {
-        console.log("Deleting...")
         if (homeDetails._id && window) {
             await deleteWindow({ body: window, home_id: homeDetails._id });
+        } else {
+            alert("Something went wrong, please try again.");
         }
     };
 
@@ -31,7 +32,9 @@ export default function WindowTable({ homeDetails = {}, sensorDetails = [] }) {
             {
                 Header: 'Delete',
                 Cell: ({ row }) => (
-                    <button onClick={() => handleDeleteWindow(row.original)}>Delete</button>
+                    <button onClick={() => {
+                        handleDeleteWindow(row.original)
+                    }}>Delete</button>
                 )
             }
         ],
