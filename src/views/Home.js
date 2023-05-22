@@ -6,7 +6,7 @@ import Header from '../features/application/Header';
 import { useNavigate } from 'react-router-dom';
 import CurrentWeather from '../features/weather/CurrentWeather';
 import React, { useEffect } from 'react';
-import { useGetUserDetailsQuery, useGetHomeDetailsQuery, useGetCurrentWeatherQuery, useGetHomeSensorsQuery } from '../reduxApi';
+import { useGetUserDetailsQuery, useGetHomeDetailsQuery, useGetHomeSensorsQuery } from '../reduxApi';
 import CreateHome from "../features/home/CreateHome";
 import CurrentAqi from "../features/weather/CurrentAqi";
 import Recommendation from "../features/home/Recommendation";
@@ -40,7 +40,7 @@ export default function Home() {
         skip: !skip,
         pollingInterval: 900000
     })
-    const { data: weather } = useGetCurrentWeatherQuery((data) ? data.zip_code : null, {skip: !data});
+    // const { data: weather } = useGetCurrentWeatherQuery((data) ? data.zip_code : null, {skip: !data});
 
     const { data: sensorData } = useGetHomeSensorsQuery(selectedHome, {
         pollingInterval: 300000,
