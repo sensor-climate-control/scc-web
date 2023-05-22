@@ -72,7 +72,7 @@ def send_reading(sensor_id, home_id, token, reading):
         "Authorization": f"Bearer {token}"
     }
 
-    reading["date_time"] = clock.mktime(reading["date_time"].timetuple())
+    reading["date_time"] = clock.mktime(reading["date_time"].timetuple()) * 1000
 
     payload = [reading]
 
@@ -91,7 +91,7 @@ def send_readings(sensor_id, home_id, token, readings):
     }
 
     for i in range(len(readings)):
-        readings[i]["date_time"] = clock.mktime(readings[i]["date_time"].timetuple())
+        readings[i]["date_time"] = clock.mktime(readings[i]["date_time"].timetuple()) * 1000
 
     response = requests.put(reading_send_url, headers=headers, json=readings)
 
@@ -267,7 +267,7 @@ def stream_live_data(token, userid, sensors, home_info):
 
 # reading fmt: {'date_time': 1683675077, 'temp_f': 90.14744241974327, 'temp_c': 32.30413467763515, 'humidity': 80.2708255087578}
 def fmt_reading(reading_dict):
-    date_str = datetime.fromtimestamp(reading_dict['date_time']).strftime("%m/%d/%Y %H:%M:%S")
+    date_str = datetime.fromtimestamp(reading_dict['date_time'] / 1000).strftime("%m/%d/%Y %H:%M:%S")
     print("  ------------------- ")
     print(f"\t{date_str},")
     print(f"\t{reading_dict['temp_f']:.1f},")
