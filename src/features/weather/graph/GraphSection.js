@@ -101,7 +101,7 @@ function newColor() {
 
 function epochToDateString(epochSeconds) {
     // Convert seconds to milliseconds
-    const epochMilliseconds = epochSeconds * 1000;
+    const epochMilliseconds = epochSeconds;
 
     // Create a new Date object from milliseconds
     const date = new Date(epochMilliseconds);
@@ -157,16 +157,16 @@ function getDataByDate(windows, timeScale, windowState) {
     // get curr epoch time
 
     if (windowState.length === windows.length) {
-        let cuttoffTime = Date.now() / 1000;
+        let cuttoffTime = Date.now();
 
         if (timeScale === 'hour') {
-            cuttoffTime -= 3600;
+            cuttoffTime -= 3600 * 1000
         } else if (timeScale === 'day') {
-            cuttoffTime -= 86400;
+            cuttoffTime -= 86400 * 1000;
         } else if (timeScale === 'week') {
-            cuttoffTime -= 604800;
+            cuttoffTime -= 604800 * 1000;
         } else if (timeScale === 'month') {
-            cuttoffTime -= 2592000;
+            cuttoffTime -= 2592000 * 1000;
         }
 
         console.log(timeScale, cuttoffTime);
