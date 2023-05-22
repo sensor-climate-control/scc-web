@@ -119,7 +119,7 @@ export default function Home() {
                     </Grid>
                     <Grid item xs={4} sm={8} md={6}>
                         {
-                        data ? <WindowTable homeDetails={data} sensorDetails={sensorData} /> :
+                        data && sensorData ? <WindowTable homeDetails={data} sensorDetails={sensorData} /> :
                             <h2> Loading ... </h2> 
                         }
                     </Grid>

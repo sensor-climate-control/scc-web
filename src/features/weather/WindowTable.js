@@ -7,7 +7,7 @@ export default function WindowTable({ homeDetails = {}, sensorDetails = [] }) {
     const [newWindow, setNewWindow] = useState({ name: "", direction: "", sensorid: "" });
 
     const [addWindow, { isLoading: isAdding }] = useAddWindowMutation();
-    const [deleteWindow, { isLoading: isDeleting }] = useDeleteWindowMutation();
+    const [deleteWindow] = useDeleteWindowMutation();
 
     const handleAddWindow = async () => {
         if (homeDetails._id && newWindow) {
@@ -16,34 +16,37 @@ export default function WindowTable({ homeDetails = {}, sensorDetails = [] }) {
         }
     };
 
-    const handleDeleteWindow = async (window) => {
-        if (homeDetails._id && window) {
-            await deleteWindow({ body: window, home_id: homeDetails._id });
-        } else {
-            alert("Something went wrong, please try again.");
-        }
-    };
-
-    const getSensorName = (sensorId) => {
-        const sensorDetail = sensorDetails.find(detail => detail._id === sensorId);
-        return sensorDetail ? sensorDetail.name : sensorId; // return the name if found, otherwise return the id
-    };
 
     const columns = React.useMemo(
-        () => [
-            { Header: 'Name', accessor: 'name' },
-            { Header: 'Direction', accessor: 'direction' },
-            { Header: 'Sensor', accessor: 'sensorid', Cell: ({value}) => getSensorName(value) },
-            {
-                Header: 'Delete',
-                Cell: ({ row }) => (
-                    <button onClick={() => {
-                        handleDeleteWindow(row.original)
-                    }}>Delete</button>
-                )
-            }
-        ],
-        []
+        () => {
+            const handleDeleteWindow = async (window) => {
+                if (homeDetails._id && window) {
+                    await deleteWindow({ body: window, home_id: homeDetails._id });
+                } else {
+                    alert("Something went wrong, please try again.");
+                }
+            };
+
+            const getSensorName = (sensorId) => {
+                const sensorDetail = sensorDetails.find(detail => detail._id === sensorId);
+                return sensorDetail ? sensorDetail.name : sensorId; // return the name if found, otherwise return the id
+            };
+
+            return [
+                { Header: 'Name', accessor: 'name' },
+                { Header: 'Direction', accessor: 'direction' },
+                { Header: 'Sensor', accessor: 'sensorid', Cell: ({value}) => getSensorName(value) },
+                {
+                    Header: 'Delete',
+                    Cell: ({ row }) => (
+                        <button onClick={() => {
+                            handleDeleteWindow(row.original)
+                        }}>Delete</button>
+                    )
+                }
+            ]
+        },
+        [deleteWindow, sensorDetails, homeDetails._id]
     );
 
     const data = homeDetails.windows || [];
