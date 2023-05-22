@@ -5,12 +5,10 @@ export default function WindowSection(props) {
     let [isToggled, setIsToggled] = useState(false);
 
     let bg_color = "";
-    if (props.status === "open") {
+    if (props.status) {
         bg_color = "#4aff71";
-    } else if (props.status === "closed") {
-        bg_color = "#ff0000";
     } else {
-        bg_color = "#efff00";
+        bg_color = "#ff0000";
     }
 
     // We need to get the temperature of the window from the server using RTK Query

@@ -346,8 +346,14 @@ router.delete('/:homeid/windows', requireAuthentication, async function (req, re
     const homeid = req.params.homeid
     if(await authorizedToAccessHomeEndpoint(req.user, homeid)) {
         try {
-            await removeWindowFromHome(homeid, req.body)
-            res.status(204).send();
+            const result = await removeWindowFromHome(homeid, req.body)
+            if (result) {
+                res.status(204).send();
+            } else {
+                res.status(500).send({
+                    error: "Error removing window from home"
+                })
+            }
         } catch (err) {
             console.error(err)
             res.status(500).send({

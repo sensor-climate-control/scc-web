@@ -90,6 +90,15 @@ const colors = [{
     backgroundColor: 'purple',
 }]
 
+function newColor() {
+    var randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+
+    return {
+        borderColor: randomColor,
+        backgroundColor: randomColor
+    }
+}
+
 function epochToDateString(epochSeconds) {
     // Convert seconds to milliseconds
     const epochMilliseconds = epochSeconds * 1000;
@@ -165,6 +174,9 @@ function getDataByDate(windows, timeScale, windowState) {
         for (let i = 0; i < windows.length; i++) {
             if (windows[i].lastReadings === [] || !windowState[i]) {
                 continue;
+            }
+            if (i >= 5) {
+                colors.push(newColor())
             }
 
             datasets.push({
