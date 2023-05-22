@@ -47,7 +47,7 @@ export default function Home() {
 
     let window_data = []
     // switch to real data
-    if (sensorData) {
+    if (sensorData && sensorData.length > 0) {
         window_data = []
         for (let i = 0; i < sensorData.length; i++) {
             if (sensorData[i].readings) {
