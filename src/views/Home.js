@@ -6,9 +6,9 @@ import Header from '../features/application/Header';
 import { useNavigate } from 'react-router-dom';
 import CurrentWeather from '../features/weather/CurrentWeather';
 import React, { useEffect } from 'react';
-import { useGetUserDetailsQuery, useGetHomeDetailsQuery, useGetCurrentWeatherQuery, useGetHomeSensorsQuery } from '../reduxApi';
-import CurrentAqi from '../features/weather/CurrentAqi';
+import { useGetUserDetailsQuery, useGetHomeDetailsQuery, useGetHomeSensorsQuery } from '../reduxApi';
 import CreateHome from "../features/home/CreateHome";
+import CurrentAqi from "../features/weather/CurrentAqi";
 import Recommendation from "../features/home/Recommendation";
 import { Grid } from '@mui/material';
 
@@ -35,9 +35,6 @@ export default function Home() {
         }
     }
 
-    const { data: homePrefs } = useGetHomeDetailsQuery(selectedHome, {skip: !selectedHome});
-    const { data: weather } = useGetCurrentWeatherQuery((homePrefs) ? homePrefs.zip_code : null, {skip: !homePrefs});
-
     const { data: sensorData } = useGetHomeSensorsQuery(selectedHome, {
         pollingInterval: 300000,
         skip: !skip
@@ -54,23 +51,11 @@ export default function Home() {
         window_data = []
         for (let i = 0; i < sensorData.length; i++) {
             if (sensorData[i].readings) {
-                let status = "closed"
-
-                if (homePrefs && weather && sensorData[i].readings.length > 0) {
-                    let lastReadingF = sensorData[i].readings[sensorData[i].readings.length - 1].temp_f
-
-                    // we open if the outside temp is cooler and the house is too hot
-                    if (lastReadingF - parseInt(homePrefs.preferences.temperature) > 1) {
-                        if (weather.main && lastReadingF > weather.main.temp) {
-                            status = "open"
-                        }
-                    }
-                }
                 if (sensorData[i].readings.length === 0) {
                     window_data.push({
                         id: sensorData[i]._id,
                         name: sensorData[i].name,
-                        status: status,
+                        status: sensorData[i].active,
                         temp: 0,
                         humidity: 0,
                         lastReadings: [],
@@ -79,7 +64,7 @@ export default function Home() {
                     window_data.push({
                         id: sensorData[i]._id,
                         name: sensorData[i].name,
-                        status: status,
+                        status: sensorData[i].active,
                         temp: sensorData[i].readings[sensorData[i].readings.length - 1].temp_f,
                         humidity: sensorData[i].readings[sensorData[i].readings.length - 1].humidity,
                         lastReadings: sensorData[i].readings,
@@ -89,7 +74,7 @@ export default function Home() {
                 window_data.push({
                     id: sensorData[i]._id,
                     name: sensorData[i].name,
-                    status: "closed",
+                    status: sensorData[i].active,
                     temp: 0,
                     humidity: 0,
                     lastReadings: [],
