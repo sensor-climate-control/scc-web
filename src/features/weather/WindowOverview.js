@@ -3,6 +3,7 @@ import RemoveSensor from "../home/RemoveSensor";
 import NewWindow from "./NewWindow";
 import "./WindowOverview.css";
 import WindowSection from "./WindowSection";
+import { Grid } from '@mui/material';
 
 export default function WindowOverview(props) {
     if (props.windows === []) {
@@ -32,16 +33,20 @@ export default function WindowOverview(props) {
 
                 <hr className="window-overview-header-line" />
 
-                <div className="window-overview-body">
+                <Grid container spacing={1} direction="row" justifyContent="flex-start" alignItems="flex-start">
                     {props.windows.map((window, ind) => (
+                        <Grid item xs='auto'>
                             <HorizontalDiv key={ind}>
                                 <WindowSection  name={window.name} status={window.status} temp={window.temp} humidity={window.humidity} />
                                 <RemoveSensor sensorid={window.id} homeid={props.homeid} />
                             </HorizontalDiv>
+                        </Grid>
                         )
                     )}
-                    <NewWindow />
-                </div>
+                    <Grid item xs='auto'>
+                        <NewWindow />
+                    </Grid>
+                </Grid>
             </div>
         </div>
     );
