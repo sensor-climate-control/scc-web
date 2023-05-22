@@ -100,40 +100,40 @@ export default function Home() {
         }
     }
 
-    console.log("Data: ", data)
-
-    const homeDetails = (
-            !userdata || 
-            !userdata.homes || 
-            userdata.homes.length === 0
-        ) ? <CreateHome userdata={userdata} /> : (
-            <Grid container item justifyContent="flex-start" direction="row" alignItems="flex-start" spacing={1} columns={{ xs: 4, sm: 8, md: 12 }}>
-                <Grid item xs={4} sm={8} md={6}>
-                    <WindowOverview windows={(window_data.length > 0) ? window_data : []} homeid={(selectedHome) ? selectedHome : false}/>
-                </Grid>
-                <Grid item xs={4} sm={8} md={6}>
-                    <GraphSection windows={(window_data.length > 0) ? window_data : []}/>
-                </Grid>
-                <Grid item xs={4} sm={8} md={6}>
-                    <WindowTable homeDetails={data} sensorDetails={sensorData} />
-                </Grid>
-                <Grid item xs="auto">
-                    <CurrentWeather zip_code={(data) ? data.zip_code : false} />
-                </Grid>
-                <Grid item xs="auto">
-                    <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
-                </Grid>
-                <Grid item xs="auto">
-                    <CurrentAqi zip_code={(data) ? data.zip_code : false} />
-                </Grid>
-            </Grid>
-        )
-
     return (
         <>
             <Header page_name='View Your Home' user_first_name={(userdata) ? userdata.name : ''} />
 
-            {homeDetails}
+            {(
+                !userdata || 
+                !userdata.homes || 
+                userdata.homes.length === 0
+            ) ? (<CreateHome userdata={userdata} />)
+                :
+                (<Grid container item justifyContent="flex-start" direction="row" alignItems="flex-start" spacing={1} columns={{ xs: 4, sm: 8, md: 12 }}>
+                    <Grid item xs={4} sm={8} md={6}>
+                        <WindowOverview windows={(window_data.length > 0) ? window_data : []} homeid={(selectedHome) ? selectedHome : false}/>
+                    </Grid>
+                    <Grid item xs={4} sm={8} md={6}>
+                        <GraphSection windows={(window_data.length > 0) ? window_data : []}/>
+                    </Grid>
+                    <Grid item xs={4} sm={8} md={6}>
+                        {
+                        data ? <WindowTable homeDetails={data} sensorDetails={sensorData} /> :
+                            <h2> Loading ... </h2> 
+                        }
+                    </Grid>
+                    <Grid item xs="auto">
+                        <CurrentWeather zip_code={(data) ? data.zip_code : false} />
+                    </Grid>
+                    <Grid item xs="auto">
+                        <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
+                    </Grid>
+                    <Grid item xs="auto">
+                        <CurrentAqi zip_code={(data) ? data.zip_code : false} />
+                    </Grid>
+                </Grid>
+            )}
         </>
     );
 }
