@@ -95,7 +95,7 @@ function HomeInfo (props) {
             <p>Desired Temperature: {homeData.preferences.temperature}</p>
             {(homeData.users) ? (<MyTable headers={["Users"]} rows={userRows} />) : null }
             <br />
-            {(homeData.sensors) ? (<MyTable headers={["Sensors"]} rows={sensorRows} />) : null }
+            {(homeData && homeData.sensors) ? (<MyTable headers={["Sensors"]} rows={sensorRows} />) : null }
             <br />
             <Button variant="contained" onClick={handleEditButton}>Edit Info</Button>
         </div>)
