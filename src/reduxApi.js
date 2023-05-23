@@ -126,7 +126,23 @@ export const api = createApi({
             }),
             invalidatesTags: ['Sensors']
         }),
+        addWindow: builder.mutation({
+            query: ({body, home_id}) => ({
+                url: `homes/${home_id}/windows`,
+                method: `POST`,
+                body
+            }),
+            invalidatesTags: ['Home']
+        }),
+        deleteWindow: builder.mutation({
+            query: ({body, home_id}) => ({
+                url: `homes/${home_id}/windows`,
+                method: `DELETE`,
+                body,
+            }),
+            invalidatesTags: ['Home']
+        }),
     }),
 });
 
-export const { useGetCurrentWeatherQuery, useGetWeatherForecastQuery, useGetCurrentAqiQuery, useGetAqiForecastQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation, useRemoveApiKeyMutation, useModifyHomeMutation, useDeleteSensorMutation } = api;
+export const { useGetCurrentWeatherQuery, useGetWeatherForecastQuery, useGetCurrentAqiQuery, useGetAqiForecastQuery, useGetHomeDetailsQuery, useGetSensorDetailsQuery, useGetUserDetailsQuery, useGetHomeSensorsQuery, useGetApiKeysQuery, useLoginMutation, useCreateAccountMutation, useModifyUserMutation, useCreateHomeMutation, useAddHomeToUserMutation, useAddApiKeyMutation, useRemoveApiKeyMutation, useModifyHomeMutation, useDeleteSensorMutation, useAddWindowMutation, useDeleteWindowMutation } = api;
