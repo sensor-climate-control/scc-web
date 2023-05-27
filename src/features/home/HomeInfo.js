@@ -34,7 +34,7 @@ function HomeInfo (props) {
         setEditInfo(!editInfo)
     }
 
-    const sensorRows = (homeData) ? (
+    const sensorRows = (homeData && homeData.sensors) ? (
         homeData.sensors.map(sensor => {
             return [sensor]
         })
