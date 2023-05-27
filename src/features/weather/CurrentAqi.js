@@ -16,12 +16,13 @@ const CurrentAqi = (props) => {
     );
 
     const aqi_description = ["Good", "Fair", "Moderate", "Poor", "Very Poor"]
-    const aqi_color = ["green", "yellow", "red", "purple", "maroon"]
+    // const aqi_color = ["green", "yellow", "red", "purple", "maroon"]
+    const aqi_color = ["black", "black", "black", "black", "black"]
     const dt = (data) ? new Date(data.list[0].dt * 1000) : null
 
 
     return (
-        <MyCard title="Current Air Quality">
+        <MyCard title="Current Air Quality" style={{ width: '18rem', backgroundColor: 'white' }}>
             {
                 (isError) ? (<p>Error: {JSON.stringify(error)}</p>) :
                 (isLoading || isUninitialized) ? <CircularProgress /> : 

@@ -24,7 +24,7 @@ const Recommendation = (props) => {
         </div>
     ) : <CircularProgress />
     return (
-        <MyCard title="Window Recommendations">
+        <MyCard title="Window Recommendations" style={{ width: '18rem', backgroundColor: 'white' }}>
             {recommendationContent}
         </MyCard>
     )
