@@ -13,7 +13,7 @@ const CurrentWeather = (props) => {
     );
 
     return (
-        <MyCard title="Current Weather">
+        <MyCard title="Current Weather" style={{ width: '18rem', backgroundColor: 'white' }}>
             {
                 (isError) ? (<p>Error: {JSON.stringify(error)}</p>) :
                 (isLoading || isUninitialized) ? <CircularProgress /> :

@@ -99,26 +99,33 @@ export default function Home() {
             ) ? (<CreateHome userdata={userdata} />)
                 :
                 (<Grid container item justifyContent="flex-start" direction="row" alignItems="flex-start" spacing={1} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    <Grid item xs={4} sm={8} md={6}>
-                        <WindowOverview windows={(window_data.length > 0) ? window_data : []} homeid={(selectedHome) ? selectedHome : false}/>
+                    <Grid container item direction="column" spacing={1} xs={4} sm={8} md={6}>
+                        <Grid item xs={4} sm={8} md={6}>
+                            <WindowOverview windows={(window_data.length > 0) ? window_data : []} homeid={(selectedHome) ? selectedHome : false}/>
+                        </Grid>
+                        <Grid container item xs={4} sm={8} md={6} direction="row" alignItems="flex-start" spacing={1}>
+                            <Grid item xs={0.175}/>
+                            <Grid item xs="auto">
+                                <CurrentWeather zip_code={(data) ? data.zip_code : false} />
+                            </Grid>
+                            <Grid item xs="auto">
+                                <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
+                            </Grid>
+                            <Grid item xs="auto">
+                                <CurrentAqi zip_code={(data) ? data.zip_code : false} />
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={4} sm={8} md={6}>
+                            {
+                            data && sensorData ? <WindowTable homeDetails={data} sensorDetails={sensorData} /> :
+                                <h2> Loading ... </h2> 
+                            }
+                        </Grid>
                     </Grid>
-                    <Grid item xs={4} sm={8} md={6}>
-                        <GraphSection windows={(window_data.length > 0) ? window_data : []}/>
-                    </Grid>
-                    <Grid item xs={4} sm={8} md={6}>
-                        {
-                        data && sensorData ? <WindowTable homeDetails={data} sensorDetails={sensorData} /> :
-                            <h2> Loading ... </h2> 
-                        }
-                    </Grid>
-                    <Grid item xs="auto">
-                        <CurrentWeather zip_code={(data) ? data.zip_code : false} />
-                    </Grid>
-                    <Grid item xs="auto">
-                        <Recommendation recommendations={(data) ? data.recommendations : false} preferences={(data) ? data.preferences : false} />
-                    </Grid>
-                    <Grid item xs="auto">
-                        <CurrentAqi zip_code={(data) ? data.zip_code : false} />
+                    <Grid container item direction="column" spacing={1} xs={4} sm={8} md={6}>
+                        <Grid item xs={4} sm={8} md={6}>
+                            <GraphSection windows={(window_data.length > 0) ? window_data : []}/>
+                        </Grid>
                     </Grid>
                 </Grid>
             )}
