@@ -58,7 +58,7 @@ connectToDb(function ()  {
 		cron.schedule("*/15 * * * *", async () => {
 			console.log("======== Updating weather information ========")
 			try {
-			await updateWeatherInfo();
+				await updateWeatherInfo();
 			} catch (e) {
 				console.log("==== scheduled task encountered an error: ", e)
 			}
@@ -71,7 +71,7 @@ connectToDb(function ()  {
 				console.log("==== scheduled task encountered an error: ", e)
 			}
 		});
-		cron.schedule("0 * * * *", async () => {
+		cron.schedule("*/15 * * * *", async () => {
 			console.log("======== Checking if sensors are online ========")
 			try {
 				await checkSensorStatus();
