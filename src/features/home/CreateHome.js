@@ -38,6 +38,7 @@ function CreateHome ({ userdata }) {
                 <input
                     type="text"
                     id="name"
+                    required={true}
                     placeholder="My Home"
                     value={name}
                     onChange={e => setName(e.target.value)}
@@ -48,6 +49,7 @@ function CreateHome ({ userdata }) {
                 <input
                     type="text"
                     id="zipcode"
+                    required={true}
                     placeholder="97330"
                     value={zipcode}
                     onChange={e => setZipcode(e.target.value)}

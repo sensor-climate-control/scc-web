@@ -68,7 +68,7 @@ async function getLatestReadings(homeid) {
         if (sensors) {
             for (let i = 0; i < sensors.length; i++) {
                 const details = await getSensorById(sensors[i])
-                if(details.readings && details.readings.length > 0) {
+                if(details && details.readings && details.readings.length > 0) {
                     latest_readings.push({"sensor": details._id, "reading": details.readings.pop()})
                 }
             }
@@ -296,20 +296,24 @@ async function checkForRecommendationUpdates() {
     const homes = await getAllHomes()
 
     for(let i = 0; i < homes.length; i++) {
-        const new_rec = await whatShouldYouDoWithTheWindows(homes[i]._id)
+        try {
+            const new_rec = await whatShouldYouDoWithTheWindows(homes[i]._id)
 
-        if(new_rec && new_rec.dt) {
-            const updateRec = await shouldWeUpdateRecommendationsNow(new_rec, homes[i].recommendations)
-            console.log(`==== ${i}: updateRec for ${homes[i]._id}: `, updateRec)
-            if(updateRec) {
-                let newHome = homes[i]
-                newHome.recommendations = new_rec
-                const result = await updateHomeById(homes[i]._id, newHome)
-                console.log("==== updateHomeById result: ", result)
-                await sendRecommendationNotifications(homes[i], new_rec)
+            if(new_rec && new_rec.dt) {
+                const updateRec = await shouldWeUpdateRecommendationsNow(new_rec, homes[i].recommendations)
+                console.log(`==== ${i}: updateRec for ${homes[i]._id}: `, updateRec)
+                if(updateRec) {
+                    let newHome = homes[i]
+                    newHome.recommendations = new_rec
+                    const result = await updateHomeById(homes[i]._id, newHome)
+                    console.log("==== updateHomeById result: ", result)
+                    await sendRecommendationNotifications(homes[i], new_rec)
+                }
+            } else {
+                console.log(`==== unable to create a proper recommendation for ${homes[i]._id}`)
             }
-        } else {
-            console.log(`==== unable to create a proper recommendation for ${homes[i]._id}`)
+        } catch (e) {
+            console.log("==== error checking for recommendation updates: ", e)
         }
     }
     console.log(`==== done, completed recommendation check for ${homes.length} homes`)
