@@ -300,7 +300,12 @@ async function checkForRecommendationUpdates() {
             const new_rec = await whatShouldYouDoWithTheWindows(homes[i]._id)
 
             if(new_rec && new_rec.dt) {
-                const updateRec = await shouldWeUpdateRecommendationsNow(new_rec, homes[i].recommendations)
+                let updateRec
+                if(homes[i]) {
+                    updateRec = await shouldWeUpdateRecommendationsNow(new_rec, homes[i].recommendations)
+                } else {
+                    updateRec = true
+                }
                 console.log(`==== ${i}: updateRec for ${homes[i]._id}: `, updateRec)
                 if(updateRec) {
                     let newHome = homes[i]
