@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { getHomeById } = require('../models/homes');
-const { getUserById, UserSchema } = require('../models/users');
-const { validateAgainstSchema } = require('./validation');
+const { getUserById } = require('../models/users');
 require('dotenv').config();
 
 const secret = process.env.OWM_API_KEY
