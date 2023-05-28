@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { getHomeById } = require('../models/homes');
-const { getUserById } = require('../models/users');
+const { getUserById, UserSchema } = require('../models/users');
+const { validateAgainstSchema } = require('./validation');
 require('dotenv').config();
 
 const secret = process.env.OWM_API_KEY
@@ -71,3 +72,35 @@ function requireAuthentication(req, res, next) {
     }
 }
 exports.requireAuthentication = requireAuthentication
+
+async function requireAdminAuthToCreateAdminUser(req, res, next) {
+    console.log("==== req.body: ", req.body)
+    if(!req.body || !req.body.admin) {
+        next()
+        return
+    }
+
+    const authHeader = req.get('authorization') || ''
+    const authParts = authHeader.split(' ')
+    const token = authParts[0] === 'Bearer' ? authParts[1] : null
+
+    try {
+        const payload = jwt.verify(token, secret)
+        // console.log("== payload:", payload)
+        req.user = payload.sub
+        const user = await getUserById(req.user)
+        if(user && user.admin) {
+            next()
+        } else {
+            res.status(403).send({
+                err: "You are not authorized to create an admin user"
+            })
+        }
+    } catch (err) {
+        res.status(401).send({
+            err: "Invalid authentication token"
+        })
+    }
+
+}
+exports.requireAdminAuthToCreateAdminUser = requireAdminAuthToCreateAdminUser

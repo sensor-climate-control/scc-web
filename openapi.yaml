@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 1.0.1
+  version: 1.0.2
   title: OSUSCC API
   description: API for the Sensor-Based In-Home Climate Control OSU Capstone Project.
 
@@ -9,7 +9,7 @@ paths:
     post:
       summary: Create a new User.
       description: >
-        Create and store a new application User with specified data and adds it to the application's database.  Only an authenticated User with 'admin' role can create users with the 'admin' or 'instructor' roles.
+        Create and store a new application User with specified data and adds it to the application's database.  Only an authenticated User with 'admin' role can create users with the 'admin' role.
       operationId: createUser
       tags:
         - Users
@@ -393,12 +393,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  homes:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Home'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Home'
 
   /homes/{homeid}:
     parameters:
@@ -734,7 +731,7 @@ paths:
                 type: array
                 items:
                   type: object
-                example: [{"date_time": "1674178986", "temp_f": "52.1", "temp_c": "11.16", "humidity": "0.25"}]
+                example: [{"date_time": "1674178986000", "temp_f": "52.1", "temp_c": "11.16", "humidity": "25"}]
         '403':
           description: >
             The request was not made by an authenticated User satisfying the authorization criteria described above.
@@ -764,7 +761,7 @@ paths:
               type: array
               items:
                 type: object
-              example: [{"date_time": "1674178986", "temp_f": "52.1", "temp_c": "11.16", "humidity": "0.25"}]
+              example: [{"date_time": "1674178986000", "temp_f": "52.1", "temp_c": "11.16", "humidity": "25"}]
       responses:
         '200':
           description: Success
@@ -800,7 +797,7 @@ paths:
         example: "97330"
         required: true
     get:
-      summary: Fetch the current weather forecast.
+      summary: Fetch the current weather.
       description: >
         Fetch the current weather forecast. Uses OpenWeatherMap Current Weather API: https://openweathermap.org/current and Geocoding API to convert zip code to latitude and longitude: https://openweathermap.org/api/geocoding-api
       operationId: getCurrentWeather
@@ -875,7 +872,7 @@ paths:
         example: "97330"
         required: true
     get:
-      summary: Fetch the current weather forecast.
+      summary: Fetch the current air quality.
       description: >
         Fetch the current weather forecast. Uses OpenWeatherMap Current Weather API: https://openweathermap.org/current and Geocoding API to convert zip code to latitude and longitude: https://openweathermap.org/api/geocoding-api
       operationId: getCurrentAqi
@@ -957,12 +954,7 @@ components:
           type: string
           description: >
             The User's phone number.
-          example: 123-456-7890
-        phone_carrier:
-          type: string
-          description: >
-            The User's phone carrier.
-          example: verizon
+          example: 1234567890
 
     Home:
       description: >
@@ -1004,7 +996,7 @@ components:
           description: List of windows in the home.
           items:
             type: object
-          example: [{name: East Window 1, direction: east}, {name: North Window 1, direction: North}]
+          example: [{name: East Window 1, direction: east, sensorid: sensor123}, {name: North Window 1, direction: North, sensorid: sensor234}]
 
     Sensor:
       description: >
@@ -1037,8 +1029,8 @@ components:
                 type: string
                 format: date-time
                 description: >
-                  Date and time of the reading.  Should be in ISO 8601 format.
-                example: "2022-06-14T17:00:00-07:00"
+                  Date and time of the reading.  Should be in Unix Epoch Milliseconds format
+                example: "1674178986000"
               temp_c:
                 type: string
                 description: Temperature reading from the sensor in celcius
@@ -1049,8 +1041,8 @@ components:
                 example: "11.16"
               humidity:
                 type: string
-                description: Humidity reading from the sensor
-                example: "0.25"
+                description: Humidity reading from the sensor (in percent)
+                example: "25"
           
     CreateApiKeyBody:
       description: >
@@ -1096,6 +1088,23 @@ components:
         error:
           type: string
           description: A message describing the Error.
+    Window:
+      description: >
+        An object representing information about a window.
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the Window
+          example: "Kitchen Window 1"
+        direction:
+          type: string
+          description: The direction the window faces
+          example: "east"
+        sensorid:
+          type: string
+          description: The id of a sensor associated with the window
+          example: "sensor123"
 
 tags:
   - name: Users

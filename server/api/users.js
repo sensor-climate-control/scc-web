@@ -1,12 +1,12 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs')
-const { generateAuthToken, requireAuthentication, getTokenExpiration, authorizedToAccessUserEndpoint } = require('../lib/auth')
+const { generateAuthToken, requireAuthentication, requireAdminAuthToCreateAdminUser, getTokenExpiration, authorizedToAccessUserEndpoint } = require('../lib/auth')
 const { validateAgainstSchema, extractValidFields } = require('../lib/validation');
 const { UserSchema, insertNewUser, getAllUsers, getUserById, deleteUserById, updateUserById, getUserByEmail, addApiKey, getUserApiKeysById, removeApiKey, ApiKeySchema } = require('../models/users');
 
 
 // Creates new user
-router.post('/', async function (req, res, next) {
+router.post('/', requireAdminAuthToCreateAdminUser, async function (req, res, next) {
     if (validateAgainstSchema(req.body, UserSchema)) {
         try {
             const id = await insertNewUser(req.body)
